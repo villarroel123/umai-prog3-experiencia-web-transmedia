@@ -14,7 +14,7 @@ import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { chapters } from "@/data/chapters";
 import { getFirebaseServices, hasFirebaseConfig } from "@/lib/firebase";
 
-const STORAGE_KEY = "signal-88-progress";
+const STORAGE_KEY = "biblioteca-recuerdos-progress";
 const VALID_CLUE_IDS = new Set(chapters.map((chapter) => chapter.clueId));
 
 function normalizeClues(value) {
@@ -33,7 +33,11 @@ function readLocal() {
 }
 
 function saveLocal(clues) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(clues));
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(clues));
+  } catch (error) {
+    console.warn("No se pudo guardar el progreso local.", error);
+  }
 }
 
 function getProvider(user) {
@@ -93,7 +97,7 @@ export function useProgress() {
         } catch (error) {
           console.warn("No se pudo iniciar la sesion anonima.", error);
           setAuthError(error.code || "auth/anonymous-sign-in-failed");
-          setSyncState("local");
+          setSyncState("offline");
         }
         return;
       }
@@ -124,7 +128,7 @@ export function useProgress() {
         console.warn("No se pudo sincronizar con Firebase.", error);
         setAuthUser(user);
         setAuthError(error.code || "firestore/sync-failed");
-        setSyncState("local");
+        setSyncState("offline");
       }
     });
 
@@ -146,7 +150,11 @@ export function useProgress() {
         updatedAt: serverTimestamp(),
       },
       { merge: true },
-    ).catch((error) => console.warn("No se pudo sincronizar el progreso.", error));
+    ).then(() => setSyncState("cloud"))
+      .catch((error) => {
+        console.warn("No se pudo sincronizar el progreso.", error);
+        setSyncState("offline");
+      });
   }, [clues, ready, remoteUser]);
 
   const discover = useCallback((clueId) => {

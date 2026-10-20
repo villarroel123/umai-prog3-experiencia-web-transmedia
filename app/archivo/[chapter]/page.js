@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
 import Experience from "@/components/Experience";
+import FilmDossier from "@/components/FilmDossier";
 import { chapters } from "@/data/chapters";
-
-export function generateStaticParams() {
-  return chapters.map((chapter) => ({ chapter: chapter.id }));
-}
+import { getGhibliFilm } from "@/lib/ghibli";
 
 export async function generateMetadata({ params }) {
   const { chapter: chapterId } = await params;
@@ -13,16 +11,16 @@ export async function generateMetadata({ params }) {
   if (!chapter) return {};
 
   return {
-    title: `${chapter.label} — SEÑAL 88`,
+    title: `${chapter.label} — La biblioteca de los recuerdos`,
     description: chapter.copy,
   };
 }
 
 export default async function ChapterPage({ params }) {
   const { chapter: chapterId } = await params;
-  const chapterExists = chapters.some((item) => item.id === chapterId);
+  const chapter = chapters.find((item) => item.id === chapterId);
+  if (!chapter) notFound();
 
-  if (!chapterExists) notFound();
-
-  return <Experience initialChapterId={chapterId} />;
+  const film = await getGhibliFilm(chapter.filmId);
+  return <Experience initialChapterId={chapterId} filmDossier={<FilmDossier film={film} />} />;
 }
