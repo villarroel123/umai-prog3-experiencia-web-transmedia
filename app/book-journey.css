@@ -6,20 +6,21 @@
 .book-journey .intro-atmosphere{z-index:0}
 .book-journey .intro-vignette{z-index:3}
 .book-journey .intro-copy-block{z-index:5}
-.book-journey .intro-nav{z-index:8}
-.book-journey--reading .intro-copy-block,.book-journey--reading .intro-nav{opacity:0;pointer-events:none}
+.book-journey--reading .intro-copy-block{opacity:0;pointer-events:none}
 .book-journey--intro .story-screen-library{opacity:0;pointer-events:none}
 
 /* The existing index content is ink over the projected top faces of the original mesh. */
 .book-journey .story-screen-library{min-height:100svh;overflow:visible;background:transparent;isolation:auto}
 .book-journey .story-screen-library::before{display:none}
 .book-journey .story-screen-library .story-grain{z-index:3}
-.book-journey .story-screen-library .story-header{position:relative;z-index:8;min-height:57px;padding:9px clamp(20px,3vw,50px);background:#2019149c}
-.book-journey--returning .story-screen-library .story-header{opacity:0;transition:opacity .3s ease;pointer-events:none}
 .book-journey .story-screen-library .story-content{position:fixed;z-index:5;inset:0;max-width:none;margin:0;padding:0;pointer-events:none;animation:none}
 .book-journey .storybook-index{position:fixed;inset:0;max-width:none;margin:0;pointer-events:none;opacity:0;transition:opacity .75s ease}
 .book-journey--reading[data-projected="true"] .storybook-index{opacity:1}
 .book-journey--returning .storybook-index{opacity:0;transition-duration:.28s}
+.book-journey--reading[data-projected="true"] .storybook-title-page>*,
+.book-journey--reading[data-projected="true"] .storybook-index-page>*{animation:book-ink-in .9s both}
+.book-journey--reading[data-projected="true"] .film-entry{animation:book-ink-in .9s both}
+@keyframes book-ink-in{from{opacity:0}to{opacity:1}}
 .book-journey .storybook-cover,.book-journey .storybook-pages{display:contents;border:0;background:none;box-shadow:none}
 .book-journey .storybook-cover::before,.book-journey .storybook-cover::after,.book-journey .storybook-pages::after{display:none}
 .book-journey .storybook-page{position:fixed;box-sizing:border-box;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:hidden}
@@ -47,7 +48,7 @@
 .book-journey--fallback .book-journey-stage{display:none}
 .book-journey--fallback .story-screen-library{background:#211b16 url('/images/biblioteca-intro.png') center/cover no-repeat}
 .book-journey--fallback .story-screen-library .story-content{position:relative;inset:auto;max-width:1500px;margin:auto;padding:30px clamp(18px,3.5vw,58px) 70px;pointer-events:auto}
-.book-journey--fallback .storybook-index{position:relative;inset:auto;max-width:1350px;margin:auto;opacity:1;pointer-events:auto}
+.book-journey--fallback .storybook-index{position:relative;inset:auto;max-width:1500px;margin:auto;opacity:1;pointer-events:auto}
 .book-journey--fallback .storybook-cover{display:block;border:10px solid #58402e;border-radius:22px;background:#704d32;box-shadow:0 32px 70px #100d0bc4}
 .book-journey--fallback .storybook-pages{position:relative;display:grid;grid-template-columns:47% 53%;min-height:565px;overflow:hidden;border-radius:16px;background:#ead3a9}
 .book-journey--fallback .storybook-page{position:relative;left:auto;top:auto;width:auto;height:auto;background-color:#f0dfb9;background-image:url('/images/ornaments/paper-grain.svg')}
@@ -55,14 +56,12 @@
 .book-journey--fallback .storybook-index-page{padding:38px 34px 25px 43px}
 
 @media(max-width:900px){
-  .book-journey .story-screen-library .story-header{min-height:62px}
   .book-journey .storybook-title-page{padding:29px 17px 15px}
   .book-journey .storybook-index-page{padding:26px 15px 15px}
   .book-journey .film-arch{height:clamp(105px,22vh,205px)}
   .book-journey--fallback .storybook-pages{grid-template-columns:1fr}
 }
 @media(max-width:700px){
-  .book-journey .story-screen-library .story-header{min-height:95px}
   .book-journey .storybook-title-page,.book-journey .storybook-index-page{padding:30px 18px 18px}
   .book-journey .storybook-title-page,.book-journey .storybook-index-page{min-height:0}
   .book-journey .storybook-title-page h1{font-size:clamp(24px,8vw,34px);margin:14px 0 3px}
@@ -89,4 +88,4 @@
   .book-journey--reading:has(.book-mobile-pages button:last-child.is-current) .storybook-title-page{opacity:0;visibility:hidden;pointer-events:none}
   .book-journey--fallback .storybook-title-page,.book-journey--fallback .storybook-index-page{opacity:1!important;pointer-events:auto}
 }
-@media(prefers-reduced-motion:reduce){.book-journey-stage,.book-journey .storybook-index{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.book-journey-stage,.book-journey .storybook-index{transition:none!important}.book-journey--reading[data-projected="true"] .storybook-title-page>*,.book-journey--reading[data-projected="true"] .storybook-index-page>*,.book-journey--reading[data-projected="true"] .film-entry{animation:none!important}}

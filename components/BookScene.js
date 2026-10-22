@@ -483,7 +483,7 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
           maxX = Math.max(maxX, Math.abs(projected.x));
           maxY = Math.max(maxY, Math.abs(projected.y));
         }
-        if (maxX <= (narrow ? 0.82 : 0.87) && maxY <= (narrow ? 0.69 : 0.86)) far = distance;
+        if (maxX <= (narrow ? 0.88 : 0.93) && maxY <= (narrow ? 0.76 : 0.93)) far = distance;
         else near = distance;
       }
       cachedReadingKey = cacheKey;

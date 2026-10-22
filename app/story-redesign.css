@@ -6,7 +6,6 @@
 .story-world-backdrop{position:absolute!important;inset:0;z-index:0;object-fit:cover;filter:blur(7px) saturate(.75);opacity:.6;transform:scale(1.04)}
 .story-screen-chapter::before,.story-screen-minigame::before{z-index:1;pointer-events:none;background:linear-gradient(180deg,#171812bf,#211d17aa 45%,#1e2019d4)}
 .story-world .story-content{z-index:2}
-.story-world .story-header{z-index:8}
 .book-folio{margin:0;color:#8d6a47;font-size:10px;font-weight:700;letter-spacing:.18em}
 .ink-flourish{width:150px;height:12px;margin:16px auto;border-top:1px solid #a18155;position:relative}
 .ink-flourish::after{content:"✧";position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:0 12px;background:#f0dfba;color:#a18155;font-size:15px}
@@ -58,8 +57,8 @@
 /* Capítulo: paisaje a la izquierda y tres recuerdos impresos en la página. */
 .story-screen-chapter .story-crumb,.story-screen-minigame .story-crumb{margin-bottom:17px;color:#f6e8cb;text-shadow:0 2px 5px #0009}
 .story-screen-chapter .story-crumb a,.story-screen-minigame .story-crumb a{color:#fff1d2}
-.chapter-cover{display:grid;grid-template-columns:43% 57%;min-height:590px;overflow:hidden}
-.chapter-scenery,.memory-scenery{position:relative;min-height:590px;overflow:hidden;background:#455a45}
+.chapter-cover{display:grid;grid-template-columns:47% 53%;min-height:565px;overflow:hidden}
+.chapter-scenery,.memory-scenery{position:relative;min-height:565px;overflow:hidden;background:#455a45}
 .chapter-scenery::after,.memory-scenery::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 35px #221a16a6;background:linear-gradient(0deg,#18251c57,transparent 48%)}
 .chapter-scenery-image,.memory-scenery-image{object-fit:cover}
 .chapter-story-chihiro .chapter-scenery-image,.memory-story-chihiro .memory-scenery-image{object-position:57% center}
@@ -95,7 +94,7 @@
 .chapter-paper-foot small{font-size:10px;white-space:nowrap}
 
 /* Página de recuerdo: ilustración sobre el paisaje y otra impresa sobre papel. */
-.memory-cover{display:grid;grid-template-columns:46% 54%;min-height:565px;overflow:hidden}
+.memory-cover{display:grid;grid-template-columns:47% 53%;min-height:565px;overflow:hidden}
 .memory-scenery{min-height:565px}
 .memory-scenery-object{position:absolute;z-index:2;left:50%;top:54%;width:64%;height:62%;transform:translate(-50%,-50%);filter:drop-shadow(0 13px 15px #211b1888);animation:illustration-float 6s ease-in-out infinite}
 .memory-scenery-object img{object-fit:contain}
