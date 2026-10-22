@@ -1,0 +1,183 @@
+/* Each game lives in the illustrated half of the existing memory spread. */
+.memory-game-cover{grid-template-columns:minmax(0,61%) minmax(0,39%);min-height:630px}
+.memory-game-scenery{position:relative;min-width:0;min-height:630px;overflow:hidden;isolation:isolate}
+.memory-game-scenery .memory-scenery-image{filter:blur(3px) saturate(.78);transform:scale(1.04)}
+.game-scene-wash{position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(180deg,#1b2d2d88,#10251f70 65%,#152d24a8)}
+.game-theme-howl .game-scene-wash{background:linear-gradient(180deg,#1d243399,#30251b8c 75%,#241c19b8)}
+.game-theme-totoro .game-scene-wash{background:linear-gradient(180deg,#153b3580,#183f3490 75%,#173426b5)}
+.memory-game-paper{min-width:0;padding:28px clamp(20px,2.5vw,37px) 25px}
+.memory-game-paper h1{font-size:clamp(28px,2.65vw,42px)}
+.memory-game-paper .memory-description{font-size:13px}
+.memory-game-paper .memory-paper-art{height:135px;margin:12px auto 4px}
+.memory-game-paper .memory-paper-art.memory-shape-wide{height:115px}
+.memory-game-paper .memory-paper-art.memory-shape-portrait{height:160px;width:135px}
+.memory-game-paper .memory-instruction{padding-top:12px}
+.memory-game-paper .memory-instruction strong{font-size:16px}
+.game-feedback{min-height:38px;margin:13px 0 0;color:#6b5a42;font:italic 11px/1.5 'Libre Baskerville',Georgia,serif}
+.memory-game-paper .memory-controls{margin-top:8px}
+.memory-game-paper .memory-controls button{padding:10px 16px;font-size:12px}
+.game-stage,.game-teaser,.game-success-scene{position:absolute;z-index:2;inset:0}
+.game-stage{overflow:hidden;color:#fff0ce}
+.game-stage button{font-family:inherit;cursor:pointer}
+.game-stage button:focus-visible{outline:3px solid #f9e1a0;outline-offset:3px}
+.game-stage button:disabled{cursor:default}
+.game-teaser{display:grid;place-content:center;justify-items:center;gap:15px;text-align:center;color:#f5e4c5;font:italic 14px 'Libre Baskerville',Georgia,serif;text-shadow:0 2px 9px #091b1b}
+.game-teaser-art{position:relative;width:min(50vw,250px);height:225px;filter:drop-shadow(0 16px 18px #071917b9);animation:game-float 4s ease-in-out infinite}
+.game-teaser-art img{object-fit:contain}
+.game-success-scene{z-index:8;display:grid;place-items:center;pointer-events:auto;animation:game-appear .4s ease-out both}
+.game-success-glow{position:absolute;width:260px;height:260px;border-radius:50%;background:#f5dc974e;filter:blur(40px);animation:game-pulse 1.6s ease-in-out infinite}
+.game-success-dust{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;background:#fff0b1;box-shadow:-140px -60px 3px #ffe4a3,120px -100px 2px #fff3c0,165px 35px 2px #ffe5a3,-120px 90px 3px #fff3c0,30px 145px 2px #f9d49a;animation:game-pulse 1.4s ease-in-out infinite}
+.game-draggable{position:relative;display:grid;place-items:center;touch-action:none;user-select:none;cursor:grab!important}
+.game-draggable:active{cursor:grabbing!important}
+.game-check{border:1px solid #e6ce92;border-radius:8px;padding:9px 15px;background:#42654e;color:#fff1cc;box-shadow:0 3px 10px #0b1a1570,inset 0 1px #ffffff5c;font:700 12px 'Libre Baskerville',Georgia,serif!important}
+.game-check:hover:not(:disabled){background:#587d5f}
+
+/* Bathhouse: four translucent shoji screens and moving silhouettes. */
+.noface-stage{display:grid;align-items:center;padding:70px 7% 54px;background:radial-gradient(ellipse at center,#b26c3660,#22191680 78%)}
+.noface-panels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%}
+.noface-panel{position:relative;height:325px;overflow:hidden;border:7px solid #4f3023;background:linear-gradient(120deg,#f0dcb8c9,#f7e9cbd4 48%,#d3af83bc);box-shadow:inset 0 0 23px #5d3e3591,0 11px 22px #120e0d9e;transition:transform .4s,filter .4s}
+.noface-panel::before{content:"";position:absolute;inset:0;border:1px solid #8a6046;background:repeating-linear-gradient(90deg,transparent 0 28%,#7b544255 28.5% 30%,transparent 30.5% 62%,#7b544255 62.5% 64%,transparent 64.5%)}
+.noface-panel:hover:not(:disabled){filter:brightness(1.1)}
+.noface-panel:hover .noface-silhouette{transform:translate(-50%,-8px) scale(1.03)}
+.noface-panel-number{position:absolute;bottom:9px;right:10px;color:#73533f;font-size:10px;letter-spacing:.15em}
+.noface-silhouette{position:absolute;left:50%;bottom:42px;width:67%;height:66%;background:#3f3937b5;filter:blur(7px);transform:translateX(-50%);transition:transform .35s,opacity .25s}
+.noface-silhouette-spirit{border-radius:49% 49% 33% 33%/27% 27% 18% 18%;height:74%}
+.noface-silhouette-fan{height:48%;clip-path:polygon(50% 0,100% 77%,75% 100%,25% 100%,0 77%)}
+.noface-silhouette-bird{height:42%;clip-path:polygon(0 65%,36% 45%,50% 0,64% 45%,100% 65%,60% 63%,50% 100%,40% 63%)}
+.noface-silhouette-vase{height:51%;clip-path:polygon(28% 0,72% 0,63% 20%,75% 48%,68% 100%,32% 100%,25% 48%,37% 20%)}
+.noface-panel.is-wrong{animation:game-shake .45s ease}.noface-panel.is-wrong .noface-silhouette{opacity:.32}
+.noface-panel.is-found{filter:brightness(1.45);transform:perspective(600px) rotateY(-12deg)}
+.noface-reveal{object-fit:contain;z-index:2;filter:drop-shadow(0 0 12px #f7eab4)}
+.noface-lantern{position:absolute;top:28px;width:35px;height:63px;border:4px solid #493123;border-radius:12px;background:#e8ad67;box-shadow:0 0 35px 15px #ffbc6680}.noface-lantern-left{left:10%}.noface-lantern-right{right:10%}
+
+/* Zeniba's three illustrated memories on a wooden table. */
+.zeniba-stage{display:grid;place-items:center;padding:35px 5%;background:radial-gradient(circle at 50% 30%,#d5a87865,#4b2719b0 80%)}
+.zeniba-table{width:100%;padding:25px 20px 18px;border:11px solid #75492f;border-radius:12px;background:repeating-linear-gradient(0deg,#9e6d48 0 23px,#8c5d3e 25px 27px,#a57750 29px 55px);box-shadow:0 20px 45px #150e0b9e,inset 0 0 20px #3e261d8c;text-align:center}
+.zeniba-sequence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.zeniba-slot{position:relative;min-width:0;padding:25px 5px 8px;border:1px dashed #f7dca4a6;border-radius:8px}
+.zeniba-slot-number{position:absolute;top:4px;left:10px;color:#fff1d2;font:italic 13px Georgia,serif}
+.zeniba-card{width:100%;height:176px;padding:6px;border:5px solid #eee1c1;border-radius:3px;background:#e9d9b7;color:#513d2f;box-shadow:0 5px 12px #2b190d8c}
+.zeniba-sketch{width:100%;height:124px;object-fit:cover;filter:sepia(.13)}
+.zeniba-card>span{font:italic 11px Georgia,serif}
+.zeniba-move{display:flex;justify-content:center;gap:12px;margin-top:6px}
+.zeniba-move button{border:1px solid #e6c995;border-radius:50%;width:29px;height:29px;background:#f3dfb8d6;color:#5e3e2a}
+.zeniba-move button:disabled{opacity:.3}
+.zeniba-table>.game-check{margin-top:18px}
+.zeniba-stage.is-solved .zeniba-slot{box-shadow:0 0 20px #f8db9e}
+.zeniba-ribbon{position:absolute;left:50%;top:44%;width:120px;height:120px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 20px #fff1c2);animation:game-reveal 1s both}.zeniba-ribbon img{object-fit:contain}
+
+/* Six river fragments; each uses an exact crop of the same illustration. */
+.haku-stage{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:19px;padding:24px 6%;background:linear-gradient(145deg,#2c566b9c,#224d47a3)}
+.haku-board{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);width:min(100%,490px);aspect-ratio:3/2;border:8px solid #e8d8ad;background:#dae6d0;box-shadow:0 14px 28px #10252ba3}
+.haku-cell{min-width:0;min-height:0;border:1px dashed #78988a;background:#d6e1d2b8;color:#41615b}
+.haku-cell:not(.is-placed)::after{content:"✧";font-size:24px;opacity:.35}
+.haku-cell.is-placed{border:0;cursor:default}
+.haku-tray{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;width:min(100%,520px);min-height:82px}
+.haku-piece{width:100%;aspect-ratio:1.35;border:3px solid #efddb8;border-radius:3px;background:#cadfd3;box-shadow:0 5px 10px #10252596}
+.haku-piece span{display:block;width:100%;height:100%}.haku-piece.is-selected{outline:3px solid #f8e2a0}
+.haku-stage.is-solved .haku-board{box-shadow:0 0 32px #b9e6da}
+.haku-dragon{position:absolute;z-index:2;left:40%;top:-30%;object-fit:contain;filter:drop-shadow(0 0 15px #d8ffff);animation:haku-rise 1.7s ease-out both;pointer-events:none}
+
+/* The hearth is built from stone and wood rather than a generic card. */
+.calcifer-stage{display:flex;flex-direction:column;justify-content:end;align-items:center;padding:32px 7% 43px;background:linear-gradient(#48312876,#1e1412b5)}
+.calcifer-stones{display:grid;place-items:end center;width:min(82%,380px);height:360px;padding:18px;border:16px solid #8c8172;border-bottom-width:28px;border-radius:47% 47% 7px 7px/28% 28% 7px 7px;background:#5a4d44;box-shadow:0 18px 26px #100f0c9c,inset 0 0 20px #2117128c}
+.calcifer-hearth{width:100%;height:100%;border-radius:48% 48% 3px 3px/30% 30% 3px 3px;background:radial-gradient(ellipse at 50% 90%,#6d3824,#261d1a 65%);box-shadow:inset 0 0 38px #0e0b0b}
+.calcifer-firebox{position:relative;width:100%;height:100%;display:flex;align-items:end;justify-content:center;padding-bottom:20px}
+.calcifer-placed-log{width:30%;height:20px;margin-left:-7%;border:3px solid #543420;border-radius:12px;background:repeating-linear-gradient(90deg,#744326 0 8px,#8d5831 9px 14px);transform:rotate(-8deg)}
+.calcifer-placed-log:nth-child(2){transform:rotate(8deg)}
+.calcifer-awake{position:absolute;bottom:17px;object-fit:contain;filter:drop-shadow(0 0 22px #f9a64d);animation:game-flame 1.4s ease-in-out infinite}
+.calcifer-tools{display:flex;justify-content:center;align-items:center;gap:14px;width:100%;min-height:80px;margin-top:20px}
+.calcifer-log{width:85px;height:33px;border:3px solid #6a4025;border-radius:18px;background:repeating-linear-gradient(90deg,#9b6134 0 11px,#764524 12px 18px);box-shadow:0 4px 9px #20140d8c}
+.calcifer-spark{width:62px;height:62px;border:0;background:transparent;color:#f8c96c;opacity:.52}.calcifer-spark svg{width:100%;height:100%}.calcifer-spark.is-ready{opacity:1;filter:drop-shadow(0 0 13px #ffce78);animation:game-pulse 1.5s infinite}
+
+/* Howl's four-way door keeps the clue and selector in the scene. */
+.door-stage{display:flex;align-items:center;justify-content:center;gap:30px;padding:20px 5%;background:linear-gradient(120deg,#27435680,#201c1baa)}
+.door-clue{position:relative;z-index:3;width:145px;padding:10px;border:5px solid #d7be8e;background:#f5e8c9;color:#4b3c2d;text-align:center;transform:rotate(-5deg);box-shadow:0 8px 18px #1015158c}
+.door-clue span{font:italic 11px Georgia,serif}.door-clue small{display:block;font-size:9px}
+.door-clue-landscape{position:relative;height:120px;margin:7px 0;background:linear-gradient(#9ac6d8 0 52%,#aad1a7 53% 70%,#5c9e6a 71%);overflow:hidden}
+.door-clue-landscape::before{content:"";position:absolute;bottom:35%;left:-10%;width:130%;height:56%;background:#6c9d86;clip-path:polygon(0 100%,28% 17%,50% 70%,75% 0,100% 100%)}
+.door-clue-landscape i{position:absolute;bottom:9px;width:8px;height:8px;border-radius:50%;background:#efc3b4}.door-clue-landscape i:nth-child(1){left:25px}.door-clue-landscape i:nth-child(2){left:63px}.door-clue-landscape i:nth-child(3){right:22px}
+.door-landscape{position:absolute;z-index:1;left:50%;top:16%;width:210px;height:380px;transform:translateX(-15%);display:grid;place-items:end center;padding-bottom:24px;background:linear-gradient(#a5cde2 0 45%,#83a994 46% 65%,#70a569 66%);border:7px solid #d7ba8a;color:#e9f5d9}.door-landscape span{font:italic 14px Georgia,serif;text-shadow:0 2px 4px #385540}
+.door-leaf{position:relative;z-index:2;width:210px;height:380px;border:11px solid #503625;background:repeating-linear-gradient(90deg,#775033 0 32px,#805639 33px 37px,#6c472f 38px 62px);box-shadow:0 14px 25px #101113aa,inset 0 0 0 4px #bd9161;transform-origin:left center;transition:transform 1.1s ease;}
+.door-stage.is-open .door-leaf{transform:perspective(650px) rotateY(-73deg)}
+.door-stage.is-wrong .door-leaf{animation:door-peek .8s ease}
+.door-inlay{position:absolute;inset:28px;border:2px solid #b28b60;box-shadow:inset 0 0 0 7px #5e3d2b}
+.door-knob{position:absolute;right:15px;top:48%;width:76px;height:76px;border:7px solid #d2a75b;border-radius:50%;background:conic-gradient(#6c9462 0 25%,#7771a2 25% 50%,#42799a 50% 75%,#d57752 75%);box-shadow:0 0 0 4px #4b352b,0 0 23px var(--door-glow);cursor:grab;touch-action:none}
+.door-knob-pointer{position:absolute;inset:20px;border-radius:50%;background:#ead19a;box-shadow:0 2px 5px #31271f;transition:transform .3s}.door-knob-pointer::after{content:"";position:absolute;left:50%;top:-15px;width:5px;height:17px;background:#fff1b7;transform:translateX(-50%)}
+.door-controls{position:absolute;z-index:4;bottom:16px;left:50%;display:flex;align-items:center;gap:9px;transform:translateX(-50%);padding:7px;border-radius:28px;background:#241b1bd9;white-space:nowrap}.door-controls>button:not(.game-check){width:30px;height:30px;border:1px solid #d5b987;border-radius:50%;background:#544532;color:#ffedc2}.door-controls span{min-width:65px;text-align:center;font-size:12px;font-weight:700}
+
+/* Six gilded cards, three discoverable pairs. */
+.pairs-stage{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;padding:28px 8%;background:radial-gradient(ellipse at center,#8a6847b0,#352720b8)}
+.pairs-table{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:min(100%,460px)}
+.pair-card{position:relative;height:160px;border:7px solid #d6b776;border-radius:8px;background:#e6cf9e;color:#69533c;box-shadow:0 7px 14px #1d160f91;transform-style:preserve-3d;transition:transform .45s,box-shadow .35s}
+.pair-card::after{content:"";position:absolute;inset:6px;border:1px solid #ab8756;pointer-events:none}
+.pair-card-back,.pair-card-front{position:absolute;inset:0;display:grid;place-items:center;backface-visibility:hidden}.pair-card-back{font:54px Georgia,serif;color:#9c7b4f}.pair-card-front{transform:rotateY(180deg);align-content:center;gap:5px}.pair-card-front svg{width:62px;height:62px;color:#82603d}.pair-card-front small{font:italic 10px Georgia,serif}
+.pair-card.is-revealed{transform:rotateY(180deg)}.pair-card.is-matched{box-shadow:0 0 22px #ffe4a2}
+.pairs-progress{font:italic 13px Georgia,serif;color:#f4e3c2}
+.pairs-jewelbox{position:absolute;z-index:3;left:50%;top:52%;display:grid;place-items:center;width:160px;height:120px;border:8px solid #6c4b33;border-radius:13px;background:#d2b684;box-shadow:0 0 35px #f8df9c;transform:translate(-50%,-50%);animation:jewelbox-reveal .9s both}.pairs-jewelbox img{object-fit:contain;filter:drop-shadow(0 0 9px #e8ffb7)}
+
+/* Totoro's clearing grows through the fixed four-stage sequence. */
+.seed-stage{background:linear-gradient(#29604755,#1f4c3388 72%,#142f20b8)}
+.seed-canopy,.little-canopy{position:absolute;top:-90px;left:-5%;width:110%;height:240px;border-radius:0 0 50% 50%;background:radial-gradient(circle at 20% 30%,#50805d 0 17%,transparent 18%),radial-gradient(circle at 53% 12%,#3d7858 0 24%,transparent 25%),radial-gradient(circle at 80% 33%,#4d8254 0 20%,transparent 21%);opacity:.8}
+.seed-clearing{position:absolute;left:50%;bottom:112px;width:min(75%,400px);height:290px;transform:translateX(-50%)}
+.seed-soil{position:absolute;bottom:0;left:5%;width:90%;height:95px;display:grid;place-items:end center;padding-bottom:12px;border-radius:50% 50% 25% 25%;background:radial-gradient(ellipse,#6b4c31,#3c2d22);box-shadow:0 8px 22px #121e169c}.seed-soil span{font-size:9px;letter-spacing:.15em;color:#e8cfa8}
+.seed-tree{position:absolute;bottom:64px;left:50%;width:180px;height:245px;transform:translateX(-50%)}
+.seed-tree-trunk{position:absolute;bottom:0;left:45%;width:18px;height:0;border-radius:12px;background:#73503b;transition:height 1s}
+.seed-tree-crown{position:absolute;top:0;left:0;width:180px;height:170px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#b3c987,#5b925e 60%,#3d734b);box-shadow:0 8px 25px #192c1c8c;transform:scale(0);transition:transform 1.2s}
+.seed-sprout{position:absolute;bottom:0;left:46%;width:20px;height:0;border-left:4px solid #95c57a;transform-origin:bottom;transition:height .7s}.seed-sprout::before,.seed-sprout::after{content:"";position:absolute;top:0;width:24px;height:13px;border-radius:80% 10%;background:#8ebc72}.seed-sprout::before{right:4px;transform:rotate(-25deg)}.seed-sprout::after{left:4px;transform:scaleX(-1) rotate(-25deg)}
+.seed-stage-regada .seed-sprout{height:55px}.seed-stage-iluminada .seed-tree-trunk{height:135px}.seed-stage-iluminada .seed-tree-crown{transform:scale(1)}.seed-stage-iluminada .seed-sprout{opacity:0}
+.seed-tools{position:absolute;left:50%;bottom:20px;display:flex;gap:14px;transform:translateX(-50%)}
+.seed-tools .game-draggable{gap:2px;min-width:74px;padding:5px 8px;border:1px solid #ddc996;border-radius:10px;background:#e8dfc8e6;color:#4b674a;box-shadow:0 6px 12px #1322168c}.seed-tools svg{width:42px;height:42px}.seed-tools span{font-size:9px}.seed-tools .is-ready{box-shadow:0 0 20px #f3e2a0}
+
+/* Rain, bus stop, Totoro and four distinct objects. */
+.umbrella-stage{background:linear-gradient(#17374f77,#173b39b0)}
+.umbrella-rain{position:absolute;inset:-100% 0 0;opacity:.55;background:repeating-linear-gradient(104deg,transparent 0 17px,#d9eced7a 18px 19px,transparent 20px 39px);animation:game-rain 3s linear infinite;pointer-events:none}
+.umbrella-stage.is-sheltered .umbrella-rain{opacity:.8;animation-duration:1.4s}
+.umbrella-stop-sign{position:absolute;left:13%;top:16%;display:grid;place-items:center;width:72px;height:75px;border:5px solid #e8e6ce;border-radius:50%;background:#6a97a6;color:#fff;font-size:16px;box-shadow:0 0 0 3px #385d68}.umbrella-stop-sign::after{content:"";position:absolute;top:65px;left:50%;width:7px;height:230px;background:#b6ad92}
+.umbrella-totoro{position:absolute;left:50%;bottom:110px;width:245px;height:315px;transform:translateX(-50%);border:0;background:transparent;filter:drop-shadow(0 12px 8px #122b2f9c)}.umbrella-totoro>img:first-child{object-fit:contain}.umbrella-held{position:absolute;left:56%;top:-17px;object-fit:contain;transform:rotate(-10deg);animation:game-reveal .7s both}
+.umbrella-stage.is-sheltered .umbrella-totoro{animation:totoro-hop 1.1s ease}
+.umbrella-objects{position:absolute;left:50%;bottom:16px;display:flex;gap:10px;transform:translateX(-50%)}
+.umbrella-objects .game-draggable{gap:2px;min-width:75px;padding:6px;border:1px solid #e2d0a5;border-radius:9px;background:#eadfc8e8;color:#554a3b}.umbrella-objects .is-selected{outline:3px solid #f5d487}.umbrella-objects svg{width:48px;height:48px}.umbrella-objects span{font-size:9px}
+
+/* Bush identity is stable while CSS animates its position. */
+.little-stage{background:linear-gradient(#234a4480,#153d2fa3)}
+.little-bush{position:absolute;bottom:130px;width:24%;height:240px;border:0;background:transparent;transition:left .72s cubic-bezier(.45,.03,.32,1)}
+.little-bush-leaves{position:absolute;z-index:2;bottom:0;left:0;width:100%;height:170px;border-radius:50% 50% 25% 25%;background:radial-gradient(circle at 30% 20%,#84a976,#4f865e 60%,#33684d);box-shadow:inset -13px -10px 18px #28583d,0 12px 16px #112c1d9e}.little-bush-leaves::before,.little-bush-leaves::after{content:"";position:absolute;width:60%;height:50%;border-radius:50%;background:#6a9a69;top:12%}.little-bush-leaves::before{left:-15%}.little-bush-leaves::after{right:-15%;background:#477d59}
+.little-bush-ground{position:absolute;bottom:-10px;left:-10%;width:120%;height:35px;border-radius:50%;background:#31583c}
+.little-spirit{position:absolute;z-index:1;left:50%;bottom:100px;transform:translateX(-50%);object-fit:contain;filter:drop-shadow(0 0 10px #fffad5);animation:game-reveal .4s both}
+.little-stage-found .little-spirit{z-index:3;bottom:120px;animation:totoro-hop 1.1s both}
+.little-bush.is-missed{animation:game-shake .5s}
+.little-cue{position:absolute;left:0;right:0;bottom:67px;text-align:center;color:#fff1d0;font:italic 16px Georgia,serif;text-shadow:0 3px 8px #15271d}
+.little-retry{position:absolute;left:50%;bottom:24px;transform:translateX(-50%)}
+
+@keyframes game-appear{from{opacity:0}to{opacity:1}}
+@keyframes game-float{50%{transform:translateY(-9px)}}
+@keyframes game-pulse{50%{opacity:.55;transform:scale(1.12)}}
+@keyframes game-reveal{from{opacity:0;transform:translateY(17px) scale(.85)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes jewelbox-reveal{from{opacity:0;transform:translate(-50%,-35%) scale(.75)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes game-shake{25%,75%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
+@keyframes game-flame{50%{transform:translateY(-7px) scale(1.05)}}
+@keyframes haku-rise{from{opacity:0;transform:translateY(80px) scale(.7)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes door-peek{50%{transform:perspective(650px) rotateY(-15deg)}}
+@keyframes game-rain{to{transform:translateY(50%)}}
+@keyframes totoro-hop{50%{transform:translate(-50%,-22px)}to{transform:translate(-50%,0)}}
+
+@media(max-width:800px){
+  .memory-game-cover{grid-template-columns:1fr}
+  .memory-game-scenery{height:510px;min-height:510px}
+  .memory-game-paper{min-height:530px}
+}
+@media(max-width:520px){
+  .memory-game-scenery{height:435px;min-height:435px}
+  .memory-game-paper{min-height:530px;padding:26px 20px}
+  .noface-stage{padding:42px 4% 26px}.noface-panels{gap:4px}.noface-panel{height:245px;border-width:4px}
+  .zeniba-stage{padding:12px 2%}.zeniba-table{padding:14px 5px;border-width:6px}.zeniba-sequence{gap:3px}.zeniba-slot{padding:20px 2px 5px}.zeniba-card{height:115px;border-width:3px;padding:2px}.zeniba-sketch{height:80px}.zeniba-card>span{font-size:8px}
+  .haku-stage{gap:12px;padding:15px 4%}.haku-board{width:100%}.haku-tray{min-height:54px}.haku-piece{border-width:2px}
+  .calcifer-stage{padding:12px 4% 21px}.calcifer-stones{height:285px;border-width:10px}.calcifer-tools{margin-top:10px}
+  .door-stage{gap:14px}.door-clue{width:104px}.door-clue-landscape{height:85px}.door-leaf,.door-landscape{width:150px;height:290px}.door-landscape{transform:translateX(-7%)}.door-knob{width:56px;height:56px;right:7px}.door-knob-pointer{inset:13px}
+  .pairs-table{gap:7px}.pair-card{height:118px;border-width:4px}.pair-card-front svg{width:43px;height:43px}
+  .seed-clearing{bottom:98px;height:240px}.seed-tree{height:210px}.seed-tools{gap:5px;bottom:12px}.seed-tools .game-draggable{min-width:67px;padding:4px}.seed-tools svg{width:33px;height:33px}
+  .umbrella-totoro{width:190px;height:240px;bottom:96px}.umbrella-stop-sign{transform:scale(.7);transform-origin:top left}.umbrella-objects{gap:5px}.umbrella-objects .game-draggable{min-width:65px;padding:4px}.umbrella-objects svg{width:39px;height:39px}
+  .little-bush{bottom:98px;height:190px}.little-bush-leaves{height:125px}.little-cue{bottom:46px}
+}
+@media(prefers-reduced-motion:reduce){.game-stage *,.game-teaser-art,.game-success-scene *{animation-duration:.01ms!important;transition-duration:.01ms!important}}

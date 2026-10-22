@@ -1,6 +1,9 @@
 import "./globals.css";
 import "./story.css";
 import "./story-redesign.css";
+import "./minigames.css";
+import "./book-journey.css";
+import BookJourney from "@/components/BookJourney";
 
 export const metadata = {
   title: "La biblioteca de los recuerdos",
@@ -10,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body><BookJourney>{children}</BookJourney></body>
     </html>
   );
 }

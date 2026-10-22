@@ -16,7 +16,7 @@ Base navegable de una experiencia web transmedia para Programación III, inspira
 /archivo/[chapter]                Prototipo anterior, conservado como referencia
 ```
 
-El botón **Comenzar** conserva la transición animada de la intro y lleva a `/biblioteca`. Cada capítulo muestra un escenario pintado, tres recuerdos ilustrados y su progreso. Cada recuerdo abre la misma plantilla reutilizable: **Comenzar ejercicio** lo deja *en curso* y **Simular resolución correcta** lo registra como *recuperado*. Esta simulación está identificada en pantalla como modo de desarrollo; los desafíos reales quedan para la siguiente etapa. La vista de recuperación ilumina el objeto, muestra partículas, su nombre y una frase narrativa. Se puede repetir la prueba sin perder lo recuperado.
+El botón **Comenzar** estabiliza el libro original, acerca la cámara, pasa dos hojas flexibles y revela el índice sobre las páginas del mismo modelo 3D. El canvas permanece montado al navegar entre `/` y `/biblioteca`; desde el índice, **Inicio** invierte el movimiento. La entrada directa a `/biblioteca` muestra el libro en posición de lectura. En celular se puede enfocar una página por vez. Cada capítulo muestra un escenario pintado, tres recuerdos ilustrados y su progreso. Cada recuerdo abre la misma plantilla reutilizable: **Comenzar ejercicio** lo deja *en curso* y **Simular resolución correcta** lo registra como *recuperado*. Esta simulación está identificada en pantalla como modo de desarrollo; los desafíos reales quedan para la siguiente etapa. La vista de recuperación ilumina el objeto, muestra partículas, su nombre y una frase narrativa. Se puede repetir la prueba sin perder lo recuperado.
 
 El libro indica los recuerdos recuperados en cada película y en total. Un capítulo se marca reconstruido cuando alcanza 3/3. `/final` muestra el estado sellado hasta alcanzar 9/9; entonces presenta los tres capítulos completos, la animación de aparición y el texto final provisional.
 
@@ -26,10 +26,11 @@ El libro indica los recuerdos recuperados en cada película y en total. Un capí
 - `lib/memoryProgress.js`: normalización y cálculo de estados, progreso por película, progreso total y desbloqueo del final.
 - `hooks/useMemoryProgress.js`: estado compartido por las pantallas, guardado local y sincronización con Firebase Auth y Firestore. Reutiliza la autenticación existente de `hooks/useProgress.js`.
 - `components/StoryExperience.js`: navegación, indicador global, estado del guardado y acceso a la cuenta.
+- `components/BookJourney.js`: capa persistente de las rutas `/` y `/biblioteca`, estado de la transición y cambio de página móvil.
 - `components/LibraryIndex.js`, `ChapterView.js`, `MinigameView.js`, `MemoryRecovered.js` y `FinalView.js`: las vistas del recorrido. El rediseño de las primeras cuatro está en `app/story-redesign.css`; `app/story.css` mantiene las reglas compartidas y el final.
 - `app/biblioteca`, `app/recuerdos/[pelicula]`, `app/recuerdos/[pelicula]/[objeto]` y `app/final`: rutas App Router. Las rutas inválidas muestran una página para volver al libro.
 
-La intro anterior (`components/IntroPage.js` y `BookScene.js`) conserva su libro y atril 3D, la animación de entrada, la respuesta moderada al puntero y la transición de **Comenzar**. Su escena usa Three.js directo con geometría y texturas procedurales; libera recursos al desmontarse. La imagen original `public/images/biblioteca-intro.png` aporta la atmósfera de la biblioteca. El índice, los capítulos y los recuerdos ahora combinan ilustraciones pintadas, papel texturado, ornamentos botánicos y profundidad CSS. Los recursos del rediseño se documentan en `docs/visual-assets.md`.
+`components/BookScene.js` conserva el libro y el atril originales. La misma instancia Three.js anima la cámara entre reposo y lectura, curva dos hojas subdivididas durante el giro y proyecta los límites de cada página en la pantalla. `app/book-journey.css` coloca el índice HTML interactivo sobre esas caras proyectadas; no dibuja un segundo libro. El encuadre se recalcula con el tamaño del canvas y la selección de página móvil. La escena libera sus recursos al salir de estas rutas. La imagen `public/images/biblioteca-intro.png` aporta la atmósfera de la biblioteca. Los capítulos y recuerdos conservan sus ilustraciones y páginas CSS; los recursos se documentan en `docs/visual-assets.md`.
 
 ## Datos de películas
 
@@ -50,7 +51,7 @@ Las variables `NEXT_PUBLIC_` son visibles para el cliente; la protección de doc
 
 ## Diseño y accesibilidad
 
-El índice se presenta como un libro físico abierto con tapa, hojas apiladas, pliegue central y tres ilustraciones de películas. Cada capítulo y recuerdo combina un paisaje propio con una página de papel envejecido. Las nueve ilustraciones de objetos son archivos independientes con fondo transparente. `next/image` adapta sus tamaños y entrega formatos modernos. El diseño se adapta a móvil, permite navegar con teclado, muestra el foco visible y respeta `prefers-reduced-motion`. La intro ofrece un botón que funciona aunque falle WebGL. La arquitectura de los ejercicios permite añadir controles accesibles junto a cada mecánica definitiva.
+El índice se presenta sobre el libro 3D físico con tapa, hojas apiladas, pliegue central y tres ilustraciones de películas. Cada capítulo y recuerdo combina un paisaje propio con una página de papel envejecido. Las nueve ilustraciones de objetos son archivos independientes con fondo transparente. `next/image` adapta sus tamaños y entrega formatos modernos. El diseño se adapta a móvil, permite navegar con teclado, muestra el foco visible y respeta `prefers-reduced-motion`. Si falla WebGL, el índice conserva su presentación HTML/CSS como alternativa. La arquitectura de los ejercicios permite añadir controles accesibles junto a cada mecánica definitiva.
 
 Referencias visuales: el moodboard de `Tp- programacion3.pdf`, el tablero de diseño adjunto y las imágenes de biblioteca, libros y atril aportadas para el proyecto. Las escenas y objetos del rediseño son ilustraciones generadas para este prototipo, inspiradas en los mundos y personajes indicados en el tablero; no son fotogramas oficiales.
 

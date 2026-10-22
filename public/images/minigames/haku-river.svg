@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#8bbad0"/><stop offset="1" stop-color="#e7dfb3"/></linearGradient><linearGradient id="water" x2="0" y2="1"><stop stop-color="#96d0d2"/><stop offset="1" stop-color="#346d87"/></linearGradient></defs>
+<path fill="url(#sky)" d="M0 0h900v600H0z"/><path fill="#dfe9d2" d="M0 220q150-120 290 0 160-155 330-12 140-130 280 2v210H0z"/><path fill="#6c947e" d="M0 250q110-90 260 5 150-65 280-5 170-85 360 5v185H0z"/>
+<path fill="#416e58" d="M0 295q90-60 180-16 110-52 220 35 190-70 310-20 110-38 190 0v306H0z"/>
+<path fill="url(#water)" d="M440 288q-72 90-143 134-75 53-245 178h690q-160-94-221-176-54-76-81-136z"/>
+<g fill="none" stroke="#c9eddf" stroke-width="7" opacity=".64"><path d="M411 353q59 12 117 0M331 430q111 22 231 0M176 540q274 31 540 0"/></g>
+<g fill="#234d3f"><path d="M27 44q-24 118 0 294h24Q22 160 68 44zM852 31q21 157-3 326h27Q892 173 869 31z"/></g>
+<g fill="#3d735a"><circle cx="35" cy="72" r="102"/><circle cx="116" cy="120" r="83"/><circle cx="868" cy="93" r="112"/><circle cx="784" cy="134" r="82"/></g>
+<g fill="#9ec68c"><circle cx="85" cy="30" r="38"/><circle cx="161" cy="113" r="26"/><circle cx="786" cy="68" r="34"/><circle cx="835" cy="195" r="23"/></g>
+<g fill="#f4e6bd"><circle cx="225" cy="281" r="6"/><circle cx="248" cy="303" r="5"/><circle cx="710" cy="282" r="6"/><circle cx="680" cy="312" r="5"/></g>
+</svg>

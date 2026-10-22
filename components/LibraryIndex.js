@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { movies } from "@/data/memories";
+import { useBookJourney } from "@/components/BookJourney";
 
 const statusText = {
   "not-started": "Sin comenzar",
@@ -9,6 +10,7 @@ const statusText = {
 };
 
 export default function LibraryIndex({ progress }) {
+  const journey = useBookJourney();
   return <section className="storybook-index" aria-labelledby="library-heading">
     <div className="storybook-cover">
       <div className="storybook-pages">
@@ -57,5 +59,9 @@ export default function LibraryIndex({ progress }) {
         </div>
       </div>
     </div>
+    {journey && <div className="book-mobile-pages" aria-label="Páginas del índice">
+      <button type="button" className={journey.mobilePage === "left" ? "is-current" : ""} onClick={() => journey.setMobilePage("left")} aria-pressed={journey.mobilePage === "left"}>Presentación</button>
+      <button type="button" className={journey.mobilePage === "right" ? "is-current" : ""} onClick={() => journey.setMobilePage("right")} aria-pressed={journey.mobilePage === "right"}>Películas</button>
+    </div>}
   </section>;
 }

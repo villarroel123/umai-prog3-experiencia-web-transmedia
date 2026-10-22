@@ -1,23 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import BookScene from "@/components/BookScene";
+import { useBookJourney } from "@/components/BookJourney";
 
 export default function IntroPage() {
-  const router = useRouter();
-  const [opening, setOpening] = useState(false);
-  const [webglUnavailable, setWebglUnavailable] = useState(false);
-
-  function begin() {
-    if (opening) return;
-    if (webglUnavailable || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      router.push("/biblioteca");
-      return;
-    }
-    setOpening(true);
-  }
+  const journey = useBookJourney();
+  const opening = journey?.phase === "opening";
+  const begin = journey?.begin;
 
   return <main className={`intro-page ${opening ? "is-opening" : ""}`}>
     <div className="intro-atmosphere" aria-hidden="true" />
@@ -25,7 +14,7 @@ export default function IntroPage() {
       <Link href="/" className="intro-brand">STUDIO GHIBLI</Link>
       <div className="intro-links">
         <Link href="/" aria-current="page">Inicio</Link>
-        <Link href="/biblioteca">Recuerdos</Link>
+        <Link href="/biblioteca" onClick={(event) => { event.preventDefault(); begin(); }}>Recuerdos</Link>
       </div>
     </nav>
 
@@ -35,7 +24,6 @@ export default function IntroPage() {
       <button type="button" className="intro-start" disabled={opening} onClick={begin}>Comenzar <span aria-hidden="true">↗</span></button>
     </section>
 
-    <BookScene opening={opening} onUnavailable={() => setWebglUnavailable(true)} onTransitionComplete={() => router.push("/biblioteca")} />
     <div className="intro-vignette" aria-hidden="true" />
   </main>;
 }

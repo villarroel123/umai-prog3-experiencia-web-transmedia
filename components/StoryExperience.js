@@ -9,6 +9,7 @@ import ChapterView from "@/components/ChapterView";
 import MinigameView from "@/components/MinigameView";
 import FinalView from "@/components/FinalView";
 import { useMemoryProgress } from "@/hooks/useMemoryProgress";
+import { useBookJourney } from "@/components/BookJourney";
 
 const syncLabels = {
   local: "Guardado local",
@@ -19,6 +20,7 @@ const syncLabels = {
 
 export default function StoryExperience({ screen, movie, memory, film }) {
   const progress = useMemoryProgress();
+  const journey = useBookJourney();
   const [authOpen, setAuthOpen] = useState(false);
   if (!progress.ready) {
     return <main className="story-world story-loading" role="status">
@@ -33,7 +35,7 @@ export default function StoryExperience({ screen, movie, memory, film }) {
     <header className="story-header">
       <Link href="/biblioteca" className="story-wordmark"><span aria-hidden="true">✦</span> La biblioteca de los recuerdos</Link>
       <nav aria-label="Navegación de la biblioteca">
-        <Link href="/">Inicio</Link>
+        <Link href="/" onClick={screen === "library" && journey ? (event) => { event.preventDefault(); journey.returnToIntro(); } : undefined}>Inicio</Link>
         <Link href="/biblioteca" aria-current={screen === "library" ? "page" : undefined}>El libro</Link>
         <Link href="/final" aria-current={screen === "final" ? "page" : undefined}>Final</Link>
       </nav>

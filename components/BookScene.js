@@ -192,15 +192,19 @@ function fadingShadow() {
   return new THREE.CanvasTexture(canvas);
 }
 
-export default function BookScene({ opening, onUnavailable, onTransitionComplete }) {
+export default function BookScene({ phase, mobilePage, projectionHostRef, onUnavailable, onForwardComplete, onReturnComplete }) {
   const mountRef = useRef(null);
-  const openingAtRef = useRef(null);
-  const completeRef = useRef(onTransitionComplete);
+  const phaseRef = useRef(phase);
+  const mobilePageRef = useRef(mobilePage);
+  const forwardRef = useRef(onForwardComplete);
+  const returnRef = useRef(onReturnComplete);
   const unavailableRef = useRef(onUnavailable);
 
-  useEffect(() => { completeRef.current = onTransitionComplete; }, [onTransitionComplete]);
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
+  useEffect(() => { mobilePageRef.current = mobilePage; }, [mobilePage]);
+  useEffect(() => { forwardRef.current = onForwardComplete; }, [onForwardComplete]);
+  useEffect(() => { returnRef.current = onReturnComplete; }, [onReturnComplete]);
   useEffect(() => { unavailableRef.current = onUnavailable; }, [onUnavailable]);
-  useEffect(() => { if (opening) openingAtRef.current = performance.now(); }, [opening]);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -352,13 +356,17 @@ export default function BookScene({ opening, onUnavailable, onTransitionComplete
       book.add(mesh);
       return { mesh, original: Float32Array.from(mesh.geometry.attributes.position.array), side };
     });
-    const turningPage = new THREE.Group();
-    const turningMesh = new THREE.Mesh(leafGeometry(1, PAGE_WIDTH, PAGE_DEPTH, 0.42, 0.014), [paper, paperEdge]);
-    turningMesh.castShadow = true;
-    turningMesh.receiveShadow = true;
-    turningPage.add(turningMesh);
-    turningPage.visible = false;
-    book.add(turningPage);
+    const turningPages = [0, 1].map((index) => {
+      const pivot = new THREE.Group();
+      const mesh = new THREE.Mesh(leafGeometry(1, PAGE_WIDTH, PAGE_DEPTH, 0.445 + index * 0.015, 0.008), [paper, paperEdge]);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.frustumCulled = false;
+      pivot.add(mesh);
+      pivot.visible = false;
+      book.add(pivot);
+      return { pivot, mesh, original: Float32Array.from(mesh.geometry.attributes.position.array) };
+    });
 
     const ambient = new THREE.AmbientLight(0xffe9c8, 1.15);
     scene.add(ambient);
@@ -409,9 +417,11 @@ export default function BookScene({ opening, onUnavailable, onTransitionComplete
     book.add(trail);
 
     let aspect = 1;
+    let width = 1;
+    let height = 1;
     function resize() {
-      const width = Math.max(mount.clientWidth, 1);
-      const height = Math.max(mount.clientHeight, 1);
+      width = Math.max(mount.clientWidth, 1);
+      height = Math.max(mount.clientHeight, 1);
       aspect = width / height;
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
@@ -427,45 +437,201 @@ export default function BookScene({ opening, onUnavailable, onTransitionComplete
     observer.observe(mount);
     window.addEventListener("pointermove", pointerMove, { passive: true });
     resize();
-    const initialNarrow = aspect < 0.95;
-    camera.position.set(
-      initialNarrow ? 2.35 : 3.15,
-      initialNarrow ? 2.8 : 3.1,
-      (initialNarrow ? 11.75 : window.innerWidth <= 900 ? 8.15 : 9.1) + 0.55,
-    );
-    camera.lookAt(0, 0.05, 0);
+
+    const introFocus = new THREE.Vector3(window.innerWidth <= 900 ? 0 : -2.45, window.innerWidth <= 900 ? 1.05 : 0.05, 0);
+    function introPosition() {
+      const narrow = window.innerWidth <= 900;
+      return new THREE.Vector3(
+        narrow ? 2.0 : 1.55,
+        narrow ? 3.4 : 3.1,
+        narrow ? Math.max(16, 8.7 / aspect) : 9.1,
+      );
+    }
+    let cachedReadingKey = "";
+    let cachedReadingPose;
+    // The final distance is calculated from the projected size of the actual model.
+    // On narrow screens the camera frames one half of the same book at a time.
+    function readingPose() {
+      const cacheKey = `${width}:${height}:${window.innerWidth}:${mobilePageRef.current}`;
+      if (cacheKey === cachedReadingKey) return cachedReadingPose;
+      const narrow = window.innerWidth <= 700;
+      const side = mobilePageRef.current === "right" ? 1 : -1;
+      const focus = new THREE.Vector3(narrow ? side * 1.13 : 0, 1.29, 0.18);
+      // The page normal is +Y. A small +Z component keeps the paper edge visible.
+      const direction = new THREE.Vector3(0, 1, 0.1).normalize();
+      const view = camera.clone();
+      view.fov = narrow ? 32 : 29;
+      view.aspect = aspect;
+      view.up.set(0, 0, -1);
+      view.updateProjectionMatrix();
+      const bounds = narrow ? [side < 0 ? -2.35 : 0, side < 0 ? 0 : 2.35] : [-2.35, 2.35];
+      const corners = [];
+      for (const x of bounds) for (const y of [0.86, 1.63]) for (const z of [-1.55, 1.55]) {
+        corners.push(new THREE.Vector3(x, y, z + 0.18));
+      }
+      let near = 2;
+      let far = 22;
+      for (let step = 0; step < 20; step += 1) {
+        const distance = (near + far) / 2;
+        view.position.copy(focus).addScaledVector(direction, distance);
+        view.lookAt(focus);
+        view.updateMatrixWorld();
+        let maxX = 0;
+        let maxY = 0;
+        for (const point of corners) {
+          const projected = point.clone().project(view);
+          maxX = Math.max(maxX, Math.abs(projected.x));
+          maxY = Math.max(maxY, Math.abs(projected.y));
+        }
+        if (maxX <= (narrow ? 0.82 : 0.87) && maxY <= (narrow ? 0.69 : 0.86)) far = distance;
+        else near = distance;
+      }
+      cachedReadingKey = cacheKey;
+      cachedReadingPose = { position: focus.clone().addScaledVector(direction, far), focus, fov: view.fov };
+      return cachedReadingPose;
+    }
+    function projectPage(side) {
+      scene.updateMatrixWorld(true);
+      camera.updateMatrixWorld();
+      const points = [];
+      const inner = side < 0 ? [-1.98, -0.17] : [0.17, 1.98];
+      for (const x of inner) for (const z of [-1.22, 1.22]) {
+        const fraction = Math.abs(x) / PAGE_WIDTH;
+        const worldPoint = book.localToWorld(new THREE.Vector3(x, 0.4 + pageHeight(fraction, z) + 0.008, z));
+        points.push(worldPoint.project(camera));
+      }
+      const left = (Math.min(...points.map((point) => point.x)) + 1) * width / 2 + mount.getBoundingClientRect().left;
+      const right = (Math.max(...points.map((point) => point.x)) + 1) * width / 2 + mount.getBoundingClientRect().left;
+      const top = (1 - Math.max(...points.map((point) => point.y))) * height / 2 + mount.getBoundingClientRect().top;
+      const bottom = (1 - Math.min(...points.map((point) => point.y))) * height / 2 + mount.getBoundingClientRect().top;
+      return { left, top, width: right - left, height: bottom - top };
+    }
+    function updateProjection() {
+      const host = projectionHostRef.current;
+      if (!host) return;
+      for (const [side, name] of [[-1, "left"], [1, "right"]]) {
+        const box = projectPage(side);
+        host.style.setProperty(`--book-${name}-x`, `${box.left}px`);
+        host.style.setProperty(`--book-${name}-y`, `${box.top}px`);
+        host.style.setProperty(`--book-${name}-w`, `${box.width}px`);
+        host.style.setProperty(`--book-${name}-h`, `${box.height}px`);
+      }
+      host.dataset.projected = "true";
+    }
 
     const startedAt = performance.now();
-    const cameraTarget = new THREE.Vector3();
-    let frame;
+    let lastPhase = phaseRef.current;
+    let phaseStartedAt = startedAt;
+    let phaseStartPosition = camera.position.clone();
+    let phaseStartFocus = introFocus.clone();
+    let phaseStartFov = 41;
+    let phaseStartUp = new THREE.Vector3(0, 1, 0);
     let completed = false;
+    let frame;
+    if (lastPhase === "reading") {
+      book.position.y = 0.98;
+      book.rotation.set(0.025, 0, 0);
+      const pose = readingPose();
+      camera.position.copy(pose.position);
+      camera.fov = pose.fov;
+      camera.updateProjectionMatrix();
+      camera.up.set(0, 0, -1);
+      camera.lookAt(pose.focus);
+      phaseStartFocus.copy(pose.focus);
+      phaseStartUp.copy(camera.up);
+    } else {
+      camera.position.copy(introPosition());
+      camera.lookAt(introFocus);
+    }
+    phaseStartPosition.copy(camera.position);
+    phaseStartFov = camera.fov;
+    const cameraFocus = phaseStartFocus.clone();
+
+    function bendTurningPage(item, progress) {
+      const { pivot, mesh, original } = item;
+      const active = progress > 0 && progress < 1;
+      pivot.visible = active;
+      if (!active) return;
+      pivot.rotation.set(0, 0, 0);
+      const attribute = mesh.geometry.attributes.position;
+      for (let i = 0; i < attribute.count; i += 1) {
+        const fraction = Math.min(1, Math.max(0, original[i * 3] / PAGE_WIDTH));
+        // The free edge starts first; each column bends around the spine in turn.
+        const travel = THREE.MathUtils.smoothstep((progress - 0.13 * (1 - fraction)) / 0.87, 0, 1);
+        const angle = Math.PI * travel;
+        const lift = Math.sin(angle);
+        const x = original[i * 3];
+        const z = original[i * 3 + 2];
+        attribute.setX(i, x * Math.cos(angle));
+        attribute.setY(i, original[i * 3 + 1] + 0.46 * x * lift + 0.08 * lift * Math.sin(Math.PI * fraction));
+        attribute.setZ(i, z + 0.035 * lift * Math.pow(fraction, 2) * Math.sin(z * 2.2 + progress * 3));
+      }
+      attribute.needsUpdate = true;
+      mesh.geometry.computeVertexNormals();
+    }
+
     function animate(now) {
+      const currentPhase = phaseRef.current;
+      if (currentPhase !== lastPhase) {
+        lastPhase = currentPhase;
+        phaseStartedAt = now;
+        phaseStartPosition = camera.position.clone();
+        phaseStartFocus = cameraFocus.clone();
+        phaseStartFov = camera.fov;
+        phaseStartUp = camera.up.clone();
+        completed = false;
+      }
       const seconds = (now - startedAt) / 1000;
-      const transitionSeconds = openingAtRef.current === null ? -1 : (now - openingAtRef.current) / 1000;
-      const leaving = transitionSeconds >= 0;
-      const enter = reducedMotion.matches ? 0 : THREE.MathUtils.smoothstep(seconds, 2.1, 5.15);
-      const urgentRise = leaving ? THREE.MathUtils.smoothstep(transitionSeconds, 0, 0.75) : 0;
-      const rise = Math.max(enter, urgentRise);
-      const bob = reducedMotion.matches || leaving ? 0 : Math.sin(seconds * 1.08) * 0.025 * rise;
+      const elapsed = (now - phaseStartedAt) / 1000;
+      const opening = currentPhase === "opening";
+      const returning = currentPhase === "returning";
+      const reading = currentPhase === "reading";
+      const transitioning = opening || returning;
+      const initialRise = reducedMotion.matches ? 1 : THREE.MathUtils.smoothstep(seconds, 2.1, 5.15);
+      const reaction = opening ? THREE.MathUtils.smoothstep(elapsed, 0, 0.72) : 0;
+      const rise = reading ? 1 : opening ? Math.max(initialRise, reaction) : returning ? 1 - THREE.MathUtils.smoothstep(elapsed, 0, 1.8) : initialRise;
+      const bob = !reducedMotion.matches && !transitioning && !reading ? Math.sin(seconds * 1.08) * 0.025 * rise : 0;
       book.position.y = 0.16 + rise * 0.82 + bob;
       shadowMaterial.opacity = 0.62 - rise * 0.4;
-      const pointerActive = !leaving && !reducedMotion.matches && now - pointer.movedAt < 1650;
+      const pointerActive = currentPhase === "intro" && !reducedMotion.matches && now - pointer.movedAt < 1650;
       const yaw = pointerActive ? pointer.x * 0.11 : 0;
       const pitch = pointerActive ? pointer.y * -0.055 : 0;
-      book.rotation.y = THREE.MathUtils.lerp(book.rotation.y, -0.1 + yaw, 0.035);
-      book.rotation.x = THREE.MathUtils.lerp(book.rotation.x, 0.24 + pitch, 0.035);
-      const zoom = leaving ? THREE.MathUtils.smoothstep(transitionSeconds, 0, 2.3) : 0;
-      const narrow = aspect < 0.95;
-      const portraitLayout = window.innerWidth <= 900;
-      const targetX = (narrow ? 2.35 : 3.15) - zoom * 1.7;
-      const targetY = (narrow ? 2.8 : 3.1) - zoom * 1.05;
-      const targetZ = (narrow ? 11.75 : portraitLayout ? 8.15 : 9.1)
-        + (1 - THREE.MathUtils.smoothstep(seconds, 0, 3)) * 0.55 - zoom * (narrow ? 5.15 : 4.3);
-      cameraTarget.set(targetX, targetY, targetZ);
-      camera.position.lerp(cameraTarget, leaving ? 0.085 : 0.028);
-      camera.lookAt(0, 0.05 + rise * 0.24 + zoom * 0.58, 0);
+      const readMix = reading ? 1 : opening ? THREE.MathUtils.smoothstep(elapsed, 0.6, 3.15) : returning ? 1 - THREE.MathUtils.smoothstep(elapsed, 0, 1.85) : 0;
+      book.rotation.y = THREE.MathUtils.lerp(book.rotation.y, THREE.MathUtils.lerp(-0.1 + yaw, 0, readMix), 0.08);
+      book.rotation.x = THREE.MathUtils.lerp(book.rotation.x, THREE.MathUtils.lerp(0.24 + pitch, 0.025, readMix), 0.08);
 
-      if (!reducedMotion.matches && !leaving) {
+      const read = readingPose();
+      const intro = introPosition();
+      const cameraMix = opening ? THREE.MathUtils.smoothstep(elapsed, 0.58, 3.1) : returning ? THREE.MathUtils.smoothstep(elapsed, 0.08, 1.85) : 1;
+      if (opening) {
+        camera.position.copy(phaseStartPosition).lerp(read.position, cameraMix);
+        cameraFocus.copy(phaseStartFocus).lerp(read.focus, cameraMix);
+        camera.fov = THREE.MathUtils.lerp(phaseStartFov, read.fov, cameraMix);
+        // Leave room for the raised leaves, then ease into the final reading frame.
+        const turningRoom = 2.3 * cameraMix * (1 - THREE.MathUtils.smoothstep(elapsed, 2.75, 3.5));
+        camera.position.addScaledVector(read.position.clone().sub(read.focus).normalize(), turningRoom);
+      } else if (returning) {
+        camera.position.copy(phaseStartPosition).lerp(intro, cameraMix);
+        cameraFocus.copy(phaseStartFocus).lerp(introFocus, cameraMix);
+        camera.fov = THREE.MathUtils.lerp(phaseStartFov, 41, cameraMix);
+      } else if (reading) {
+        camera.position.lerp(read.position, 0.12);
+        cameraFocus.lerp(read.focus, 0.12);
+        camera.fov = THREE.MathUtils.lerp(camera.fov, read.fov, 0.12);
+      } else {
+        camera.position.lerp(intro, 0.028);
+        cameraFocus.lerp(introFocus, 0.028);
+        camera.fov = THREE.MathUtils.lerp(camera.fov, 41, 0.03);
+      }
+      const targetUp = new THREE.Vector3(0, 0, -1);
+      if (opening) camera.up.copy(phaseStartUp).lerp(targetUp, cameraMix).normalize();
+      else if (returning) camera.up.copy(phaseStartUp).lerp(new THREE.Vector3(0, 1, 0), cameraMix).normalize();
+      else if (reading) camera.up.copy(targetUp);
+      else camera.up.set(0, 1, 0);
+      camera.updateProjectionMatrix();
+      camera.lookAt(cameraFocus);
+
+      if (!reducedMotion.matches && !transitioning) {
         for (const { mesh, original, side } of idleSheets) {
           const attribute = mesh.geometry.attributes.position;
           for (let i = 0; i < attribute.count; i += 1) {
@@ -478,34 +644,34 @@ export default function BookScene({ opening, onUnavailable, onTransitionComplete
           attribute.needsUpdate = true;
           mesh.geometry.computeVertexNormals();
         }
-        sunlight.intensity = 2.15 + Math.sin(seconds * 0.47) * 0.045;
       }
+      sunlight.intensity = 2.15 + (opening ? Math.sin(Math.min(elapsed / 3.2, 1) * Math.PI) * 0.2 : 0);
       const magic = reducedMotion.matches ? 0 : THREE.MathUtils.smoothstep(seconds, 2.05, 3.65);
-      const magicLevel = magic * (leaving ? 1 + 0.32 * THREE.MathUtils.smoothstep(transitionSeconds, 0, 1) : 1);
+      const magicLevel = magic * (opening ? 1 + 0.36 * Math.sin(Math.min(elapsed / 3.4, 1) * Math.PI) : returning ? 1 - 0.45 * cameraMix : reading ? 0.4 : 1);
       magicGroups.forEach(({ count, positions, geometry, material }, group) => {
         material.opacity = (group ? 0.48 : 0.43) * magicLevel;
         for (let i = 0; i < count; i += 1) {
-          const phase = (i * 2.399 + group * 0.8) % (Math.PI * 2);
+          const angle = (i * 2.399 + group * 0.8) % (Math.PI * 2);
           const orbit = 1.25 + (i % 5) * 0.26;
           const drift = seconds * (0.1 + (i % 4) * 0.027);
-          positions[i * 3] = Math.cos(phase + drift) * orbit;
+          positions[i * 3] = Math.cos(angle + drift) * orbit;
           positions[i * 3 + 1] = book.position.y + 0.2 + ((i * 0.37 + seconds * 0.055) % 1.7);
-          positions[i * 3 + 2] = Math.sin(phase + drift) * 0.95 + Math.cos(i * 1.9) * 0.33;
+          positions[i * 3 + 2] = Math.sin(angle + drift) * 0.95 + Math.cos(i * 1.9) * 0.33;
         }
         geometry.attributes.position.needsUpdate = true;
       });
-      trailMaterial.opacity = 0.18 * magicLevel * (0.75 + Math.sin(seconds * 0.9) * 0.25);
-      pageGlow.intensity = magic * 0.65 + (leaving ? 1.25 * THREE.MathUtils.smoothstep(transitionSeconds, 0.5, 1.9) : 0);
+      trailMaterial.opacity = 0.12 * magicLevel;
+      pageGlow.intensity = opening ? 0.65 + Math.sin(Math.min(elapsed / 3.4, 1) * Math.PI) * 0.42 : reading ? 0.2 : magic * 0.5;
       pageGlow.position.y = book.position.y + 0.55;
-      if (leaving) {
-        const turn = THREE.MathUtils.smoothstep(transitionSeconds, 0.62, 1.9);
-        turningPage.visible = transitionSeconds >= 0.62;
-        turningPage.rotation.y = -Math.PI * turn;
-        turningPage.rotation.z = Math.sin(Math.PI * turn) * 0.24;
-        if (transitionSeconds > 2.45 && !completed) {
-          completed = true;
-          completeRef.current();
-        }
+      turningPages.forEach((item, index) => bendTurningPage(item, opening ? (elapsed - (index ? 1.38 : 0.76)) / 1.56 : 0));
+      if (reading || (opening && elapsed > 3)) updateProjection();
+      if (opening && elapsed >= 3.55 && !completed) {
+        completed = true;
+        forwardRef.current();
+      }
+      if (returning && elapsed >= 2.05 && !completed) {
+        completed = true;
+        returnRef.current();
       }
       renderer.render(scene, camera);
       frame = requestAnimationFrame(animate);
@@ -531,7 +697,7 @@ export default function BookScene({ opening, onUnavailable, onTransitionComplete
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, []);
+  }, [projectionHostRef]);
 
-  return <div ref={mountRef} className="intro-stage" role="img" aria-label="Libro antiguo abierto sobre un atril tallado; se eleva suavemente entre motas doradas" />;
+  return <div ref={mountRef} className="book-journey-stage" role="img" aria-label="El mismo libro antiguo se acerca y abre sus páginas para revelar el índice ilustrado" />;
 }

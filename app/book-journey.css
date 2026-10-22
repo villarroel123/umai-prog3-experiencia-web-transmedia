@@ -1,0 +1,92 @@
+/* The WebGL canvas belongs to the route shell, so navigation never replaces its book. */
+.book-journey{position:relative;min-height:100svh;overflow:hidden;background:#2b2119 url('/images/biblioteca-intro.png') center/cover no-repeat}
+.book-journey-stage{position:fixed;z-index:2;inset:0;pointer-events:none;opacity:1}
+.book-journey-stage canvas{display:block;width:100%;height:100%}
+.book-journey .intro-page{background:transparent;isolation:auto}
+.book-journey .intro-atmosphere{z-index:0}
+.book-journey .intro-vignette{z-index:3}
+.book-journey .intro-copy-block{z-index:5}
+.book-journey .intro-nav{z-index:8}
+.book-journey--reading .intro-copy-block,.book-journey--reading .intro-nav{opacity:0;pointer-events:none}
+.book-journey--intro .story-screen-library{opacity:0;pointer-events:none}
+
+/* The existing index content is ink over the projected top faces of the original mesh. */
+.book-journey .story-screen-library{min-height:100svh;overflow:visible;background:transparent;isolation:auto}
+.book-journey .story-screen-library::before{display:none}
+.book-journey .story-screen-library .story-grain{z-index:3}
+.book-journey .story-screen-library .story-header{position:relative;z-index:8;min-height:57px;padding:9px clamp(20px,3vw,50px);background:#2019149c}
+.book-journey--returning .story-screen-library .story-header{opacity:0;transition:opacity .3s ease;pointer-events:none}
+.book-journey .story-screen-library .story-content{position:fixed;z-index:5;inset:0;max-width:none;margin:0;padding:0;pointer-events:none;animation:none}
+.book-journey .storybook-index{position:fixed;inset:0;max-width:none;margin:0;pointer-events:none;opacity:0;transition:opacity .75s ease}
+.book-journey--reading[data-projected="true"] .storybook-index{opacity:1}
+.book-journey--returning .storybook-index{opacity:0;transition-duration:.28s}
+.book-journey .storybook-cover,.book-journey .storybook-pages{display:contents;border:0;background:none;box-shadow:none}
+.book-journey .storybook-cover::before,.book-journey .storybook-cover::after,.book-journey .storybook-pages::after{display:none}
+.book-journey .storybook-page{position:fixed;box-sizing:border-box;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:hidden}
+.book-journey .storybook-title-page{left:var(--book-left-x);top:var(--book-left-y);width:var(--book-left-w);height:var(--book-left-h);padding:36px clamp(17px,1.8vw,28px) 17px;pointer-events:none}
+.book-journey .storybook-index-page{left:var(--book-right-x);top:var(--book-right-y);width:var(--book-right-w);height:var(--book-right-h);padding:32px clamp(15px,1.7vw,26px) 18px;pointer-events:auto}
+.book-journey .storybook-title-page .book-folio{margin-top:0;font-size:clamp(7px,.7vw,10px);letter-spacing:.12em}
+.book-journey .storybook-title-page h1{margin:25px 0 0;font-size:clamp(23px,2.2vw,38px);line-height:1.24}
+.book-journey .title-page-intro{max-width:90%;margin-top:14px;font-size:clamp(11px,1vw,16px);line-height:1.55}
+.book-journey .title-page-progress{margin-top:auto;margin-bottom:9px;font-size:clamp(9px,.85vw,12px)}
+.book-journey .page-botanical{width:clamp(62px,6.3vw,108px);height:clamp(62px,6.3vw,108px);opacity:.68}
+.book-journey .page-botanical-top{top:0;left:0}
+.book-journey .page-botanical-bottom{bottom:0;left:0}
+.book-journey .page-botanical-bottom-right{bottom:0;right:0}
+.book-journey .title-page-vignette{left:17px;bottom:19px;width:clamp(55px,5.2vw,76px);height:clamp(65px,6vw,88px)}
+.book-journey .film-gallery{gap:clamp(7px,.85vw,14px);padding-top:clamp(14px,2.3vh,26px)}
+.book-journey .film-arch{height:clamp(145px,31vh,260px);border-width:3px}
+.book-journey .film-entry strong{min-height:32px;margin-top:12px;font-size:clamp(10px,1vw,16px)}
+.book-journey .film-entry small{margin-top:7px;font-size:clamp(8px,.7vw,10px)}
+.book-journey .film-progress-dots{gap:7px;margin-top:6px}
+.book-journey .film-progress-dots i{width:9px;height:9px}
+.book-journey .index-page-heading{font-size:clamp(8px,.68vw,10px);letter-spacing:.12em;padding-bottom:9px}
+.book-journey .index-page-footer{margin-top:9px;padding-top:8px;font-size:clamp(8px,.7vw,11px)}
+.book-journey .book-mobile-pages{display:none}
+.book-journey .story-loading{position:relative;z-index:4;background:transparent}
+.book-journey--fallback .book-journey-stage{display:none}
+.book-journey--fallback .story-screen-library{background:#211b16 url('/images/biblioteca-intro.png') center/cover no-repeat}
+.book-journey--fallback .story-screen-library .story-content{position:relative;inset:auto;max-width:1500px;margin:auto;padding:30px clamp(18px,3.5vw,58px) 70px;pointer-events:auto}
+.book-journey--fallback .storybook-index{position:relative;inset:auto;max-width:1350px;margin:auto;opacity:1;pointer-events:auto}
+.book-journey--fallback .storybook-cover{display:block;border:10px solid #58402e;border-radius:22px;background:#704d32;box-shadow:0 32px 70px #100d0bc4}
+.book-journey--fallback .storybook-pages{position:relative;display:grid;grid-template-columns:47% 53%;min-height:565px;overflow:hidden;border-radius:16px;background:#ead3a9}
+.book-journey--fallback .storybook-page{position:relative;left:auto;top:auto;width:auto;height:auto;background-color:#f0dfb9;background-image:url('/images/ornaments/paper-grain.svg')}
+.book-journey--fallback .storybook-title-page{padding:45px 55px 36px}
+.book-journey--fallback .storybook-index-page{padding:38px 34px 25px 43px}
+
+@media(max-width:900px){
+  .book-journey .story-screen-library .story-header{min-height:62px}
+  .book-journey .storybook-title-page{padding:29px 17px 15px}
+  .book-journey .storybook-index-page{padding:26px 15px 15px}
+  .book-journey .film-arch{height:clamp(105px,22vh,205px)}
+  .book-journey--fallback .storybook-pages{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .book-journey .story-screen-library .story-header{min-height:95px}
+  .book-journey .storybook-title-page,.book-journey .storybook-index-page{padding:30px 18px 18px}
+  .book-journey .storybook-title-page,.book-journey .storybook-index-page{min-height:0}
+  .book-journey .storybook-title-page h1{font-size:clamp(24px,8vw,34px);margin:14px 0 3px}
+  .book-journey .title-page-intro{font-size:clamp(11px,3.3vw,14px);line-height:1.5}
+  .book-journey .title-page-progress{margin-top:auto;margin-bottom:8px;font-size:10px}
+  .book-journey .page-botanical{width:85px;height:85px}
+  .book-journey .title-page-vignette{width:62px;height:72px}
+  .book-journey .film-gallery{gap:6px;padding-top:15px}
+  .book-journey .film-arch{height:clamp(95px,24vh,170px)}
+  .book-journey .film-entry strong{min-height:42px;margin-top:9px;font-size:10px}
+  .book-journey .film-entry small{font-size:8px}
+  .book-journey .film-progress-dots i{width:7px;height:7px}
+  .book-journey .index-page-heading{font-size:8px}
+  .book-journey .index-page-footer{font-size:8px}
+  .book-journey .storybook-page{overflow:auto;scrollbar-width:none}
+  .book-journey .storybook-page::-webkit-scrollbar{display:none}
+  .book-journey .storybook-title-page{display:flex}
+  .book-journey .storybook-index-page{display:flex}
+  .book-journey .book-mobile-pages{position:fixed;z-index:9;right:50%;bottom:14px;display:flex;gap:6px;transform:translateX(50%);padding:5px;border:1px solid #d9bf88;border-radius:30px;background:#2c281fdc;box-shadow:0 5px 18px #0008;pointer-events:auto}
+  .book-mobile-pages button{border:0;border-radius:24px;padding:8px 12px;background:transparent;color:#e9d7b5;font-size:11px}
+  .book-mobile-pages button.is-current{background:#4f6a4e;color:#fff1cd}
+  .book-journey--reading .storybook-title-page,.book-journey--reading .storybook-index-page{transition:opacity .2s}
+  .book-journey--reading:has(.book-mobile-pages button:first-child.is-current) .storybook-index-page,
+  .book-journey--reading:has(.book-mobile-pages button:last-child.is-current) .storybook-title-page{opacity:0;visibility:hidden;pointer-events:none}
+  .book-journey--fallback .storybook-title-page,.book-journey--fallback .storybook-index-page{opacity:1!important;pointer-events:auto}
+}
+@media(prefers-reduced-motion:reduce){.book-journey-stage,.book-journey .storybook-index{transition:none!important}}
