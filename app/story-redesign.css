@@ -1,0 +1,201 @@
+/* Materiales compartidos por el índice y las páginas ilustradas. */
+.story-screen-library .story-content,
+.story-screen-chapter .story-content,
+.story-screen-minigame .story-content{max-width:1500px;padding:30px clamp(18px,3.5vw,58px) 70px}
+.story-screen-chapter,.story-screen-minigame{background:#202b22}
+.story-world-backdrop{position:absolute!important;inset:0;z-index:0;object-fit:cover;filter:blur(7px) saturate(.75);opacity:.6;transform:scale(1.04)}
+.story-screen-chapter::before,.story-screen-minigame::before{z-index:1;pointer-events:none;background:linear-gradient(180deg,#171812bf,#211d17aa 45%,#1e2019d4)}
+.story-world .story-content{z-index:2}
+.story-world .story-header{z-index:8}
+.book-folio{margin:0;color:#8d6a47;font-size:10px;font-weight:700;letter-spacing:.18em}
+.ink-flourish{width:150px;height:12px;margin:16px auto;border-top:1px solid #a18155;position:relative}
+.ink-flourish::after{content:"✧";position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:0 12px;background:#f0dfba;color:#a18155;font-size:15px}
+.page-botanical{position:absolute;z-index:2;width:155px;height:155px;background:url('/images/ornaments/botanical-corner.svg') center/contain no-repeat;pointer-events:none;opacity:.84}
+.page-botanical-top{top:4px;left:8px}
+.page-botanical-bottom{bottom:0;left:2px;transform:scaleY(-1)}
+.page-botanical-bottom-right{right:0;bottom:0;transform:rotate(180deg)}
+
+/* El libro índice muestra tapa, hojas apiladas y un pliegue ancho. */
+.storybook-index{max-width:1350px;margin:auto}
+.storybook-cover,.chapter-cover,.memory-cover{position:relative;isolation:isolate;border:10px solid #58402e;border-radius:22px 29px 27px 22px;background:#704d32;box-shadow:0 32px 70px #100d0bc4,0 0 0 2px #a17649,inset 0 0 0 3px #3b2b23}
+.storybook-cover::before,.chapter-cover::before,.memory-cover::before{content:"";position:absolute;z-index:-1;left:10px;right:10px;bottom:-12px;height:19px;border-radius:0 0 16px 16px;background:repeating-linear-gradient(0deg,#cbb58a 0 2px,#9d805a 3px 4px,#e2d0a5 5px 6px);box-shadow:0 5px 0 #513824,0 12px 20px #0008}
+.storybook-cover::after,.chapter-cover::after,.memory-cover::after{content:"";position:absolute;z-index:3;inset:6px;border:1px solid #a47c54a8;border-radius:15px 21px 18px 14px;pointer-events:none}
+.storybook-pages{position:relative;display:grid;grid-template-columns:47% 53%;min-height:565px;overflow:hidden;border-radius:16px 22px 19px 15px;background:#ead3a9}
+.storybook-pages::after{content:"";position:absolute;z-index:4;left:47%;top:-3%;bottom:-3%;width:47px;transform:translateX(-50%);pointer-events:none;background:linear-gradient(90deg,#8a63434d,#3d2b2440 35%,#f8e9c95e 66%,transparent);filter:blur(2px)}
+.storybook-page,.chapter-paper,.memory-paper{position:relative;min-width:0;color:#3b2b21;background-color:#f0dfb9;background-image:url('/images/ornaments/paper-grain.svg'),radial-gradient(ellipse at 45% 28%,#fff0cf 0,#f1dfb9 60%,#d5b88b 100%);background-blend-mode:multiply,normal}
+.storybook-title-page{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:45px 55px 36px;text-align:center;border-radius:18px 62px 22px 14px / 18px 20px 22px 15px;box-shadow:inset -24px 0 30px #80624447,inset 0 0 22px #fff8e3}
+.storybook-title-page .book-folio{margin-top:20px}
+.storybook-title-page h1{position:relative;z-index:2;margin:27px 0 3px;font:400 clamp(32px,3.1vw,49px)/1.23 'Libre Baskerville',Georgia,serif;letter-spacing:-.045em}
+.storybook-title-page h1 em{font-weight:400;color:#425f4b}
+.title-page-intro{position:relative;z-index:2;max-width:380px;margin:6px 0 0;font:italic clamp(15px,1.3vw,19px)/1.7 'Libre Baskerville',Georgia,serif}
+.title-page-vignette{position:absolute;left:18px;bottom:20px;width:95px;height:110px;opacity:.75;transform:rotate(-9deg)}
+.title-page-vignette img{width:100%;height:100%;object-fit:contain}
+.title-page-progress{position:relative;z-index:2;margin:73px 0 0;color:#766243;font:italic 13px 'Libre Baskerville',Georgia,serif}
+.storybook-index-page{display:flex;flex-direction:column;padding:38px 34px 25px 43px;border-radius:54px 19px 16px 22px / 18px 18px 19px 18px;box-shadow:inset 19px 0 29px #7c5f3c45,inset -4px 0 13px #f9efd6}
+.index-page-heading{display:flex;justify-content:space-between;gap:15px;padding-bottom:13px;border-bottom:1px solid #a98d637a;color:#8a6b4a;font-size:10px;letter-spacing:.16em}
+.film-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:16px;flex:1;padding-top:31px}
+.film-entry{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;color:#3b2e24;text-align:center;text-decoration:none}
+.film-arch{position:relative;display:block;width:100%;height:260px;overflow:hidden;border:5px solid #e6d2aa;border-radius:49% 49% 5px 5px / 25% 25% 5px 5px;outline:1px solid #a78354;box-shadow:0 6px 13px #60452c58,inset 0 0 0 2px #9b764a;background:#b3c8b1;transition:transform .35s,box-shadow .35s,filter .35s}
+.film-arch::after{content:"";position:absolute;inset:4px;border:1px solid #f7e8c990;border-radius:inherit;pointer-events:none}
+.film-arch-scene{object-fit:cover;transition:transform .5s,filter .5s}
+.film-entry-chihiro .film-arch-scene{object-position:65% center}
+.film-entry-howl .film-arch-scene{object-position:35% center}
+.film-entry-totoro .film-arch-scene{object-position:48% center}
+.film-arch-character{position:absolute;z-index:1;bottom:-12px;left:50%;width:67%;height:63%;object-fit:contain;transform:translateX(-50%);filter:drop-shadow(0 5px 5px #14221a66)}
+.film-arch-spark{position:absolute;z-index:2;right:13px;top:25px;width:9px;height:9px;border-radius:50%;background:#fff6ce;box-shadow:0 0 14px 6px #fff2bb9e;opacity:0;transition:opacity .3s}
+.film-entry:hover .film-arch,.film-entry:focus-visible .film-arch{transform:translateY(-6px);box-shadow:0 12px 22px #60452c76,0 0 20px #dbb96792;filter:brightness(1.06)}
+.film-entry:hover .film-arch-scene,.film-entry:focus-visible .film-arch-scene{transform:scale(1.04)}
+.film-entry:hover .film-arch-spark,.film-entry:focus-visible .film-arch-spark{opacity:1}
+.film-entry strong{display:block;min-height:47px;margin-top:17px;font:400 clamp(15px,1.25vw,19px)/1.28 'Libre Baskerville',Georgia,serif}
+.film-progress-dots{display:flex;justify-content:center;gap:9px;margin-top:8px}
+.film-progress-dots i{display:block;width:11px;height:11px;border:1px solid #6a6746;border-radius:50%;background:transparent}
+.film-progress-dots i.filled{background:#4a6b52;border-color:#4a6b52;box-shadow:0 0 7px #6b8c5d80}
+.film-entry small{margin-top:12px;color:#746048;font-size:10px}
+.index-page-footer{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px;padding-top:13px;border-top:1px solid #a98d637a;color:#776345;font:italic 11px/1.4 'Libre Baskerville',Georgia,serif}
+.index-page-footer a{color:#3c5f49;text-decoration:none;font-style:normal;font-weight:700;white-space:nowrap}
+.index-page-footer a:hover{text-decoration:underline}
+
+/* Capítulo: paisaje a la izquierda y tres recuerdos impresos en la página. */
+.story-screen-chapter .story-crumb,.story-screen-minigame .story-crumb{margin-bottom:17px;color:#f6e8cb;text-shadow:0 2px 5px #0009}
+.story-screen-chapter .story-crumb a,.story-screen-minigame .story-crumb a{color:#fff1d2}
+.chapter-cover{display:grid;grid-template-columns:43% 57%;min-height:590px;overflow:hidden}
+.chapter-scenery,.memory-scenery{position:relative;min-height:590px;overflow:hidden;background:#455a45}
+.chapter-scenery::after,.memory-scenery::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 35px #221a16a6;background:linear-gradient(0deg,#18251c57,transparent 48%)}
+.chapter-scenery-image,.memory-scenery-image{object-fit:cover}
+.chapter-story-chihiro .chapter-scenery-image,.memory-story-chihiro .memory-scenery-image{object-position:57% center}
+.chapter-story-howl .chapter-scenery-image,.memory-story-howl .memory-scenery-image{object-position:40% center}
+.chapter-story-totoro .chapter-scenery-image,.memory-story-totoro .memory-scenery-image{object-position:45% center}
+.chapter-scenery-character{position:absolute;z-index:2;left:2%;bottom:-22px;width:46%;height:49%;object-fit:contain;filter:drop-shadow(0 6px 9px #162419a8)}
+.chapter-scenery-caption{position:absolute;z-index:2;top:28px;left:30px;color:#fff4d8;font-size:10px;letter-spacing:.17em;text-shadow:0 2px 8px #1b281c}
+.chapter-paper{display:flex;flex-direction:column;padding:42px 45px 29px;box-shadow:inset 22px 0 30px #88674753}
+.chapter-paper-heading{position:relative;display:flex;justify-content:center;align-items:start;min-height:47px}
+.chapter-paper-heading .book-folio{margin-top:5px;padding:7px 18px;border:1px solid #927654;border-radius:24px;background:#f9e9c7ac}
+.chapter-count{position:absolute;right:0;top:-8px;display:grid;justify-items:center;gap:3px;color:#5a442f}
+.chapter-count strong{font:400 28px 'Libre Baskerville',Georgia,serif}
+.chapter-count strong span{font-size:17px}
+.chapter-count small{font-size:9px;letter-spacing:.08em}
+.chapter-count .film-progress-dots{margin-top:3px;gap:6px}
+.chapter-count .film-progress-dots i{width:9px;height:9px}
+.chapter-paper h1{margin:0 0 12px;text-align:center;font:italic 400 clamp(34px,3.5vw,53px)/1.2 'Libre Baskerville',Georgia,serif;letter-spacing:-.04em}
+.chapter-opening{max-width:510px;margin:0 auto;color:#544331;text-align:center;font:14px/1.7 'Libre Baskerville',Georgia,serif}
+.chapter-object-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:26px}
+.chapter-object-frame{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;min-height:225px;padding:10px 7px 13px;border:1px solid #a8885c;border-radius:11px 11px 8px 8px;outline:1px solid #d9bc8d;outline-offset:-5px;color:#382e24;text-align:center;text-decoration:none;background:#f5e5c5a6;box-shadow:0 3px 5px #684e352b;transition:transform .28s,box-shadow .28s}
+.chapter-object-frame::before,.chapter-object-frame::after{content:"✧";position:absolute;color:#a07e56;font-size:10px}
+.chapter-object-frame::before{top:1px;left:6px}.chapter-object-frame::after{bottom:1px;right:6px}
+.chapter-object-frame:hover,.chapter-object-frame:focus-visible{transform:translateY(-5px) scale(1.02);box-shadow:0 9px 16px #684e3550,0 0 14px #d6b77696}
+.chapter-object-frame.is-recovered{border-color:#8a944f;box-shadow:0 0 14px #d9be69a3}
+.chapter-object-art{position:relative;display:block;width:100%;height:137px}
+.chapter-object-art img{position:absolute;inset:0;max-width:100%;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 2px #70594438);transition:transform .3s}
+.chapter-object-frame:hover img,.chapter-object-frame:focus-visible img{transform:scale(1.06)}
+.chapter-object-frame strong{display:grid;place-items:center;flex:1;font:400 clamp(12px,1.1vw,15px)/1.3 'Libre Baskerville',Georgia,serif}
+.chapter-object-frame small{margin-top:5px;color:#7d684c;font-size:10px}
+.chapter-recovered-seal{position:absolute;z-index:2;top:-10px;right:-8px;display:grid;place-items:center;width:27px;height:27px;border:2px solid #ede0b7;border-radius:50%;background:#52704d;color:#fff8d7;font-size:16px;box-shadow:0 2px 7px #49392173}
+.chapter-paper-foot{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-top:auto;padding-top:22px;border-top:1px solid #ad8a5c73;color:#69533c}
+.chapter-paper-foot p{max-width:400px;margin:0;font:italic 12px/1.5 'Libre Baskerville',Georgia,serif}
+.chapter-paper-foot small{font-size:10px;white-space:nowrap}
+
+/* Página de recuerdo: ilustración sobre el paisaje y otra impresa sobre papel. */
+.memory-cover{display:grid;grid-template-columns:46% 54%;min-height:565px;overflow:hidden}
+.memory-scenery{min-height:565px}
+.memory-scenery-object{position:absolute;z-index:2;left:50%;top:54%;width:64%;height:62%;transform:translate(-50%,-50%);filter:drop-shadow(0 13px 15px #211b1888);animation:illustration-float 6s ease-in-out infinite}
+.memory-scenery-object img{object-fit:contain}
+.memory-scenery-object.memory-shape-wide{width:86%;height:52%}
+.memory-scenery-object.memory-shape-portrait{width:53%;height:66%}
+.memory-paper{display:flex;flex-direction:column;align-items:center;padding:30px 54px 24px;text-align:center;box-shadow:inset 23px 0 30px #8867475b}
+.memory-paper .book-folio{position:relative;z-index:2}
+.memory-paper h1{position:relative;z-index:2;margin:22px 0 1px;font:400 clamp(35px,3.3vw,50px)/1.18 'Libre Baskerville',Georgia,serif;letter-spacing:-.045em}
+.memory-paper .ink-flourish{margin:18px auto 14px}
+.memory-description{max-width:430px;margin:0;color:#513c2d;font:14px/1.7 'Libre Baskerville',Georgia,serif}
+.memory-paper-art{position:relative;flex:none;width:240px;height:175px;margin:16px auto 10px}
+.memory-paper-art img{object-fit:contain;filter:drop-shadow(0 6px 6px #614a3460)}
+.memory-paper-art.memory-shape-wide{width:min(360px,100%);height:160px}
+.memory-paper-art.memory-shape-portrait{width:170px;height:205px;margin:6px auto 0}
+.memory-instruction{display:grid;gap:7px;width:100%;max-width:420px;margin-top:auto;padding:17px 0 0;border-top:1px solid #ac8b5d7a;text-align:left}
+.memory-instruction span{color:#906b48;font-size:10px;letter-spacing:.17em}
+.memory-instruction strong{color:#3e3127;font:italic 400 17px/1.5 'Libre Baskerville',Georgia,serif}
+.memory-controls{display:grid;justify-items:center;gap:8px;margin-top:18px}
+.memory-controls button,.memory-recovered-page .recovered-actions a{border:1px solid #425c42;border-radius:9px;padding:13px 23px;background:#4a694d;color:#fff4d7;text-decoration:none;font:700 13px 'Libre Baskerville',Georgia,serif;box-shadow:inset 0 1px #ffffff42,0 4px 8px #51412c4a;cursor:pointer}
+.memory-controls button:hover,.memory-recovered-page .recovered-actions a:hover{transform:translateY(-2px);background:#5c7b55}
+.memory-controls button:disabled{opacity:.6;cursor:wait}
+.memory-controls small{color:#8a7152;font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+.memory-recovered-page{position:relative;z-index:2;display:flex;flex:1;flex-direction:column;align-items:center;width:100%;animation:story-ink-in .7s ease-out both}
+.memory-recovered-page .recovered-art{height:200px;margin:7px auto 5px;filter:drop-shadow(0 0 18px #e9ca6b9c);animation:memory-reveal .8s ease-out both}
+.memory-recovered-page .recovered-art.memory-shape-wide{height:200px}
+.memory-recovered-page .recovered-art.memory-shape-portrait{height:215px}
+.recovered-sparkles{position:absolute;top:150px;left:50%;width:8px;height:8px;border-radius:50%;background:#f2d68d;box-shadow:-115px 17px 3px #f2d68db0,100px 55px 2px #f2d68db0,64px -27px 2px #fff1b0b0,-65px 133px 2px #fff1b0b0;animation:memory-sparkle 3s ease-in-out infinite}
+.recovered-label{margin:2px 0;color:#56714d;font:italic 17px 'Libre Baskerville',Georgia,serif}
+.recovered-narrative{max-width:450px;margin:8px 0 0;color:#533f2b;font:italic 14px/1.65 'Libre Baskerville',Georgia,serif}
+.recovered-save{margin-top:9px;color:#786247;font-size:10px}
+.memory-recovered-page .recovered-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:auto;padding-top:20px}
+.memory-recovered-page .recovered-actions a:last-child{background:transparent;color:#3d5c43}
+.story-minigame .minigame-replay,.memory-story .minigame-replay{display:block;margin:24px auto 0;color:#f3d9a5;background:none;border:0;border-bottom:1px solid #e8c98a;font-size:12px;cursor:pointer}
+@keyframes illustration-float{50%{transform:translate(-50%,calc(-50% - 6px))}}
+@keyframes memory-reveal{from{opacity:.3;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes memory-sparkle{50%{opacity:.35;transform:translateY(-7px)}}
+
+@media(max-width:1100px){
+  .storybook-index-page{padding:32px 25px 24px 35px}
+  .film-gallery{gap:11px}.film-arch{height:220px}
+  .chapter-paper{padding:38px 28px 25px}.chapter-object-gallery{gap:9px}
+  .memory-paper{padding:36px 30px 29px}
+}
+@media(max-width:800px){
+  .story-screen-library .story-content,.story-screen-chapter .story-content,.story-screen-minigame .story-content{padding:24px 18px 70px}
+  .storybook-pages{grid-template-columns:1fr}
+  .storybook-pages::after{display:none}
+  .storybook-title-page{min-height:350px;padding:35px 32px 25px;box-shadow:inset 0 -17px 22px #85654352}
+  .storybook-title-page h1{font-size:39px;margin-top:16px}
+  .title-page-intro{max-width:420px}
+  .title-page-progress{margin-top:37px}
+  .storybook-index-page{min-height:470px;padding:35px 32px 27px;box-shadow:inset 0 17px 25px #85654343}
+  .film-gallery{gap:16px;padding-top:25px}.film-arch{height:215px}
+  .chapter-cover,.memory-cover{grid-template-columns:1fr}
+  .chapter-scenery,.memory-scenery{min-height:295px;height:295px}
+  .chapter-paper,.memory-paper{box-shadow:inset 0 18px 29px #8867474e}
+  .chapter-paper{min-height:510px}
+  .memory-paper{min-height:600px}
+  .memory-scenery-object{width:43%;height:75%;top:56%}
+  .memory-scenery-object.memory-shape-wide{width:59%;height:68%}
+  .memory-scenery-object.memory-shape-portrait{width:34%;height:79%}
+}
+@media(max-width:520px){
+  .storybook-cover,.chapter-cover,.memory-cover{border-width:7px}
+  .page-botanical{width:110px;height:110px;opacity:.65}
+  .storybook-title-page{min-height:330px;padding:29px 22px 22px}
+  .storybook-title-page h1{font-size:31px}
+  .title-page-intro{font-size:13px;line-height:1.6}
+  .title-page-vignette{width:72px;height:85px;left:6px;bottom:2px}
+  .title-page-progress{margin-top:38px;font-size:11px}
+  .storybook-index-page{min-height:420px;padding:31px 18px 23px}
+  .index-page-heading{font-size:8px}
+  .film-gallery{gap:8px;padding-top:20px}
+  .film-arch{height:140px;border-width:3px}
+  .film-entry strong{min-height:50px;margin-top:10px;font-size:12px}
+  .film-entry small{font-size:8px;line-height:1.25}
+  .film-progress-dots{gap:5px;margin-top:4px}.film-progress-dots i{width:8px;height:8px}
+  .index-page-footer{font-size:9px}
+  .story-screen-chapter .story-crumb,.story-screen-minigame .story-crumb{font-size:9px}
+  .chapter-scenery,.memory-scenery{min-height:250px;height:250px}
+  .chapter-paper{min-height:505px;padding:30px 17px 24px}
+  .chapter-paper h1{margin-top:8px;font-size:32px}
+  .chapter-opening{font-size:11px;line-height:1.55}
+  .chapter-count{right:0;top:-6px}.chapter-count strong{font-size:22px}.chapter-count small{font-size:7px}
+  .chapter-paper-heading .book-folio{font-size:8px;padding:5px 8px}
+  .chapter-object-gallery{gap:6px;margin-top:25px}
+  .chapter-object-frame{min-height:172px;padding:7px 4px 10px}
+  .chapter-object-art{height:88px}
+  .chapter-object-frame strong{font-size:10px}.chapter-object-frame small{font-size:8px}
+  .chapter-paper-foot{gap:9px;padding-top:15px}.chapter-paper-foot p{font-size:10px}.chapter-paper-foot small{font-size:8px;white-space:normal;text-align:right}
+  .memory-paper{min-height:580px;padding:29px 19px 25px}
+  .memory-paper h1{font-size:34px}
+  .memory-description{font-size:12px}
+  .memory-paper-art{width:190px;height:150px}.memory-paper-art.memory-shape-portrait{width:135px;height:185px}
+  .memory-paper-art.memory-shape-wide{height:140px}
+  .memory-instruction strong{font-size:15px}
+  .memory-controls button{font-size:11px;padding:12px 16px}
+  .memory-recovered-page .recovered-art{height:200px}
+  .memory-recovered-page .recovered-art.memory-shape-portrait{height:220px}
+  .recovered-narrative{font-size:12px}
+  .memory-recovered-page .recovered-actions a{font-size:10px;padding:10px 12px}
+}
+@media(prefers-reduced-motion:reduce){.film-arch,.film-arch-scene,.chapter-object-frame,.chapter-object-art img,.memory-scenery-object,.recovered-sparkles,.memory-recovered-page .recovered-art{animation:none!important;transition:none!important}}

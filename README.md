@@ -1,44 +1,60 @@
 # La biblioteca de los recuerdos
 
-Prototipo académico de experiencia web transmedia inspirado en **El viaje de Chihiro**, **El castillo ambulante** y **Mi vecino Totoro**. Una biblioteca mágica conserva sus historias, pero las páginas de un libro se están borrando. La persona visitante explora tres mundos, recupera un recuerdo en cada uno y recompone el libro.
+Base navegable de una experiencia web transmedia para Programación III, inspirada en **El viaje de Chihiro**, **El castillo ambulante** y **Mi vecino Totoro**. Una biblioteca conserva sus historias en un libro mágico; nueve recuerdos perdidos deben regresar para completar sus tres capítulos.
 
-El contenido narrativo actual es provisional. Los textos, escenas y referencias visuales específicas de las películas se incorporarán después de investigar fuentes y seleccionar material con créditos adecuados. Esta base ya permite probar el recorrido completo.
-
-## Recorrido
+## Recorrido implementado
 
 ```text
-/  Portada de la biblioteca
-└── /archivo/chihiro  → recuperar UMBRAL
-    └── /archivo/howl → recuperar CHISPA
-        └── /archivo/totoro → recuperar SEMILLA
-            └── libro completo / cierre
+/                                  Intro existente con libro 3D en Three.js
+└── /biblioteca                    Índice de los tres capítulos dentro de un libro abierto
+    ├── /recuerdos/chihiro         Capítulo y tres objetos por recuperar
+    ├── /recuerdos/howl            Capítulo y tres objetos por recuperar
+    └── /recuerdos/totoro          Capítulo y tres objetos por recuperar
+        └── /recuerdos/[pelicula]/[objeto]  Plantilla de los nueve ejercicios
+
+/final                             Cierre sellado hasta recuperar los nueve recuerdos
+/archivo/[chapter]                Prototipo anterior, conservado como referencia
 ```
 
-Cada capítulo presenta un ambiente visual, un objeto 3D interactivo y una página que vuelve a escribirse al recuperar su recuerdo. El siguiente capítulo se habilita después de guardar el anterior. El mismo resultado se puede alcanzar con el botón **Recuperar recuerdo**, alternativa accesible al canvas. El progreso se conserva en `localStorage` y, al configurar Firebase, también en Cloud Firestore asociado al usuario autenticado.
+El botón **Comenzar** conserva la transición animada de la intro y lleva a `/biblioteca`. Cada capítulo muestra un escenario pintado, tres recuerdos ilustrados y su progreso. Cada recuerdo abre la misma plantilla reutilizable: **Comenzar ejercicio** lo deja *en curso* y **Simular resolución correcta** lo registra como *recuperado*. Esta simulación está identificada en pantalla como modo de desarrollo; los desafíos reales quedan para la siguiente etapa. La vista de recuperación ilumina el objeto, muestra partículas, su nombre y una frase narrativa. Se puede repetir la prueba sin perder lo recuperado.
 
-## Datos de las películas
+El libro indica los recuerdos recuperados en cada película y en total. Un capítulo se marca reconstruido cuando alcanza 3/3. `/final` muestra el estado sellado hasta alcanzar 9/9; entonces presenta los tres capítulos completos, la animación de aparición y el texto final provisional.
 
-Cada ruta `/archivo/[chapter]` consulta en el servidor la ficha correspondiente de [Studio Ghibli API](https://ghibliapi.dev/). Los IDs de las tres películas están en `data/chapters.js`; `lib/ghibli.js` hace la petición y selecciona los campos que usa la interfaz: título internacional y original, romanización, sinopsis, dirección, producción, año y duración. La ficha se muestra debajo del recuerdo con un enlace a la respuesta de origen. Los datos se revalidan cada 24 horas.
+## Contenido y arquitectura
 
-Si la API falla, la página sigue funcionando con una copia local de esos campos, identificada como **COPIA LOCAL**. La sinopsis se muestra en el inglés original de la API. Los enlaces `image` y `movie_banner` de la respuesta no se usan: las escenas, animaciones e imágenes del proyecto se agregarán manualmente con sus créditos.
+- `data/memories.js`: definición central de las tres películas y los nueve recuerdos, con identificador, título, descripción, tipo de interacción, instrucción, frase narrativa y estado inicial.
+- `lib/memoryProgress.js`: normalización y cálculo de estados, progreso por película, progreso total y desbloqueo del final.
+- `hooks/useMemoryProgress.js`: estado compartido por las pantallas, guardado local y sincronización con Firebase Auth y Firestore. Reutiliza la autenticación existente de `hooks/useProgress.js`.
+- `components/StoryExperience.js`: navegación, indicador global, estado del guardado y acceso a la cuenta.
+- `components/LibraryIndex.js`, `ChapterView.js`, `MinigameView.js`, `MemoryRecovered.js` y `FinalView.js`: las vistas del recorrido. El rediseño de las primeras cuatro está en `app/story-redesign.css`; `app/story.css` mantiene las reglas compartidas y el final.
+- `app/biblioteca`, `app/recuerdos/[pelicula]`, `app/recuerdos/[pelicula]/[objeto]` y `app/final`: rutas App Router. Las rutas inválidas muestran una página para volver al libro.
 
-## Referencias visuales
+La intro anterior (`components/IntroPage.js` y `BookScene.js`) conserva su libro y atril 3D, la animación de entrada, la respuesta moderada al puntero y la transición de **Comenzar**. Su escena usa Three.js directo con geometría y texturas procedurales; libera recursos al desmontarse. La imagen original `public/images/biblioteca-intro.png` aporta la atmósfera de la biblioteca. El índice, los capítulos y los recuerdos ahora combinan ilustraciones pintadas, papel texturado, ornamentos botánicos y profundidad CSS. Los recursos del rediseño se documentan en `docs/visual-assets.md`.
 
-- Moodboard y concepto: `Tp- programacion3.pdf`, proporcionado para el proyecto por Agostina Brizuela y Sofía Villarreal.
-- Dirección visual aplicada: biblioteca de madera oscura, luz cálida, verdes de bosque, detalles dorados, libro de papel envejecido y contraste entre interior y paisajes abiertos.
-- Imagen de portada: ilustración original generada para este prototipo con ImageGen; archivo `public/images/biblioteca-original.png`. Prompt: “original magical library of memories, antique open book, old shelves, lanterns, arched window to blue sky and green hills; hand-painted fantasy storybook illustration; deep green, walnut, aged ivory and amber; no characters, text or recognizable copyrighted settings.”
-- Paisajes de capítulos y recuerdos 3D: CSS y geometría procedural originales del proyecto. No incluyen fotogramas ni personajes de las películas.
-- Tipografías: Libre Baskerville y DM Sans, servidas desde Google Fonts.
+## Datos de películas
 
-## Decisiones técnicas
+Los capítulos nuevos y el prototipo anterior consultan [Studio Ghibli API](https://ghibliapi.dev/) mediante `lib/ghibli.js`. La ficha presenta título, año y dirección; si falla la API, se usan los datos locales de `data/chapters.js`. La respuesta se revalida cada 24 horas. Las imágenes y animaciones narrativas se incorporarán manualmente tras investigar las escenas y sus créditos.
 
-- **Next.js App Router**: `app/page.js` para la portada y `app/archivo/[chapter]/page.js` para los capítulos. La ruta dinámica consulta la API como Server Component y genera metadata específica. `FilmDossier` presenta los datos en el servidor; `Experience` y `ThreeArtifact` son Client Components por su estado, navegación, WebGL y acceso al navegador. La ruta incluye un estado de carga mientras consulta la ficha.
-- **Three.js directo**: cada objeto usa escena, cámara, renderer, geometrías, materiales e iluminación. El canvas responde al tamaño del contenedor, limita el pixel ratio a 2, anima con `requestAnimationFrame`, permite rotar con el puntero y detecta selección con raycasting. Al desmontarse libera geometrías, materiales, eventos y renderer.
-- **Contenido editable**: los tres capítulos, textos, pistas, colores y motivos 3D se definen en `data/chapters.js`.
-- **Persistencia**: `hooks/useProgress.js` gestiona modo local y sincronización con Firebase Auth y Firestore. `firestore.rules` limita los documentos `users/{uid}` y `progress/{uid}` a su propio usuario.
-- **Accesibilidad**: botones de navegación y recuperación operables con teclado, etiquetas para el canvas, estado textual del recuerdo, foco visible y reducción de movimiento según preferencias del sistema.
+## Persistencia y acceso
 
-## Instalación
+Sin `.env.local`, el progreso se guarda en `localStorage` y la interfaz muestra **Guardado local**. Con Firebase configurado, la autenticación existente admite invitado anónimo, Google y email/contraseña. Los recuerdos se guardan en `progress/{uid}.memories` de Cloud Firestore, separados por usuario. El estado local y el de Firestore se fusionan conservando el estado más avanzado; cada recuerdo puede estar pendiente, en curso o recuperado. La interfaz muestra si el guardado está en la nube o si funciona sin conexión. Las reglas existentes de `firestore.rules` limitan `users/{uid}` y `progress/{uid}` al usuario autenticado.
+
+Para configurar Firebase:
+
+1. Crear un proyecto y una Web App en Firebase, activar Authentication anónima, Google y email/contraseña, y crear Cloud Firestore.
+2. Copiar `.env.example` a `.env.local` y completar las variables `NEXT_PUBLIC_FIREBASE_*` indicadas allí.
+3. Revisar e integrar `firestore.rules` con las reglas existentes del proyecto y publicarlas.
+4. Reiniciar el servidor.
+
+Las variables `NEXT_PUBLIC_` son visibles para el cliente; la protección de documentos depende de Firebase Authentication y de las reglas de Firestore.
+
+## Diseño y accesibilidad
+
+El índice se presenta como un libro físico abierto con tapa, hojas apiladas, pliegue central y tres ilustraciones de películas. Cada capítulo y recuerdo combina un paisaje propio con una página de papel envejecido. Las nueve ilustraciones de objetos son archivos independientes con fondo transparente. `next/image` adapta sus tamaños y entrega formatos modernos. El diseño se adapta a móvil, permite navegar con teclado, muestra el foco visible y respeta `prefers-reduced-motion`. La intro ofrece un botón que funciona aunque falle WebGL. La arquitectura de los ejercicios permite añadir controles accesibles junto a cada mecánica definitiva.
+
+Referencias visuales: el moodboard de `Tp- programacion3.pdf`, el tablero de diseño adjunto y las imágenes de biblioteca, libros y atril aportadas para el proyecto. Las escenas y objetos del rediseño son ilustraciones generadas para este prototipo, inspiradas en los mundos y personajes indicados en el tablero; no son fotogramas oficiales.
+
+## Ejecutar y verificar
 
 Requiere Node.js 20 o posterior.
 
@@ -47,26 +63,10 @@ npm install
 npm run dev
 ```
 
-Abrir `http://localhost:3000`. Para verificar: `npm run lint` y `npm run build`.
+Abrir `http://localhost:3000`. Para revisar el código y la compilación: `npm run lint` y `npm run build`.
 
-## Firebase opcional
+## Próxima etapa
 
-Sin configuración, la experiencia funciona en modo **LOCAL**. Para sincronización:
+Investigar escenas y objetos de cada película, redactar la narrativa definitiva y sustituir las nueve simulaciones por mecánicas propias: identificar silueta, ordenar secuencia, reconstruir imagen, encender chimenea, girar perilla, encontrar parejas, hacer crecer árbol, completar escena y seguir personaje. La estructura común ya registra el resultado de cualquiera de ellas. También podrán ampliarse las escenas visuales y las transiciones del libro.
 
-1. Crear proyecto y Web App en Firebase.
-2. Activar Authentication anónima, Google y email/contraseña.
-3. Crear Cloud Firestore.
-4. Copiar `.env.example` a `.env.local` y completar `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`, `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` y `NEXT_PUBLIC_FIREBASE_APP_ID`.
-5. Integrar las reglas de `firestore.rules` con las reglas existentes del proyecto y publicarlas.
-6. Reiniciar el servidor.
-
-El indicador muestra **NUBE** cuando el progreso se sincroniza. Las variables `NEXT_PUBLIC_` son visibles para el cliente; la protección de datos depende de Authentication y de las reglas de Firestore.
-
-## Próximos contenidos
-
-- Elegir escenas y momentos de cada película, redactar los textos definitivos y justificar la relación entre objeto, interacción y recuerdo.
-- Reemplazar los paisajes de base por imágenes propias o recursos con permisos y créditos completos.
-- Completar el cierre narrativo, agregar audio si aporta al relato y preparar la presentación navegada.
-- Publicar un deploy y añadir aquí su enlace antes de la entrega.
-
-Proyecto inspirado en películas de Studio Ghibli con finalidad académica. Las marcas y obras pertenecen a sus titulares; esta base usa ilustración y geometría originales.
+Proyecto académico inspirado en películas de Studio Ghibli. Sus obras y marcas pertenecen a sus titulares; esta base utiliza una ilustración y geometría originales.

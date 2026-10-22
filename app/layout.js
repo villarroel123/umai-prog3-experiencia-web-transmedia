@@ -1,4 +1,6 @@
 import "./globals.css";
+import "./story.css";
+import "./story-redesign.css";
 
 export const metadata = {
   title: "La biblioteca de los recuerdos",

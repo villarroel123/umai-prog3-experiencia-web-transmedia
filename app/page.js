@@ -1,5 +1,5 @@
-import Experience from "@/components/Experience";
+import IntroPage from "@/components/IntroPage";
 
 export default function Home() {
-  return <Experience initialChapterId={null} />;
+  return <IntroPage />;
 }
