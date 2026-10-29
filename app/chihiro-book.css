@@ -1,24 +1,16 @@
 /* Projected ink stays attached to the same Three.js book throughout the chapter. */
-.book-journey--turning .book-journey-stage{z-index:2}
+.book-journey--turning .book-journey-stage{z-index:7}
 .book-journey--reading[data-projected="true"] .storybook-index{opacity:1!important}
 .book-journey--turning .storybook-index{pointer-events:none}
 .book-turn-target,.book-turn-source{position:fixed;inset:0;pointer-events:none}
-.book-turn-source{z-index:8;perspective:1800px}
+.book-journey[data-turn-half="false"] .book-turn-target{visibility:hidden}
+.book-turn-source{z-index:8}
 .book-journey .book-turn-source .storybook-page{background-color:#e8d6ac!important;background-image:var(--book-paper-texture)!important;background-position:center!important;background-size:100% 100%!important;pointer-events:none!important}
 .book-turn-source .storybook-page>*{animation:none!important}
 .book-turn-static{position:fixed;inset:0;pointer-events:none}
 .book-journey .book-turn-static .storybook-page{background:transparent!important}
 .book-turn-forward .book-turn-static .storybook-index-page,.book-turn-backward .book-turn-static .storybook-title-page{display:none!important}
 .book-journey[data-turn-half="true"] .book-turn-static{visibility:hidden}
-.book-journey[data-turn-half="false"] .book-turn-forward .book-turn-target .storybook-title-page,.book-journey[data-turn-half="false"] .book-turn-backward .book-turn-target .storybook-index-page{visibility:hidden}
-.book-turn-leaf{position:fixed;top:var(--book-right-y);left:var(--book-right-x);width:var(--book-right-w);height:var(--book-right-h);transform:rotateY(var(--book-turn-angle,0deg));transform-style:preserve-3d;will-change:transform;pointer-events:none;filter:drop-shadow(0 9px 8px #36231955)}
-.book-turn-forward .book-turn-leaf{transform-origin:left center}
-.book-turn-backward .book-turn-leaf{top:var(--book-left-y);left:var(--book-left-x);width:var(--book-left-w);height:var(--book-left-h);transform-origin:right center}
-.book-turn-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
-.book-turn-face-front{transform:translateZ(1px)}
-.book-turn-face-back{transform:rotateY(180deg) translateZ(1px)}
-.book-journey .book-turn-face .storybook-page{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important;box-shadow:inset 0 0 14px #72553630}
-.book-turn-forward .book-turn-face-front .storybook-title-page,.book-turn-forward .book-turn-face-back .storybook-index-page,.book-turn-backward .book-turn-face-front .storybook-index-page,.book-turn-backward .book-turn-face-back .storybook-title-page{display:none!important}
 
 /* Film spreads use the illustration and five editorial elements only. */
 .book-journey .book-navigation-art-page{justify-content:center}
@@ -26,6 +18,7 @@
 .book-journey .book-navigation-art-page .book-art-caption{margin:0;font-size:clamp(13px,1.3vw,20px)}
 .book-journey .book-navigation-chapter-page{justify-content:center;align-items:flex-start;text-align:left;padding:clamp(28px,5vh,55px) clamp(28px,3vw,48px)}
 .book-journey .book-navigation-chapter-page h1{max-width:90%;margin:0 0 clamp(16px,3.2vh,30px);font-size:clamp(24px,2.4vw,38px);text-align:left}
+.book-journey .book-navigation-chapter-page-howl h1{align-self:center;width:100%;max-width:100%;margin-inline:auto;text-align:center}
 .book-journey .book-navigation-chapter-page .book-chapter-description{max-width:93%;font-size:clamp(11px,1.03vw,15px);line-height:1.6}
 .book-journey .book-navigation-chapter-page .book-chapter-experience{width:100%;max-width:93%;margin:clamp(25px,4vh,42px) 0 0;padding:0;border:0}
 .book-journey .book-navigation-chapter-page .book-chapter-experience h2{margin:0 0 12px;font-size:clamp(19px,1.7vw,27px)}
@@ -98,7 +91,6 @@
   .book-journey .book-navigation-chapter-page .book-chapter-start{margin-top:22px}
 }
 @media(max-width:700px){
-  .book-turn-leaf{filter:drop-shadow(0 5px 6px #36231955)}
   .book-journey .book-navigation-art-page .book-chapter-art{height:80%}
   .book-journey .book-navigation-chapter-page{padding:14px 20px}
   .book-journey .book-navigation-chapter-page h1{margin:0 0 8px;font-size:clamp(20px,6vw,27px)}

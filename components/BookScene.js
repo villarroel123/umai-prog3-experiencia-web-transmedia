@@ -687,7 +687,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       pageGlow.intensity = opening ? 0.65 + Math.sin(Math.min(elapsed / 3.4, 1) * Math.PI) * 0.42 : reading ? 0.2 : magic * 0.5;
       pageGlow.position.y = book.position.y + 0.55;
       turningPages.forEach((item, index) => bendTurningPage(item, opening ? (elapsed - (index ? 1.38 : 0.76)) / 1.56 : 0));
-      const turnProgress = requestedTurn && !turnCompleted ? Math.min((now - turnStartedAt) / 1550, 1) : 0;
+      const turnProgress = requestedTurn && !turnCompleted ? Math.min((now - turnStartedAt) / 1050, 1) : 0;
       const projectionHost = projectionHostRef.current;
       if (projectionHost && requestedTurn) {
         const angle = THREE.MathUtils.smoothstep((turnProgress - 0.065) / 0.87, 0, 1) * 180 * -requestedTurn.direction;

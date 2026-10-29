@@ -109,15 +109,14 @@ function BookSpread({ spread, progress, journey, preview = false }) {
       <div className="storybook-page storybook-title-page book-navigation-art-page">
         <span className="page-botanical page-botanical-top" aria-hidden="true" />
         <div className="book-chapter-art"><Image src={movie.sceneImage} alt={movie.sceneAlt} fill sizes="(max-width: 700px) 85vw, 39vw" priority={spread === "chihiro"} /></div>
-        <p className="book-art-caption">{movie.title}</p>
         <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
       </div>
-      <div className="storybook-page storybook-index-page book-navigation-chapter-page">
+      <div className={`storybook-page storybook-index-page book-navigation-chapter-page book-navigation-chapter-page-${movie.id}`}>
         <span className="page-botanical page-botanical-top" aria-hidden="true" />
         <h1>{movie.title}</h1>
         <p className="book-chapter-description">{descriptions[movie.id]}</p>
         <div className="book-chapter-experience"><h2>{experience.title}</h2><p>{instructions[movie.id]}</p></div>
-        <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo(chapter.saved ? ({ chihiro: "restored", howl: "howlRestored", totoro: "totoroRestored" })[movie.id] : chapter.objectRecovered ? ({ chihiro: "object", howl: "howlObject", totoro: "totoroObject" })[movie.id] : ({ chihiro: "game", howl: "howlGame", totoro: "totoroGame" })[movie.id])} disabled={preview}>{chapter.saved ? "Leer recuerdo" : chapter.started ? "Continuar experiencia" : "Comenzar experiencia"} <span aria-hidden="true">→</span></button>
+        <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo(chapter.saved ? ({ chihiro: "restored", howl: "howlRestored", totoro: "totoroRestored" })[movie.id] : chapter.objectRecovered ? ({ chihiro: "object", howl: "howlObject", totoro: "totoroObject" })[movie.id] : ({ chihiro: "game", howl: "howlGame", totoro: "totoroGame" })[movie.id])} disabled={preview}>{chapter.saved ? "Leer recuerdo" : chapter.started ? "Continuar minijuego" : "Comenzar minijuego"} <span aria-hidden="true">→</span></button>
         {chapter.saved && !preview && <button type="button" className="book-chapter-replay" onClick={() => journey?.turnTo(({ chihiro: "game", howl: "howlGame", totoro: "totoroGame" })[movie.id])}>Volver al minijuego</button>}
         <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
       </div>
@@ -138,10 +137,6 @@ export default function LibraryIndex({ progress }) {
     <div className={turn ? "book-turn-target" : ""}><BookSpread spread={visibleSpread} progress={progress} journey={journey} /></div>
     {turn && <div key={turn.id} className={`book-turn-source book-turn-${turn.direction > 0 ? "forward" : "backward"}`} aria-hidden="true">
       <div className="book-turn-static"><BookSpread spread={turn.source} progress={progress} journey={journey} preview /></div>
-      <div className="book-turn-leaf">
-        <div className="book-turn-face book-turn-face-front"><BookSpread spread={turn.source} progress={progress} journey={journey} preview /></div>
-        <div className="book-turn-face book-turn-face-back"><BookSpread spread={turn.target} progress={progress} journey={journey} preview /></div>
-      </div>
     </div>}
     <PageArrows journey={journey} progress={progress} />
     {journey && spread !== "contents" && <button type="button" className="book-index-bookmark" onClick={() => journey.turnTo("contents")} disabled={journey.turning} aria-label="Volver al índice de los recuerdos"><span aria-hidden="true">✦</span> Índice</button>}
