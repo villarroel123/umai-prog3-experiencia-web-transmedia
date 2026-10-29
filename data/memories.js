@@ -5,8 +5,8 @@ const filmDetails = {
     opening: "Entre pasillos de vapor y puertas que cambian de lugar, tres señales esperan volver a la memoria.",
     note: "Un viaje puede recuperar su nombre cuando reconocemos lo que nos acompañó.",
     scene: "bathhouse",
-    sceneImage: "/images/scenes/chihiro-bathhouse.png",
-    sceneAlt: "Casa de baños japonesa entre cerezos y un puente rojo",
+    sceneImage: "/images/experiences/chihiro/tren-atardecer.webp",
+    sceneAlt: "Tren antiguo sobre el agua al atardecer, con reflejos cálidos",
     emblem: "門",
   },
   howl: {

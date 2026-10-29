@@ -60,15 +60,6 @@ function illustratedTexture(kind) {
       ink.fillStyle = "rgba(110,76,43,.29)";
       ink.fill();
     }
-    ink.strokeStyle = "rgba(109,83,51,.15)";
-    ink.lineWidth = 2;
-    for (let i = 0; i < 5; i += 1) {
-      const y = 274 + i * 52;
-      ink.beginPath();
-      ink.moveTo(180, y);
-      ink.bezierCurveTo(350, y - 4, 565, y + 3, 770 - (i % 2) * 80, y);
-      ink.stroke();
-    }
     ink.strokeStyle = "rgba(112,78,44,.16)";
     for (let i = 0; i < 3; i += 1) {
       ink.beginPath();
@@ -192,18 +183,22 @@ function fadingShadow() {
   return new THREE.CanvasTexture(canvas);
 }
 
-export default function BookScene({ phase, mobilePage, projectionHostRef, onUnavailable, onForwardComplete, onReturnComplete }) {
+export default function BookScene({ phase, mobilePage, turn, projectionHostRef, onUnavailable, onForwardComplete, onReturnComplete, onTurnComplete }) {
   const mountRef = useRef(null);
   const phaseRef = useRef(phase);
   const mobilePageRef = useRef(mobilePage);
   const forwardRef = useRef(onForwardComplete);
   const returnRef = useRef(onReturnComplete);
+  const turnRef = useRef(turn);
+  const turnCompleteRef = useRef(onTurnComplete);
   const unavailableRef = useRef(onUnavailable);
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { mobilePageRef.current = mobilePage; }, [mobilePage]);
   useEffect(() => { forwardRef.current = onForwardComplete; }, [onForwardComplete]);
   useEffect(() => { returnRef.current = onReturnComplete; }, [onReturnComplete]);
+  useEffect(() => { turnRef.current = turn; }, [turn]);
+  useEffect(() => { turnCompleteRef.current = onTurnComplete; }, [onTurnComplete]);
   useEffect(() => { unavailableRef.current = onUnavailable; }, [onUnavailable]);
 
   useEffect(() => {
@@ -232,6 +227,8 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
     const woodTexture = illustratedTexture("wood");
     const coverTexture = illustratedTexture("cover");
     const paperTexture = illustratedTexture("paper");
+    // The DOM ink layer uses the exact canvas that colors the Three.js paper.
+    projectionHostRef.current?.style.setProperty("--book-paper-texture", `url("${paperTexture.image.toDataURL("image/png")}")`);
     const shadowTexture = fadingShadow();
     const wood = new THREE.MeshStandardMaterial({ map: woodTexture, color: 0xb4a18b, roughness: 1 });
     const woodDark = new THREE.MeshStandardMaterial({ color: 0x493128, roughness: 1 });
@@ -367,6 +364,23 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
       book.add(pivot);
       return { pivot, mesh, original: Float32Array.from(mesh.geometry.attributes.position.array) };
     });
+    const navigationPages = [-1, 1].map((side) => {
+      const pivot = new THREE.Group();
+      const mesh = new THREE.Mesh(leafGeometry(side, PAGE_WIDTH, PAGE_DEPTH, 0.49, 0.012), [paper, paperEdge]);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.frustumCulled = false;
+      pivot.add(mesh);
+      pivot.visible = false;
+      book.add(pivot);
+      return { pivot, mesh, original: Float32Array.from(mesh.geometry.attributes.position.array), side };
+    });
+    const turningShadowMaterial = new THREE.MeshBasicMaterial({ color: 0x493421, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide });
+    const turningShadow = new THREE.Mesh(new THREE.PlaneGeometry(PAGE_WIDTH, PAGE_DEPTH), turningShadowMaterial);
+    turningShadow.rotation.x = -Math.PI / 2;
+    turningShadow.position.y = 0.485;
+    turningShadow.visible = false;
+    book.add(turningShadow);
 
     const ambient = new THREE.AmbientLight(0xffe9c8, 1.15);
     scene.add(ambient);
@@ -483,7 +497,7 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
           maxX = Math.max(maxX, Math.abs(projected.x));
           maxY = Math.max(maxY, Math.abs(projected.y));
         }
-        if (maxX <= (narrow ? 0.88 : 0.93) && maxY <= (narrow ? 0.76 : 0.93)) far = distance;
+        if (maxX <= (narrow ? 0.9 : 1.01) && maxY <= (narrow ? 0.8 : 1.09)) far = distance;
         else near = distance;
       }
       cachedReadingKey = cacheKey;
@@ -527,6 +541,9 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
     let phaseStartFov = 41;
     let phaseStartUp = new THREE.Vector3(0, 1, 0);
     let completed = false;
+    let currentTurnId = 0;
+    let turnStartedAt = 0;
+    let turnCompleted = false;
     let frame;
     if (lastPhase === "reading") {
       book.position.y = 0.98;
@@ -555,7 +572,7 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
       pivot.rotation.set(0, 0, 0);
       const attribute = mesh.geometry.attributes.position;
       for (let i = 0; i < attribute.count; i += 1) {
-        const fraction = Math.min(1, Math.max(0, original[i * 3] / PAGE_WIDTH));
+        const fraction = Math.min(1, Math.max(0, Math.abs(original[i * 3]) / PAGE_WIDTH));
         // The free edge starts first; each column bends around the spine in turn.
         const travel = THREE.MathUtils.smoothstep((progress - 0.13 * (1 - fraction)) / 0.87, 0, 1);
         const angle = Math.PI * travel;
@@ -563,7 +580,7 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
         const x = original[i * 3];
         const z = original[i * 3 + 2];
         attribute.setX(i, x * Math.cos(angle));
-        attribute.setY(i, original[i * 3 + 1] + 0.46 * x * lift + 0.08 * lift * Math.sin(Math.PI * fraction));
+        attribute.setY(i, original[i * 3 + 1] + 0.46 * Math.abs(x) * lift + 0.08 * lift * Math.sin(Math.PI * fraction));
         attribute.setZ(i, z + 0.035 * lift * Math.pow(fraction, 2) * Math.sin(z * 2.2 + progress * 3));
       }
       attribute.needsUpdate = true;
@@ -571,6 +588,12 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
     }
 
     function animate(now) {
+      const requestedTurn = turnRef.current;
+      if (requestedTurn && requestedTurn.id !== currentTurnId) {
+        currentTurnId = requestedTurn.id;
+        turnStartedAt = now;
+        turnCompleted = false;
+      }
       const currentPhase = phaseRef.current;
       if (currentPhase !== lastPhase) {
         lastPhase = currentPhase;
@@ -664,6 +687,25 @@ export default function BookScene({ phase, mobilePage, projectionHostRef, onUnav
       pageGlow.intensity = opening ? 0.65 + Math.sin(Math.min(elapsed / 3.4, 1) * Math.PI) * 0.42 : reading ? 0.2 : magic * 0.5;
       pageGlow.position.y = book.position.y + 0.55;
       turningPages.forEach((item, index) => bendTurningPage(item, opening ? (elapsed - (index ? 1.38 : 0.76)) / 1.56 : 0));
+      const turnProgress = requestedTurn && !turnCompleted ? Math.min((now - turnStartedAt) / 1550, 1) : 0;
+      const projectionHost = projectionHostRef.current;
+      if (projectionHost && requestedTurn) {
+        const angle = THREE.MathUtils.smoothstep((turnProgress - 0.065) / 0.87, 0, 1) * 180 * -requestedTurn.direction;
+        projectionHost.style.setProperty("--book-turn-angle", `${angle}deg`);
+        projectionHost.dataset.turnHalf = turnProgress >= 0.5 ? "true" : "false";
+      }
+      for (const item of navigationPages) {
+        bendTurningPage(item, requestedTurn && item.side === requestedTurn.direction ? turnProgress : 0);
+      }
+      turningShadow.visible = !!requestedTurn && turnProgress > 0 && turnProgress < 1;
+      turningShadow.position.x = requestedTurn?.direction === 1 ? -PAGE_WIDTH / 2 : PAGE_WIDTH / 2;
+      turningShadowMaterial.opacity = 0.21 * Math.sin(turnProgress * Math.PI);
+      if (requestedTurn && turnProgress >= 1 && !turnCompleted) {
+        turnCompleted = true;
+        navigationPages.forEach((item) => { item.pivot.visible = false; });
+        turningShadow.visible = false;
+        turnCompleteRef.current();
+      }
       if (reading || (opening && elapsed > 3)) updateProjection();
       if (opening && elapsed >= 3.55 && !completed) {
         completed = true;

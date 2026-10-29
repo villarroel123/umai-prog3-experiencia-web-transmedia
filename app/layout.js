@@ -3,6 +3,12 @@ import "./story.css";
 import "./story-redesign.css";
 import "./minigames.css";
 import "./book-journey.css";
+import "./chapter-experience.css";
+import "./chihiro-experience.css";
+import "./book-navigation.css";
+import "./chihiro-book.css";
+import "./book-contents.css";
+import "./stage-c.css";
 import BookJourney from "@/components/BookJourney";
 
 export const metadata = {

@@ -1,0 +1,45 @@
+.book-journey .book-contents-left{justify-content:center;padding:8% 10% 7%;text-align:center}
+.book-journey .book-contents-left .book-folio{margin:0 0 9%}
+.book-journey .book-contents-left h1{margin:0;color:#3b2e22;font:400 clamp(25px,2.55vw,41px)/1.18 'Libre Baskerville',Georgia,serif}
+.book-journey .book-contents-left h1 em{color:#496b52;font-weight:400}
+.book-journey .book-contents-left .ink-flourish{margin:7% auto}
+.book-journey .book-contents-left>p:not(.book-folio){max-width:330px;margin:0 auto;color:#584634;font:italic clamp(11px,.96vw,15px)/1.65 'Libre Baskerville',Georgia,serif}
+.book-contents-illustration{width:90px;height:90px;margin:10% auto 0;opacity:.72}
+.book-contents-illustration img{width:100%;height:100%;object-fit:contain}
+.book-journey .book-contents-right{justify-content:flex-start;align-items:stretch;padding:7% 8% 8%;text-align:left}
+.book-contents-right .index-page-heading{width:100%;margin:0 0 5%;padding:0 0 4%;border-bottom:1px solid #b99a6b}
+.book-contents-list{display:flex;flex:1;flex-direction:column;justify-content:center;gap:0;width:100%;margin:0;padding:0;list-style:none}
+.book-contents-list li{position:relative;border-bottom:1px solid #aa8c645e}
+.book-contents-list li:last-child{border-bottom:0}
+.book-contents-chapter{display:grid;grid-template-columns:33px 1fr 24px;align-items:center;gap:9px;width:100%;min-height:94px;padding:8px 1px;border:0;background:transparent;color:#3e3024;text-align:left;cursor:pointer}
+.book-contents-chapter:disabled{cursor:default}
+.book-contents-chapter:not(:disabled):hover .book-contents-copy strong,.book-contents-chapter:focus-visible .book-contents-copy strong{color:#426549;text-decoration:underline;text-underline-offset:4px}
+.book-contents-chapter:focus-visible,.book-contents-restored:focus-visible,.book-index-bookmark:focus-visible{outline:2px solid #46684d;outline-offset:3px}
+.book-contents-number{align-self:start;padding-top:11px;color:#97744e;font:italic 13px Georgia,serif}
+.book-contents-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.book-contents-copy strong{font:400 clamp(15px,1.35vw,21px)/1.2 'Libre Baskerville',Georgia,serif}
+.book-contents-copy em{color:#775e43;font:italic clamp(10px,.82vw,13px)/1.3 Georgia,serif}
+.book-contents-copy small{color:#527058;font:10px/1.3 Georgia,serif}
+.book-contents-icon{color:#ad8e5f;font:19px Georgia,serif}
+.book-contents-restored{display:block;margin:-8px 0 10px 42px;padding:1px 0;border:0;border-bottom:1px solid #8b7655;background:transparent;color:#526b51;font:italic 10px Georgia,serif;cursor:pointer}
+.book-contents-hint{margin:4% 0 0;color:#80674c;font:italic 11px Georgia,serif}
+.book-index-bookmark{position:fixed;z-index:9;top:calc(var(--book-right-y) + 16px);left:min(calc(100vw - 72px),calc(var(--book-right-x) + var(--book-right-w) - 2px));min-width:68px;padding:8px 9px 10px;border:1px solid #a1794b;border-radius:0 6px 6px 0;background:#446148;color:#fff0cd;box-shadow:2px 4px 9px #2b1b1570;font:11px Georgia,serif;cursor:pointer;pointer-events:auto}
+.book-index-bookmark span{display:block;margin-bottom:3px;color:#e4c08b;font-size:14px}
+.book-index-bookmark:disabled{visibility:hidden}
+.book-index-bookmark:hover{background:#54775a}
+.book-journey--fallback .book-index-bookmark{top:18px;right:18px;left:auto}
+@media(max-width:900px){.book-journey .book-contents-right{padding:6% 7%}.book-contents-chapter{min-height:75px}.book-contents-copy strong{font-size:15px}}
+@media(max-width:700px){
+  .book-journey .book-contents-left{padding:13% 9%}
+  .book-journey .book-contents-left h1{font-size:clamp(25px,7vw,34px)}
+  .book-journey .book-contents-left>p:not(.book-folio){font-size:11px}
+  .book-contents-illustration{width:67px;height:67px;margin:5% auto 0}
+  .book-journey .book-contents-right{padding:8% 7%}
+  .book-contents-chapter{min-height:72px;grid-template-columns:25px 1fr 17px;gap:6px;padding:4px 0}
+  .book-contents-number{font-size:10px}
+  .book-contents-copy strong{font-size:clamp(13px,4vw,17px)}
+  .book-contents-copy em,.book-contents-copy small{font-size:9px}
+  .book-contents-restored{margin:0 0 6px 31px;font-size:9px}
+  .book-contents-hint{font-size:9px}
+  .book-index-bookmark{top:max(12px,calc(var(--book-right-y) + 7px));right:4px;left:auto;min-width:55px;padding:5px 6px;font-size:9px}
+}

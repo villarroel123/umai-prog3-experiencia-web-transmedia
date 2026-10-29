@@ -1,18 +1,17 @@
 import { notFound } from "next/navigation";
 import StoryExperience from "@/components/StoryExperience";
+import { chapterExperiences } from "@/data/chapterExperiences";
 import { getMovie } from "@/data/memories";
-import { getGhibliFilm } from "@/lib/ghibli";
 
 export async function generateMetadata({ params }) {
   const { pelicula } = await params;
   const movie = getMovie(pelicula);
-  return movie ? { title: movie.title + " — La biblioteca de los recuerdos", description: movie.opening } : {};
+  return movie ? { title: movie.title + " — La biblioteca de los recuerdos", description: chapterExperiences[movie.id].setting } : {};
 }
 
 export default async function MoviePage({ params }) {
   const { pelicula } = await params;
   const movie = getMovie(pelicula);
   if (!movie) notFound();
-  const film = await getGhibliFilm(movie.filmId);
-  return <StoryExperience screen="chapter" movie={movie} film={film} />;
+  return <StoryExperience screen="chapter" movie={movie} />;
 }

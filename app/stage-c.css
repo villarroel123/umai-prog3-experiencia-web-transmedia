@@ -1,0 +1,129 @@
+/* New memories remain printed on the projected leaves of the Three.js book. */
+.book-journey .stage-c-game-left,.book-journey .stage-c-restored-left{justify-content:center;align-items:center}
+.book-journey .stage-c-game-right,.book-journey .stage-c-form-page,.book-journey .stage-c-restored-right{justify-content:flex-start;align-items:center;text-align:center;padding:clamp(25px,4vh,42px) clamp(21px,2.1vw,34px) 18px}
+.book-journey .stage-c-game-right h1,.book-journey .stage-c-form-page h1,.book-journey .stage-c-restored-right h1{max-width:94%;margin:7px auto 12px;color:#3b2d22;font:italic 400 clamp(20px,2vw,32px)/1.2 'Libre Baskerville',Georgia,serif}
+.book-journey .stage-c-game-right>p,.book-journey .stage-c-form-page>p{max-width:92%;margin:0 auto 13px;color:#56422f;font:clamp(10px,.88vw,13px)/1.55 'Libre Baskerville',Georgia,serif}
+.stage-c-game-right .book-game-art{margin:auto}
+.stage-c-object-art{position:relative;width:86%;margin:auto auto 0;filter:drop-shadow(0 10px 15px #503a2d66)}
+.stage-c-object-art img{display:block;width:100%;height:auto;max-height:55vh;object-fit:contain;animation:stage-c-arrive 1s ease-out both}
+.book-journey .stage-c-object-left{justify-content:center;align-items:center}
+.book-journey .stage-c-object-left .book-art-caption{margin:8px 0 auto;color:#5a4630;font:italic clamp(13px,1.2vw,18px) Georgia,serif}
+.book-journey .stage-c-form-page{justify-content:center}
+.stage-c-form-page form{display:flex;flex-direction:column;align-items:flex-end;gap:8px;width:94%;margin:18px auto 0}
+.stage-c-form-page textarea{box-sizing:border-box;width:100%;min-height:120px;padding:12px 14px;resize:vertical;border:1px solid #ad916c;border-radius:7px;background:#f8e9ccbb;color:#3b2e22;font:13px/1.5 Georgia,serif;box-shadow:inset 0 2px 5px #795d3c24}
+.stage-c-form-page textarea:focus-visible{outline:2px solid #507358;outline-offset:2px}
+.stage-c-form-page form small{color:#806b4d;font:10px Georgia,serif}
+.stage-c-form-page form .book-chapter-start{align-self:center;margin:10px auto 0}
+.stage-c-form-page form [role="alert"]{color:#8d3d31;font-size:11px}
+.stage-c-restored-left .book-restored-art{width:93%;height:75%;margin:0 auto}
+.stage-c-restored-object{position:relative;z-index:2;display:block;width:65%;margin:-12% auto 0;padding:0;border:0;background:transparent;filter:drop-shadow(0 8px 8px #54372577);cursor:pointer;animation:stage-c-arrive 1.3s ease-out both}
+.stage-c-restored-object img{display:block;width:100%;height:auto;max-height:175px;object-fit:contain}
+.stage-c-restored-object:hover{transform:translateY(-4px)}
+.stage-c-restored-right .book-restored-answer{margin:20px auto 16px}
+.stage-c-restored-right .book-chapter-replay{margin-top:auto}
+.howl-letter-revisit{position:absolute;z-index:3;right:13%;bottom:13%;left:13%;max-height:24%;overflow:auto;padding:12px 14px;border:1px solid #ad8f60;border-radius:6px;background:#f3e0b8ed;color:#4a3327;white-space:pre-wrap;overflow-wrap:anywhere;font:italic 12px/1.5 Georgia,serif;box-shadow:0 6px 16px #49342277}
+.howl-writing-preview{position:absolute;top:41%;left:25%;width:50%;max-height:18%;overflow:hidden;color:#6e4f3e;font:italic clamp(8px,.9vw,13px)/1.4 Georgia,serif;transform:rotate(-7deg)}
+.howl-object-left.is-restoring .stage-c-object-art{animation:stage-c-restore 1.7s ease-in-out both}
+
+/* The desk has generous invisible hit areas over its illustrated objects. */
+.howl-desk{position:relative;isolation:isolate;width:min(100%,440px);aspect-ratio:1.5;margin:auto 0 0;overflow:hidden;border:3px solid #b68c5c;border-radius:7px;background:#5a3a25;box-shadow:0 8px 20px #543a2977,inset 0 0 0 3px #ddbd83}
+.howl-desk>img{object-fit:cover}
+.howl-desk-shade{position:absolute;z-index:1;inset:60% 0 0;background:linear-gradient(transparent,#291e19bb);pointer-events:none}
+.howl-hotspot{position:absolute;z-index:2;display:block;padding:0;border:1px solid transparent;border-radius:10px;background:transparent;cursor:pointer}
+.howl-hotspot:hover:not(:disabled),.howl-hotspot:focus-visible{outline:2px solid #f3da9e;outline-offset:1px;background:#fff4a326;box-shadow:0 0 17px #ffe4a65c}
+.howl-hotspot-books{top:17%;left:0;width:23%;height:53%}
+.howl-hotspot-papers{top:58%;left:25%;width:30%;height:27%}
+.howl-hotspot-drawer{top:64%;left:51%;width:20%;height:28%}
+.howl-hotspot-cup{top:36%;left:31%;width:18%;height:28%}
+.howl-hotspot-lamp{top:7%;left:59%;width:17%;height:52%}
+.howl-hotspot-box{top:43%;left:74%;width:24%;height:42%}
+.howl-key{position:absolute;z-index:4;bottom:14%;left:44%;width:17%;pointer-events:none;filter:drop-shadow(0 1px 6px #f5dc8b)}
+.howl-key img{display:block;width:100%;height:auto}
+.howl-key.is-unlocking{animation:howl-key-unlock .9s ease-in-out both}
+.howl-desk-letter{position:absolute;z-index:5;top:31%;left:73%;width:25%;padding:0;border:0;background:transparent;cursor:pointer;filter:drop-shadow(0 0 12px #ffdf97);animation:stage-c-arrive .7s ease-out both}
+.howl-desk-letter:hover,.howl-desk-letter:focus-visible{outline:2px solid #ffdc98;transform:scale(1.1)}
+.howl-desk-letter img{display:block;width:100%;height:auto}
+.howl-desk-letter.is-leaving{animation:stage-c-restore 1s ease-in both}
+.howl-desk-sparkles{position:absolute;z-index:3;top:28%;right:4%;width:31%;height:51%;border-radius:50%;box-shadow:0 0 19px 6px #f5c87682;animation:howl-sparkle 2s ease-in-out infinite;pointer-events:none}
+.howl-desk-feedback{position:absolute;z-index:5;right:4%;bottom:2%;left:4%;margin:0;color:#fff1ce;text-align:center;text-shadow:0 1px 3px #1d160f;font:italic clamp(10px,.82vw,13px)/1.3 Georgia,serif;pointer-events:none}
+.howl-desk-continue{position:absolute;z-index:6;top:5%;right:3%;padding:6px 9px;border:1px solid #f4d9a7;border-radius:5px;background:#334e3fe8;color:#fff3d4;font:11px Georgia,serif;cursor:pointer}
+
+/* Rain and sunlight transform the same illustrated clearing into a living tree. */
+.totoro-game{display:flex;flex-direction:column;align-items:center;width:100%;min-height:0;margin:auto 0 0}
+.totoro-forest-board{position:relative;isolation:isolate;width:min(100%,440px);aspect-ratio:1.54;overflow:hidden;border:3px solid #9a8657;border-radius:6px;background:#173c2c;box-shadow:0 8px 22px #35492c70}
+.totoro-forest-board>img{object-fit:cover}
+.totoro-forest-board::after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(90deg,#183b2130,transparent 50%,#1a322c33)}
+.totoro-growing-tree{position:absolute;z-index:3;bottom:14%;left:35%;width:30%;height:64%;transform-origin:50% 100%;transform:scale(.16);transition:transform 2.1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 2px 8px #183a2866);pointer-events:none}
+.totoro-growing-tree img{display:block;width:100%;height:100%;object-fit:contain}
+.totoro-forest-board.is-watered .totoro-growing-tree{transform:scale(.47)}
+.totoro-forest-board.is-sunlit .totoro-growing-tree{transform:scale(1);animation:totoro-sway 4s ease-in-out 2.2s infinite alternate}
+.totoro-weather{position:absolute;z-index:5;display:block;padding:0;border:0;background:transparent;filter:drop-shadow(0 3px 6px #22382799);cursor:grab;touch-action:none;user-select:none}
+.totoro-weather:hover:not(:disabled),.totoro-weather:focus-visible{outline:2px solid #f8e4ab;outline-offset:1px;filter:drop-shadow(0 0 11px #fff2b7)}
+.totoro-weather:active{cursor:grabbing}
+.totoro-weather:disabled{opacity:.48;cursor:default}
+.totoro-weather img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.totoro-cloud{top:8%;left:7%;width:24%;height:26%}
+.totoro-sun{top:5%;right:7%;width:20%;height:28%}
+.totoro-rain{position:absolute;z-index:4;top:27%;left:37%;display:flex;gap:11px;pointer-events:none}
+.totoro-rain i{display:block;width:3px;height:12px;border-radius:100% 100% 70% 70%;background:#a8dded;box-shadow:0 0 5px #d8f5ff;transform:rotate(13deg);animation:totoro-rain 1.1s ease-in-out 3}
+.totoro-rain i:nth-child(2),.totoro-rain i:nth-child(4){animation-delay:.17s}
+.totoro-rain i:nth-child(3){animation-delay:.37s}
+.totoro-sunbeams{position:absolute;z-index:2;top:0;right:2%;width:65%;height:100%;background:linear-gradient(125deg,#ffe7a600 15%,#ffe8a84d 46%,#fff4bc22 65%,transparent 80%);mix-blend-mode:screen;animation:totoro-light 3s ease-out both;pointer-events:none}
+.totoro-leaf-pick{position:absolute;z-index:6;top:34%;left:47%;width:22%;padding:0;border:0;background:transparent;filter:drop-shadow(0 0 11px #fcf6a9);cursor:pointer;animation:totoro-leaf-glow 2s ease-in-out infinite alternate}
+.totoro-leaf-pick img{display:block;width:100%;height:auto;transform:rotate(-22deg)}
+.totoro-leaf-pick:hover,.totoro-leaf-pick:focus-visible{outline:2px solid #fff5b1;transform:scale(1.12)}
+.totoro-forest-board.is-recovering .totoro-leaf-pick{animation:stage-c-restore 1.1s ease-out both}
+.totoro-forest-continue{position:absolute;z-index:7;right:3%;bottom:5%;padding:6px 9px;border:1px solid #e6d5a4;border-radius:5px;background:#365843e8;color:#fff4d5;font:11px Georgia,serif;cursor:pointer}
+.totoro-game-feedback{min-height:17px;margin:7px 0 2px;color:#3d6041;font:italic 11px Georgia,serif}
+.totoro-game-help{margin:0;color:#755f45;font:10px/1.35 Georgia,serif}
+.totoro-object-art{width:77%;filter:drop-shadow(0 0 12px #f2dd80a1) drop-shadow(0 10px 13px #60452c6b);animation:totoro-leaf-glow 3s ease-in-out infinite alternate}
+.totoro-writing-preview{position:absolute;top:39%;left:27%;width:44%;max-height:20%;overflow:hidden;color:#394b2c;font:italic clamp(8px,.8vw,12px)/1.4 Georgia,serif;transform:rotate(-11deg)}
+.totoro-object-left.is-restoring .stage-c-object-art{animation:stage-c-restore 1.7s ease-in-out both}
+.totoro-restored-leaf{width:55%;filter:drop-shadow(0 0 10px #f6e3a0) drop-shadow(0 7px 7px #3e3b2c7a)}
+.book-journey .totoro-final-button{margin:13px auto 0}
+.book-contents-final{display:block;margin:0 auto;padding:6px 0;border:0;border-bottom:1px solid #71855d;background:transparent;color:#42624c;font:italic 11px Georgia,serif;cursor:pointer}
+.book-contents-final:focus-visible{outline:2px solid #46684d;outline-offset:3px}
+.book-journey .book-finale-left,.book-journey .book-finale-right{justify-content:center;align-items:center;text-align:center;padding:6% 8%}
+.book-finale-left .book-folio,.book-finale-right .book-folio{margin:0 0 18px;color:#916c43;font:10px Georgia,serif;letter-spacing:.14em}
+.book-finale-left h2{max-width:86%;margin:0 auto 20px;color:#493728;font:italic 400 clamp(21px,2vw,32px)/1.25 'Libre Baskerville',Georgia,serif}
+.book-finale-objects{display:flex;justify-content:center;gap:12px;width:95%;min-height:38%;margin:0 auto}
+.book-finale-object{display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;gap:8px;min-width:0;padding:8px 4px;border:1px solid #b69b73;border-radius:52% 52% 5px 5px/16% 16% 5px 5px;background:#f4e7c9ad;color:#4b3829;box-shadow:0 3px 8px #6a4c342f;cursor:pointer;opacity:0;transform:translateY(12px) scale(.94);transition:opacity .6s ease,transform .6s ease,box-shadow .2s ease}
+.book-finale-object.is-revealed{opacity:1;transform:none}
+.book-finale-object:hover:not(:disabled){box-shadow:0 5px 15px #6a4c3455}
+.book-finale-object:focus-visible{outline:2px solid #537358;outline-offset:2px}
+.book-finale-object-image{display:grid;place-items:center;width:100%;height:80px}
+.book-finale-object-image img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 3px 5px #6c512d66)}
+.book-finale-object>span:last-child{min-height:30px;font:italic clamp(9px,.85vw,12px)/1.2 Georgia,serif}
+.book-finale-right h1{margin:0;color:#3c2c20;font:400 clamp(29px,2.8vw,45px)/1.2 'Libre Baskerville',Georgia,serif}
+.book-finale-right h1 em{color:#486c52;font-weight:400}
+.book-finale-right .ink-flourish{margin:7% auto}
+.book-finale-right>p:not(.book-folio){max-width:360px;margin:0 auto 30px;color:#554231;font:italic clamp(13px,1.1vw,17px)/1.6 'Libre Baskerville',Georgia,serif}
+.book-finale-right .book-chapter-start{margin:0 auto}
+@keyframes totoro-rain{from{opacity:0;transform:translateY(-15px)}50%{opacity:1}to{opacity:0;transform:translateY(65px)}}
+@keyframes totoro-light{from{opacity:0}to{opacity:1}}
+@keyframes totoro-sway{from{rotate:-2deg}to{rotate:2deg}}
+@keyframes totoro-leaf-glow{from{filter:drop-shadow(0 0 6px #f6e7a0)}to{filter:drop-shadow(0 0 17px #f3d962)}}
+@keyframes howl-key-unlock{50%{transform:translate(220%,-55%) rotate(42deg);filter:drop-shadow(0 0 15px #fff4aa)}100%{transform:translate(220%,-55%) rotate(90deg);opacity:0}}
+@keyframes howl-sparkle{50%{opacity:.4;transform:scale(1.15)}}
+@keyframes stage-c-arrive{from{opacity:0;transform:translateY(17px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes stage-c-restore{45%{filter:brightness(1.5) drop-shadow(0 0 18px #ffe393);transform:translateY(-7px) scale(.93)}100%{opacity:.6;transform:translateY(-25px) scale(.78)}}
+@media(max-width:700px){
+  .book-journey .stage-c-game-right,.book-journey .stage-c-form-page,.book-journey .stage-c-restored-right{padding:13px 16px 12px}
+  .book-journey .stage-c-game-right h1,.book-journey .stage-c-form-page h1,.book-journey .stage-c-restored-right h1{margin:0 auto 5px;font-size:21px}
+  .book-journey .stage-c-game-right>p,.book-journey .stage-c-form-page>p{margin-bottom:5px;font-size:10px;line-height:1.35}
+  .howl-desk{width:100%;margin:auto 0 5px}
+  .stage-c-form-page form{gap:5px;margin:7px auto 0}
+  .stage-c-form-page textarea{height:66px;min-height:66px;padding:8px 10px;font-size:11px}
+  .stage-c-form-page form .book-chapter-start{margin:3px auto 0}
+  .stage-c-restored-object{width:60%}
+  .howl-letter-revisit{font-size:10px}
+  .totoro-forest-board{width:100%;margin:0}
+  .totoro-game-feedback,.totoro-game-help{font-size:9px}
+  .totoro-restored-leaf{width:52%}
+  .book-finale-objects{gap:5px}
+  .book-finale-object-image{height:60px}
+  .book-finale-left h2{font-size:21px}
+  .book-finale-right h1{font-size:28px}
+  .book-finale-right>p:not(.book-folio){font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.howl-key,.howl-desk-letter,.howl-desk-sparkles,.stage-c-object-art img,.stage-c-restored-object,.howl-object-left.is-restoring .stage-c-object-art,.totoro-rain,.totoro-sunbeams,.totoro-growing-tree,.totoro-leaf-pick,.totoro-object-art{animation:none!important;transition:none!important}}
