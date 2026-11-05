@@ -1,4 +1,15 @@
 /* The paper and book geometry stay shared; only the illustrated memory changes. */
+.book-chapter-art,.book-game-art,.book-restored-art { isolation: isolate; }
+.book-chapter-art::before,.book-game-art::before,.book-restored-art::before {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  background: var(--art-image) center / cover no-repeat;
+  filter: blur(14px) brightness(.8);
+  opacity: .8;
+  pointer-events: none;
+}
+.book-chapter-art img,.book-game-art img,.book-restored-art img { z-index: 1; }
 .experience-theme .book-game-left .book-game-art {
   width: 88%;
   height: 82%;
@@ -12,9 +23,9 @@
   background: var(--memory-surface);
   box-shadow: 0 3px 9px #49382e30, 0 0 0 4px #f2e4c78c;
 }
-.experience-theme--chihiro .book-game-left .book-game-art img { object-fit: cover; object-position: 50% 50%; }
-.experience-theme--howl .book-game-left .book-game-art img { object-fit: cover; object-position: 50% 50%; }
-.experience-theme--totoro .book-game-left .book-game-art img { object-fit: cover; object-position: 45% 50%; }
+.experience-theme--chihiro .book-game-left .book-game-art img,
+.experience-theme--howl .book-game-left .book-game-art img,
+.experience-theme--totoro .book-game-left .book-game-art img { object-fit: contain; object-position: center; }
 .experience-theme .book-game-right h1 {
   max-width: 84%;
   margin: 0 auto 9px;
@@ -78,8 +89,8 @@
 .experience-theme--chihiro .book-ticket-slot:hover:not(:disabled),
 .experience-theme--chihiro .book-ticket-slot:focus-visible { outline-color: var(--memory-accent); }
 .experience-theme--chihiro .book-ticket-piece { border-color: var(--memory-accent); background: var(--memory-surface); }
-.experience-theme--chihiro .book-ticket-tray { gap: clamp(10px, 1.2vw, 18px); min-height: 84px; }
-.experience-theme--chihiro .book-ticket-piece { flex-basis: clamp(61px, 5.6vw, 78px); height: clamp(45px, 3.9vw, 57px); }
+.experience-theme--chihiro .book-ticket-tray { align-items: center; gap: clamp(10px, 1.2vw, 18px); min-height: 84px; }
+.experience-theme--chihiro .book-ticket-piece { flex-basis: clamp(61px, 5.6vw, 78px); height: auto; aspect-ratio: 707/274; }
 .experience-theme--chihiro .book-ticket-piece:hover,
 .experience-theme--chihiro .book-ticket-piece.is-selected { box-shadow: 0 5px 12px #1b243080, 0 0 0 2px var(--memory-accent); }
 .experience-theme--chihiro .book-ticket-feedback,
@@ -157,8 +168,8 @@
 .experience-theme--totoro .totoro-weather { filter: drop-shadow(0 2px 4px #2a4b5488); }
 .experience-theme--totoro .totoro-weather:hover:not(:disabled),
 .experience-theme--totoro .totoro-weather:focus-visible { outline-color: var(--memory-accent); }
-.experience-theme--totoro .totoro-cloud { top: 7%; left: 9%; width: 20%; height: 23%; }
-.experience-theme--totoro .totoro-sun { top: 6%; right: 8%; width: 18%; height: 24%; }
+.experience-theme--totoro .totoro-cloud { top: 4%; left: 6%; width: 27%; height: 31%; }
+.experience-theme--totoro .totoro-sun { top: 4%; right: 5%; width: 24%; height: 31%; }
 .experience-theme--totoro .totoro-leaf-pick { filter: drop-shadow(0 0 9px #fff5b0); }
 .experience-theme--totoro .totoro-growth-progress {
   display: flex;
@@ -194,7 +205,7 @@
   .experience-theme--chihiro .book-ticket-game { gap: 4px; padding: 0; }
   .experience-theme--chihiro .book-ticket-board { width: min(94%, 245px); }
   .experience-theme--chihiro .book-ticket-tray { min-height: 39px; gap: 5px; }
-  .experience-theme--chihiro .book-ticket-piece { flex-basis: 45px; height: 32px; }
+  .experience-theme--chihiro .book-ticket-piece { flex-basis: 45px; height: auto; }
   .experience-theme--howl .howl-desk,
   .experience-theme--totoro .totoro-forest-board { width: 100%; }
   .experience-theme--totoro .totoro-growth-progress { margin-top: 6px; font-size: 8px; }

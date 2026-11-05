@@ -41,9 +41,9 @@ export default function BookRestoredPage({ chapterId, progress, animate }) {
       <div className="storybook-page storybook-title-page book-memory-left">
         <p className="book-folio">PÁGINA 01 · EL VIAJE DE CHIHIRO</p>
         <div className="book-memory-illustration">
-          <Image src="/images/experiences/chihiro/tren-atardecer.webp" alt="Tren al atardecer reflejado en el agua" fill sizes="(max-width: 700px) 85vw, 35vw" />
+          <Image src="/images/scenes/el viaje de chihiro.jpg" alt="Chihiro junto a Haku bajo el cielo nocturno" fill sizes="(max-width: 700px) 85vw, 35vw" />
         </div>
-        <div className="book-memory-ticket"><Image src={experience.objectImage} alt="Boleto restaurado" width={560} height={254} sizes="(max-width: 700px) 65vw, 260px" /><span>{answer.slice(0, 90)}{answer.length > 90 ? "…" : ""}</span></div>
+        <div className="book-memory-ticket"><Image src={experience.objectImage} alt="Boleto restaurado" width={707} height={274} sizes="(max-width: 700px) 65vw, 260px" /><span>{answer.slice(0, 90)}{answer.length > 90 ? "…" : ""}</span></div>
         <h1 id="book-memory-heading">El viaje de Chihiro</h1>
         <p>El boleto encontró su lugar en el libro.</p>
         <span className="page-botanical page-botanical-bottom" aria-hidden="true" />

@@ -67,12 +67,12 @@
 /* The train, ticket, game and personal writing are printed on projected pages. */
 .book-journey .book-game-left,.book-journey .book-object-left,.book-journey .book-restored-left{justify-content:center;align-items:center}
 .book-game-art,.book-restored-art{position:relative;width:94%;height:84%;overflow:hidden;border:4px solid #d6b789;border-radius:46% 46% 6px 6px/12% 12% 6px 6px;outline:1px solid #a68658;box-shadow:0 8px 20px #6d4b3055}
-.book-game-art img,.book-restored-art img{object-fit:cover}
+.book-game-art img,.book-restored-art img{object-fit:contain}
 .book-journey .book-game-right,.book-journey .book-object-right,.book-journey .book-restored-right{justify-content:flex-start;align-items:center;text-align:center;padding:clamp(26px,4vh,43px) clamp(21px,2.1vw,34px) 20px}
 .book-journey .book-game-right h1,.book-journey .book-object-right h1,.book-journey .book-restored-right h1{max-width:90%;margin:8px auto 13px;color:#3b2d22;font:italic 400 clamp(21px,2vw,32px)/1.2 'Libre Baskerville',Georgia,serif}
 .book-journey .book-game-right>p,.book-journey .book-object-right>p,.book-journey .book-restored-question{max-width:92%;margin:0 auto 15px;color:#56422f;font:clamp(10px,.88vw,13px)/1.55 'Libre Baskerville',Georgia,serif}
 .book-ticket-game{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;min-height:0;margin:auto 0}
-.book-ticket-board{position:relative;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);width:min(92%,340px);aspect-ratio:2.19;border:2px dashed #a98a62;border-radius:5px;background:#ddc49a44 url('/images/experiences/chihiro/boleto-recuperado.webp') center/100% 100% no-repeat;box-shadow:inset 0 0 0 3px #f1dfbc,0 3px 10px #5d3d2640}
+.book-ticket-board{position:relative;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);width:min(92%,340px);aspect-ratio:707/274;border:2px dashed #a98a62;border-radius:5px;background:#ddc49a44 url('/images/experiences/chihiro/ticket.png') center/100% 100% no-repeat;box-shadow:inset 0 0 0 3px #f1dfbc,0 3px 10px #5d3d2640}
 .book-ticket-board::before{content:"";position:absolute;inset:0;background:#f0dfb9bb;pointer-events:none}
 .book-ticket-slot{position:relative;z-index:1;min-width:0;min-height:0;border:1px dashed #977b5c;background:transparent;cursor:pointer}
 .book-ticket-slot:hover:not(:disabled),.book-ticket-slot:focus-visible{outline:2px solid #406147;outline-offset:-3px;background:#e8d5b366}

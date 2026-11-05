@@ -1,0 +1,101 @@
+:root {
+  --font-story: "Cormorant Upright", serif;
+  --font-title: "Redaction 10", Georgia, serif;
+}
+
+.cormorant-upright-regular {
+  font-family: var(--font-story);
+  font-weight: 400;
+  font-style: normal;
+}
+
+.redaction-10-regular {
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Display text uses the same face across the landing, index and chapters. */
+body :is(h1, h2, h3, h4),
+.brand,
+.book-contents-copy strong,
+.film-entry strong,
+.chapter-scenery-story strong,
+.chapter-object-frame strong,
+.book-finale-object > span:last-child {
+  font-family: var(--font-title) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  letter-spacing: 0 !important;
+}
+
+body :is(h1, h2, h3, h4) em { font-style: normal !important; }
+
+button,
+.chapter-start,
+.book-chapter-start,
+.book-text-next,
+.memory-recovered-page .recovered-actions a {
+  font-family: var(--font-title) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+}
+
+/* Cormorant Upright belongs to the narration and the visitor's own writing. */
+.intro-copy-block > p,
+.storybook-page p:not(.book-folio),
+.storybook-page blockquote,
+.storybook-page textarea,
+.book-contents-copy em,
+.chapter-intro-copy,
+.chapter-opening,
+.memory-description,
+.memory-text,
+.story-panel p,
+.chapter-footnote > p,
+.memory-page p,
+.final-chapter p,
+.recuerdos-message p {
+  font-family: var(--font-story) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+}
+
+.intro-copy-block > p { font-size: clamp(22px, 1.95vw, 29px); line-height: 1.25; }
+.book-journey .book-navigation-title .title-page-intro,
+.book-journey .book-contents-left > p:not(.book-folio),
+.book-journey .book-navigation-chapter-page .book-chapter-description,
+.book-journey .book-game-right > p,
+.book-journey .book-object-right > p,
+.book-journey .stage-c-form-page > p,
+.book-journey .book-finale-right > p:not(.book-folio) {
+  font-size: clamp(18px, 1.4vw, 23px);
+  line-height: 1.25;
+}
+.book-journey .book-navigation-title .title-page-progress { font-size: 14px; }
+.book-journey .book-contents-copy em { font-size: clamp(16px, 1.15vw, 19px); line-height: 1.15; }
+.book-journey .storybook-page textarea { font-size: clamp(18px, 1.3vw, 21px); line-height: 1.2; }
+.book-journey .book-restored-right .book-restored-answer {
+  font-size: clamp(19px, 1.5vw, 24px);
+  line-height: 1.35;
+  background: repeating-linear-gradient(to bottom, #f9edcfb8 0, #f9edcfb8 calc(1.35em - 1px), #bda9899c calc(1.35em - 1px), #bda9899c 1.35em);
+  background-position: 0 11px;
+}
+
+/* Functional hints stay compact and clear beside the mini games. */
+.storybook-page :is(.book-ticket-feedback, .book-ticket-accessibility, .howl-desk-feedback, .totoro-game-feedback, .totoro-game-help) {
+  font-family: Georgia, serif !important;
+}
+
+@media (max-width: 700px) {
+  .book-journey .book-navigation-title .title-page-intro { max-width: 82%; margin-top: 9px; font-size: 16px; line-height: 1.2; }
+  .book-journey .book-navigation-title .title-page-progress { font-size: 12px; }
+  .book-journey .book-contents-left > p:not(.book-folio),
+  .book-journey .book-navigation-chapter-page .book-chapter-description,
+  .book-journey .book-game-right > p,
+  .book-journey .book-object-right > p,
+  .book-journey .stage-c-form-page > p,
+  .book-journey .book-finale-right > p:not(.book-folio) { font-size: 18px; }
+  .book-journey .storybook-page textarea { font-size: 18px; }
+  .book-journey .book-restored-right .book-restored-answer { font-size: 19px; }
+}

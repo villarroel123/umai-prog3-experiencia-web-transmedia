@@ -7,7 +7,6 @@ import { experienceThemes } from "@/data/experienceThemes";
 import ExperienceGameSpread from "@/components/ExperienceGameSpread";
 import MemoryRestoration, { MemoryRestorationArt, MemoryRestorationPreview } from "@/components/MemoryRestoration";
 import MagicalInk from "@/components/MagicalInk";
-import ShareMemoryPrompt from "@/components/ShareMemoryPrompt";
 import { markMemoryInkPending } from "@/data/memoryAnimations";
 
 const assets = "/images/experiences/howl";
@@ -87,8 +86,8 @@ function HowlDesk({ progress, journey, preview }) {
     <Image src={`${assets}/escritorio-colina.png`} alt="Escritorio ilustrado en una colina con libros, lámpara, cajón y caja cerrada" fill sizes="(max-width: 700px) 85vw, 38vw" />
     <div className="howl-desk-shade" aria-hidden="true" />
     {["books", "papers", "drawer", "cup", "lamp", "box"].map((object) => <button key={object} type="button" className={`howl-hotspot howl-hotspot-${object}`} onClick={() => inspect(object)} disabled={preview || letterTaken} aria-label={{ books: "Explorar los libros", papers: "Explorar los papeles", drawer: "Abrir el cajón", cup: "Mirar la taza", lamp: "Examinar la lámpara", box: "Abrir la caja" }[object]} />)}
-    {keyFound && <div className={`howl-key${unlocking ? " is-unlocking" : ""}`} aria-label="Llave recuperada"><Image src={`${assets}/llave.webp`} alt="" width={580} height={506} sizes="60px" /></div>}
-    {boxOpen && <button type="button" className={`howl-desk-letter${letterTaken ? " is-leaving" : ""}`} onClick={takeLetter} disabled={preview || letterTaken} aria-label="Recuperar la carta"><Image src={`${assets}/sobre-abierto.webp`} alt="Carta antigua dentro de un sobre abierto" width={900} height={834} sizes="80px" /></button>}
+    {keyFound && <div className={`howl-key${unlocking ? " is-unlocking" : ""}`} aria-label="Llave recuperada"><Image src={`${assets}/llave.png`} alt="" width={1508} height={1043} sizes="60px" /></div>}
+    {boxOpen && <button type="button" className={`howl-desk-letter${letterTaken ? " is-leaving" : ""}`} onClick={takeLetter} disabled={preview || letterTaken} aria-label="Recuperar la carta"><Image src={`${assets}/sobre-abierto.png`} alt="Carta antigua dentro de un sobre abierto" width={1536} height={1024} sizes="80px" /></button>}
     {boxOpen && <span className="howl-desk-sparkles" aria-hidden="true" />}
     <p className="howl-desk-feedback" role="status">{feedback}</p>
     {chapter.objectRecovered && !preview && <button type="button" className="howl-desk-continue" onClick={() => journey?.turnTo("howlObject")}>Ver la carta recuperada →</button>}
@@ -118,14 +117,13 @@ function HowlQuestion({ progress, journey, preview }) {
     const success = await progress.saveAnswer("howl", answer);
     if (!success) { submitted.current = false; setSaving(false); setFeedback("No se pudo guardar la carta. Intentá nuevamente."); return; }
     try { window.localStorage.removeItem(draftKey); } catch { /* El texto ya está guardado. */ }
-    markMemoryInkPending("howl");
     setRestoring(true);
   }
   return <>
     <div className={`storybook-page storybook-title-page stage-c-object-left howl-object-left${restoring ? " is-restoring" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       {showingAnimation ? <MemoryRestorationArt theme={experienceThemes.howl} /> : <>
-        <div className="stage-c-object-art"><Image src={`${assets}/sobre-cerrado.webp`} alt="Sobre antiguo con sello de cera y flores" width={900} height={834} sizes="(max-width: 700px) 78vw, 34vw" priority /></div>
+        <div className="stage-c-object-art"><Image src={`${assets}/sobre-cerrado.webp`} alt="Sobre antiguo con sello de cera y flores" width={900} height={539} sizes="(max-width: 700px) 78vw, 34vw" priority /></div>
         <p className="book-art-caption">La carta recuperada</p>
       </>}
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
@@ -133,7 +131,7 @@ function HowlQuestion({ progress, journey, preview }) {
     <div className={`storybook-page storybook-index-page stage-c-form-page${showingAnimation ? " memory-restoration-page" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>La carta que nunca enviaste</h1>
-      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="howl" onComplete={() => journey?.turnTo("howlRestored")} />) : <>
+      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="howl" onComplete={() => { markMemoryInkPending("howl"); journey?.turnTo("howlRestored"); }} />) : <>
       {!chapter.objectRecovered ? <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo("howlGame")}>Recuperar la carta →</button> : <>
         <p>{experience.question}</p>
         <form onSubmit={save}>
@@ -154,23 +152,22 @@ function HowlQuestion({ progress, journey, preview }) {
 function HowlRestored({ progress, journey, preview }) {
   const chapter = progress.chapter("howl");
   const [opened, setOpened] = useState(false);
-  const active = journey?.spread === "howlRestored" && !journey?.turn && !preview;
+  const active = ["howl", "howlRestored"].includes(journey?.spread) && !journey?.turn && !preview;
   if (!chapter.saved) return <HowlQuestion progress={progress} journey={journey} preview={preview} />;
   return <>
     <div className="storybook-page storybook-title-page stage-c-restored-left">
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <div className="book-restored-art"><Image src="/images/scenes/howl-castle.png" alt="El castillo ambulante bajo un cielo luminoso" fill sizes="(max-width: 700px) 85vw, 37vw" /></div>
-      <button type="button" className={`stage-c-restored-object howl-restored-envelope${opened ? " is-open" : ""}`} onClick={() => setOpened((value) => !value)} disabled={preview} aria-label={opened ? "Cerrar la carta" : "Abrir la carta guardada"} aria-expanded={opened}><Image src={`${assets}/${opened ? "sobre-abierto" : "sobre-cerrado"}.webp`} alt="" width={900} height={834} sizes="(max-width: 700px) 55vw, 22vw" /></button>
+      <div className="book-restored-art"><Image src="/images/scenes/el castillo vagabundo.jpg" alt="El castillo ambulante entre montañas y praderas" fill sizes="(max-width: 700px) 85vw, 37vw" /></div>
+      <button type="button" className={`stage-c-restored-object howl-restored-envelope${opened ? " is-open" : ""}`} onClick={() => setOpened((value) => !value)} disabled={preview} aria-label={opened ? "Cerrar la carta" : "Abrir la carta guardada"} aria-expanded={opened}><Image src={`${assets}/${opened ? "sobre-abierto.png" : "sobre-cerrado.webp"}`} alt="" width={opened ? 1536 : 900} height={opened ? 1024 : 539} sizes="(max-width: 700px) 55vw, 22vw" /></button>
       {opened && <div className="howl-letter-revisit" role="region" aria-label="Carta guardada">{chapter.answer}</div>}
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
     </div>
     <div className="storybook-page storybook-index-page book-restored-right stage-c-restored-right">
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <h1>La carta que nunca enviaste</h1>
-      <p className="book-restored-question">{experience.question}</p>
+      <h1>Mi recuerdo</h1>
+      <div className="ink-flourish" aria-hidden="true" />
       <MagicalInk answer={chapter.answer} chapterId="howl" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
-      <ShareMemoryPrompt chapterId="howl" answer={chapter.answer} progress={progress} journey={journey} preview={preview} />
-      {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("howl")}>Volver al capítulo →</button>}
+      {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("howlGame")}>Volver al minijuego →</button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>
   </>;

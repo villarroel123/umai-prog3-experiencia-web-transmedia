@@ -22,9 +22,8 @@ const bookPaths = {
   totoroObject: "/recuerdos/totoro/objeto",
   totoroRestored: "/recuerdos/totoro/restaurado",
   finale: "/final",
-  community: "/red-recuerdos",
 };
-const bookOrder = ["index", "contents", "chihiro", "game", "object", "restored", "howl", "howlGame", "howlObject", "howlRestored", "totoro", "totoroGame", "totoroObject", "totoroRestored", "finale", "community"];
+const bookOrder = ["index", "contents", "chihiro", "game", "object", "restored", "howl", "howlGame", "howlObject", "howlRestored", "totoro", "totoroGame", "totoroObject", "totoroRestored", "finale"];
 
 function pageForPath(pathname) {
   const key = Object.keys(bookPaths).find((item) => bookPaths[item] === pathname);
@@ -43,7 +42,7 @@ export default function BookJourney({ children }) {
   const [intendedPath, setIntendedPath] = useState(null);
   const [phase, setPhase] = useState(() => pathname === "/biblioteca" ? "reading" : "intro");
   const [unavailable, setUnavailable] = useState(false);
-  const [mobilePage, setMobilePage] = useState(() => ["game", "object", "howlGame", "howlObject", "totoroGame", "totoroObject", "community"].includes(pageForPath(pathname)) ? "right" : "left");
+  const [mobilePage, setMobilePage] = useState(() => ["game", "object", "howlGame", "howlObject", "totoroGame", "totoroObject"].includes(pageForPath(pathname)) ? "right" : "left");
   const [spread, setSpread] = useState(() => pageForPath(pathname));
   const [turn, setTurn] = useState(null);
   const turnSerial = useRef(0);

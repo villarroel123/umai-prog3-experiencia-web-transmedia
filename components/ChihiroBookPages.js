@@ -7,7 +7,6 @@ import { experienceThemes } from "@/data/experienceThemes";
 import ExperienceGameSpread from "@/components/ExperienceGameSpread";
 import MemoryRestoration, { MemoryRestorationArt, MemoryRestorationPreview } from "@/components/MemoryRestoration";
 import MagicalInk from "@/components/MagicalInk";
-import ShareMemoryPrompt from "@/components/ShareMemoryPrompt";
 import { markMemoryInkPending } from "@/data/memoryAnimations";
 
 const experience = chapterExperiences.chihiro;
@@ -151,14 +150,13 @@ function ObjectQuestion({ progress, journey, preview }) {
       return;
     }
     try { window.localStorage.removeItem(key); } catch { /* La respuesta ya está guardada. */ }
-    markMemoryInkPending("chihiro");
     setRestoring(true);
   }
   return <>
     <div className={`storybook-page storybook-title-page book-object-left${restoring ? " is-restoring" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       {showingAnimation ? <MemoryRestorationArt theme={experienceThemes.chihiro} /> : <>
-        <div className="book-object-ticket"><Image src={ticketImage} alt="Boleto de tren antiguo recuperado" width={930} height={423} sizes="(max-width: 700px) 83vw, 37vw" priority /><span className="book-object-glow" aria-hidden="true" /></div>
+        <div className="book-object-ticket"><Image src={ticketImage} alt="Boleto de tren antiguo recuperado" width={707} height={274} sizes="(max-width: 700px) 83vw, 37vw" priority /><span className="book-object-glow" aria-hidden="true" /></div>
         <p className="book-art-caption">El boleto de los recuerdos</p>
       </>}
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
@@ -166,8 +164,8 @@ function ObjectQuestion({ progress, journey, preview }) {
     <div className={`storybook-page storybook-index-page book-object-right${showingAnimation ? " memory-restoration-page" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>Un recuerdo para conservar</h1>
-      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="chihiro" onComplete={() => journey?.turnTo("restored")} />) : <>
-      <div className="book-object-ticket-mobile"><Image src={ticketImage} alt="Boleto recuperado" width={930} height={423} sizes="(max-width: 700px) 45vw" /></div>
+      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="chihiro" onComplete={() => { markMemoryInkPending("chihiro"); journey?.turnTo("restored"); }} />) : <>
+      <div className="book-object-ticket-mobile"><Image src={ticketImage} alt="Boleto recuperado" width={707} height={274} sizes="(max-width: 700px) 45vw" /></div>
       <p>{experience.question}</p>
       {!chapter.gameComplete ? <button className="book-chapter-start" onClick={() => journey?.turnTo("game")}>Reconstruir el boleto →</button> : <form onSubmit={save}>
         <label htmlFor="book-chihiro-answer" className="sr-only">Tu recuerdo personal</label>
@@ -186,22 +184,21 @@ function ObjectQuestion({ progress, journey, preview }) {
 function RestoredPages({ progress, journey, preview }) {
   const chapter = progress.chapter("chihiro");
   const answer = chapter.answer;
-  const active = journey?.spread === "restored" && !journey?.turn && !preview;
+  const active = ["chihiro", "restored"].includes(journey?.spread) && !journey?.turn && !preview;
   if (!chapter.saved) return <ObjectQuestion progress={progress} journey={journey} preview={preview} />;
   return <>
     <div className="storybook-page storybook-title-page book-restored-left">
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <div className="book-restored-art"><Image src="/images/experiences/chihiro/tren-atardecer.webp" alt="Tren sobre el agua al atardecer" fill sizes="(max-width: 700px) 85vw, 37vw" priority /></div>
-      <div className="book-restored-ticket"><Image src={ticketImage} alt="Boleto de tren restaurado" width={930} height={423} sizes="(max-width: 700px) 65vw, 24vw" /></div>
+      <div className="book-restored-art"><Image src="/images/scenes/el viaje de chihiro.jpg" alt="Chihiro junto a Haku bajo el cielo nocturno" fill sizes="(max-width: 700px) 85vw, 37vw" priority /></div>
+      <div className="book-restored-ticket"><Image src={ticketImage} alt="Boleto de tren restaurado" width={707} height={274} sizes="(max-width: 700px) 65vw, 24vw" /></div>
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
     </div>
     <div className="storybook-page storybook-index-page book-restored-right">
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <h1>El boleto de los recuerdos</h1>
-      <p className="book-restored-question">{experience.question}</p>
+      <h1>Mi recuerdo</h1>
+      <div className="ink-flourish" aria-hidden="true" />
       <MagicalInk answer={answer} chapterId="chihiro" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
-      <ShareMemoryPrompt chapterId="chihiro" answer={answer} progress={progress} journey={journey} preview={preview} />
-      {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("chihiro")}>Volver al capítulo →</button>}
+      {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("game")}>Volver al minijuego →</button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>
   </>;

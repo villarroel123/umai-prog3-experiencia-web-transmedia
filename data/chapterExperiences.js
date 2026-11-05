@@ -7,7 +7,7 @@ export const chapterExperiences = {
     discovery: "Reconstruí el boleto",
     question: "Si este tren pudiera llevarte a cualquier recuerdo, ¿a qué momento de tu vida te gustaría regresar?",
     instruction: "Encontrá las cuatro piezas y unilas para recuperar el boleto de tren.",
-    objectImage: "/images/experiences/chihiro/boleto-recuperado.webp",
+    objectImage: "/images/experiences/chihiro/ticket.png",
   },
   howl: {
     title: "La carta que nunca enviaste",

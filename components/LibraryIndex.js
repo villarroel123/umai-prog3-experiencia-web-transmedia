@@ -9,7 +9,6 @@ import ChihiroBookPages from "@/components/ChihiroBookPages";
 import HowlBookPages from "@/components/HowlBookPages";
 import TotoroBookPages from "@/components/TotoroBookPages";
 import FinalBookPages from "@/components/FinalBookPages";
-import CommunityBookPages from "@/components/CommunityBookPages";
 
 const descriptions = {
   chihiro: "Una niña descubre un mundo de espíritus donde deberá encontrar el valor para regresar a casa.",
@@ -17,19 +16,19 @@ const descriptions = {
   totoro: "Dos hermanas encuentran en el bosque la magia de los pequeños momentos compartidos.",
 };
 const chapterObjects = {
-  chihiro: "/images/experiences/chihiro/boleto-recuperado.webp",
+  chihiro: "/images/experiences/chihiro/ticket.png",
   howl: "/images/experiences/howl/sobre-cerrado.webp",
-  totoro: "/images/experiences/totoro/hoja.webp",
+  totoro: "/images/experiences/totoro/hoja.png",
 };
 
 function PageArrows({ journey, progress }) {
   const spread = journey?.spread || "index";
   const films = ["index", "contents", "chihiro", "howl", "totoro"];
   const position = films.indexOf(spread);
-  const previous = position >= 0 ? films[position - 1] : ({ game: "chihiro", object: "game", restored: "object", howlGame: "howl", howlObject: "howlGame", howlRestored: "howlObject", totoroGame: "totoro", totoroObject: "totoroGame", totoroRestored: "totoroObject", finale: "totoroRestored", community: "contents" })[spread];
-  const next = position >= 0 ? films[position + 1] : ({ restored: "howl", howlRestored: "totoro", totoroRestored: progress.overall.finalUnlocked ? "finale" : null, finale: "community" })[spread];
+  const previous = position >= 0 ? films[position - 1] : ({ game: "chihiro", object: "game", restored: "object", howlGame: "howl", howlObject: "howlGame", howlRestored: "howlObject", totoroGame: "totoro", totoroObject: "totoroGame", totoroRestored: "totoroObject", finale: "totoroRestored" })[spread];
+  const next = position >= 0 ? films[position + 1] : ({ restored: "howl", howlRestored: "totoro", totoroRestored: progress.overall.finalUnlocked ? "finale" : null })[spread];
   const chapterNumber = spread.startsWith("howl") ? 2 : spread.startsWith("totoro") || spread === "finale" ? 3 : 1;
-  const count = spread === "index" ? "PRÓLOGO" : spread === "contents" ? "ÍNDICE" : spread === "community" ? "RED DE RECUERDOS" : position >= 0 ? `${String(position - 1).padStart(2, "0")} / 03` : `${String(chapterNumber).padStart(2, "0")} / 03`;
+  const count = spread === "index" ? "PRÓLOGO" : spread === "contents" ? "ÍNDICE" : position >= 0 ? `${String(position - 1).padStart(2, "0")} / 03` : `${String(chapterNumber).padStart(2, "0")} / 03`;
   return <nav className="book-page-arrows" aria-label="Pasar páginas del libro">
     <button type="button" className="book-page-arrow book-page-arrow-prev" onClick={() => journey?.turnTo(previous)} disabled={!journey || journey.turning || !previous} aria-label="Página anterior">‹</button>
     <span className="book-page-count" aria-live="polite">{count}</span>
@@ -51,17 +50,10 @@ function ChapterList({ progress, journey, preview }) {
         {chapter.saved && <button type="button" className="book-contents-restored" onClick={() => journey?.turnTo(({ chihiro: "restored", howl: "howlRestored", totoro: "totoroRestored" })[movie.id])} disabled={preview || journey?.turning}>Abrir página restaurada <span aria-hidden="true">↗</span></button>}
       </li>;
     })}
-    <li className="book-contents-community">
-      <button type="button" className="book-contents-chapter" onClick={() => journey?.turnTo("community")} disabled={preview || journey?.turning}>
-        <span className="book-contents-number">✦</span>
-        <span className="book-contents-copy"><strong>Red de recuerdos</strong><em>Historias de otros viajeros</em></span>
-        <span className="book-contents-icon" aria-hidden="true">❧</span>
-      </button>
-    </li>
   </ol>;
 }
 
-function BookSpread({ spread, progress, community, journey, preview = false }) {
+function BookSpread({ spread, progress, journey, preview = false }) {
   if (["game", "object", "restored"].includes(spread)) {
     return <ChihiroBookPages spread={spread} progress={progress} journey={journey} preview={preview} />;
   }
@@ -72,9 +64,17 @@ function BookSpread({ spread, progress, community, journey, preview = false }) {
     return <TotoroBookPages spread={spread} progress={progress} journey={journey} preview={preview} />;
   }
   if (spread === "finale") return <FinalBookPages progress={progress} journey={journey} preview={preview} />;
-  if (spread === "community") return <CommunityBookPages progress={progress} community={community} journey={journey} preview={preview} />;
   const movie = movies.find((item) => item.id === spread);
   const chapter = movie && progress.chapter(movie.id);
+  if (movie && chapter.saved) {
+    const restoredPages = {
+      chihiro: ChihiroBookPages,
+      howl: HowlBookPages,
+      totoro: TotoroBookPages,
+    };
+    const RestoredPages = restoredPages[movie.id];
+    return <RestoredPages spread={({ chihiro: "restored", howl: "howlRestored", totoro: "totoroRestored" })[movie.id]} progress={progress} journey={journey} preview={preview} />;
+  }
   return <div className="storybook-cover"><div className="storybook-pages">
     {spread === "contents" ? <>
       <div className="storybook-page storybook-title-page book-contents-left">
@@ -111,7 +111,7 @@ function BookSpread({ spread, progress, community, journey, preview = false }) {
         <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
       </div>
     </> : <>
-      <div className="storybook-page storybook-title-page book-navigation-art-page">
+      <div className={`storybook-page storybook-title-page book-navigation-art-page book-navigation-art-page-${movie.id}`}>
         <span className="page-botanical page-botanical-top" aria-hidden="true" />
         <div className="book-chapter-art"><Image src={movie.sceneImage} alt={movie.sceneAlt} fill sizes="(max-width: 700px) 85vw, 39vw" priority={spread === "chihiro"} /></div>
         <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
@@ -122,20 +122,26 @@ function BookSpread({ spread, progress, community, journey, preview = false }) {
         <h1>{movie.title}</h1>
         <div className="ink-flourish" aria-hidden="true" />
         <p className="book-chapter-description">{descriptions[movie.id]}</p>
-        <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo(chapter.saved ? ({ chihiro: "restored", howl: "howlRestored", totoro: "totoroRestored" })[movie.id] : chapter.objectRecovered ? ({ chihiro: "object", howl: "howlObject", totoro: "totoroObject" })[movie.id] : ({ chihiro: "game", howl: "howlGame", totoro: "totoroGame" })[movie.id])} disabled={preview}>{chapter.saved ? "Leer recuerdo" : chapter.started ? "Continuar experiencia" : "Comenzar experiencia"} <span aria-hidden="true">→</span></button>
-        {chapter.saved && !preview && <button type="button" className="book-chapter-replay" onClick={() => journey?.turnTo(({ chihiro: "game", howl: "howlGame", totoro: "totoroGame" })[movie.id])}>Volver al minijuego</button>}
+        <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo(chapter.objectRecovered ? ({ chihiro: "object", howl: "howlObject", totoro: "totoroObject" })[movie.id] : ({ chihiro: "game", howl: "howlGame", totoro: "totoroGame" })[movie.id])} disabled={preview}>{chapter.started ? "Continuar experiencia" : "Comenzar experiencia"} <span aria-hidden="true">→</span></button>
         <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
       </div>
     </>}
   </div></div>;
 }
 
-export default function LibraryIndex({ progress, community }) {
+export default function LibraryIndex({ progress }) {
   const journey = useBookJourney();
   const activateTurn = journey?.activateTurn;
   const spread = journey?.spread || "index";
   const turn = journey?.turn;
+  const setMobilePage = journey?.setMobilePage;
   const visibleSpread = turn?.target || spread;
+  const completedChapter = movies.some((movie) => movie.id === spread && progress.chapter(movie.id).saved);
+  useEffect(() => {
+    if (!turn && (completedChapter || ["restored", "howlRestored", "totoroRestored"].includes(spread))) {
+      setMobilePage?.("right");
+    }
+  }, [completedChapter, setMobilePage, spread, turn]);
   useEffect(() => {
     const movie = movies.find((item) => item.id === visibleSpread);
     document.title = movie ? `${movie.title} — La biblioteca de los recuerdos` : "La biblioteca de los recuerdos";
@@ -152,13 +158,12 @@ export default function LibraryIndex({ progress, community }) {
     return () => { cancelled = true; };
   }, [turn, activateTurn]);
   return <section className={`storybook-index book-navigation${turn && !turn.ready ? " book-turn-preparing" : ""}`} aria-label="Páginas del libro">
-    <div className={turn ? "book-turn-target" : ""}><BookSpread spread={visibleSpread} progress={progress} community={community} journey={journey} /></div>
+    <div className={turn ? "book-turn-target" : ""}><BookSpread spread={visibleSpread} progress={progress} journey={journey} /></div>
     {turn && <div key={turn.id} className={`book-turn-source book-turn-${turn.direction > 0 ? "forward" : "backward"}`} aria-hidden="true">
-      <BookSpread spread={turn.source} progress={progress} community={community} journey={journey} preview />
+      <BookSpread spread={turn.source} progress={progress} journey={journey} preview />
     </div>}
     <PageArrows journey={journey} progress={progress} />
     {journey && <button type="button" className="book-index-bookmark" onClick={() => journey.turnTo("contents")} disabled={journey.turning || spread === "contents"} aria-label="Volver al índice de los recuerdos"><span aria-hidden="true">▤</span></button>}
-    {journey && <button type="button" className="book-community-bookmark" onClick={() => journey.turnTo("community")} disabled={journey.turning || spread === "community"} aria-label="Abrir Red de recuerdos"><span aria-hidden="true">✦</span><span>Red de recuerdos</span></button>}
     {journey && <div className="book-mobile-pages" aria-label="Páginas visibles">
       <button type="button" className={journey.mobilePage === "left" ? "is-current" : ""} onClick={() => journey.setMobilePage("left")} aria-pressed={journey.mobilePage === "left"}>Ilustración</button>
       <button type="button" className={journey.mobilePage === "right" ? "is-current" : ""} onClick={() => journey.setMobilePage("right")} aria-pressed={journey.mobilePage === "right"}>{visibleSpread === "contents" ? "Capítulos" : "Historia"}</button>

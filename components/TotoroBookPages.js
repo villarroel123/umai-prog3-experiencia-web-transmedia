@@ -7,7 +7,6 @@ import { experienceThemes } from "@/data/experienceThemes";
 import ExperienceGameSpread from "@/components/ExperienceGameSpread";
 import MemoryRestoration, { MemoryRestorationArt, MemoryRestorationPreview } from "@/components/MemoryRestoration";
 import MagicalInk from "@/components/MagicalInk";
-import ShareMemoryPrompt from "@/components/ShareMemoryPrompt";
 import { markMemoryInkPending } from "@/data/memoryAnimations";
 
 const assets = "/images/experiences/totoro";
@@ -94,9 +93,9 @@ function ForestGame({ progress, journey, preview }) {
       <div className="totoro-growing-tree" aria-hidden="true"><Image src={`${assets}/arbol.webp`} alt="" width={544} height={850} sizes="(max-width: 700px) 40vw, 18vw" /></div>
       {watered && <span className="totoro-rain" aria-hidden="true"><i /><i /><i /><i /><i /></span>}
       {sunlit && <span className="totoro-sunbeams" aria-hidden="true" />}
-      <button type="button" className="totoro-weather totoro-cloud" style={drag?.kind === "rain" ? { transform: `translate(${drag.x - drag.originX}px, ${drag.y - drag.originY}px)`, zIndex: 7 } : undefined} onClick={() => { if (!movedRef.current) apply("rain"); movedRef.current = false; }} onPointerDown={(event) => startDrag(event, "rain")} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => setDrag(null)} disabled={preview || watered || chapter.objectRecovered} aria-label="Arrastrar o tocar la nube para regar la planta"><Image src={`${assets}/nube.webp`} alt="" width={550} height={409} sizes="100px" /></button>
-      <button type="button" className="totoro-weather totoro-sun" style={drag?.kind === "sun" ? { transform: `translate(${drag.x - drag.originX}px, ${drag.y - drag.originY}px)`, zIndex: 7 } : undefined} onClick={() => { if (!movedRef.current) apply("sun"); movedRef.current = false; }} onPointerDown={(event) => startDrag(event, "sun")} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => setDrag(null)} disabled={preview || !watered || sunlit || chapter.objectRecovered} aria-label="Arrastrar o tocar el sol para iluminar la planta"><Image src={`${assets}/sol.webp`} alt="" width={450} height={446} sizes="90px" /></button>
-      {sunlit && (!chapter.objectRecovered || recovering) && <button type="button" className="totoro-leaf-pick" onClick={takeLeaf} disabled={preview || recovering} aria-label="Recuperar la hoja del árbol"><Image src={`${assets}/hoja.webp`} alt="Hoja especial del bosque" width={850} height={570} sizes="95px" /></button>}
+      <button type="button" className="totoro-weather totoro-cloud" style={drag?.kind === "rain" ? { transform: `translate(${drag.x - drag.originX}px, ${drag.y - drag.originY}px)`, zIndex: 7 } : undefined} onClick={() => { if (!movedRef.current) apply("rain"); movedRef.current = false; }} onPointerDown={(event) => startDrag(event, "rain")} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => setDrag(null)} disabled={preview || watered || chapter.objectRecovered} aria-label="Arrastrar o tocar la nube para regar la planta"><Image src={`${assets}/nube.png`} alt="" width={1536} height={1024} sizes="100px" /></button>
+      <button type="button" className="totoro-weather totoro-sun" style={drag?.kind === "sun" ? { transform: `translate(${drag.x - drag.originX}px, ${drag.y - drag.originY}px)`, zIndex: 7 } : undefined} onClick={() => { if (!movedRef.current) apply("sun"); movedRef.current = false; }} onPointerDown={(event) => startDrag(event, "sun")} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => setDrag(null)} disabled={preview || !watered || sunlit || chapter.objectRecovered} aria-label="Arrastrar o tocar el sol para iluminar la planta"><Image src={`${assets}/sol.png`} alt="" width={1536} height={1024} sizes="90px" /></button>
+      {sunlit && (!chapter.objectRecovered || recovering) && <button type="button" className="totoro-leaf-pick" onClick={takeLeaf} disabled={preview || recovering} aria-label="Recuperar la hoja del árbol"><Image src={`${assets}/hoja.png`} alt="Hoja especial del bosque" width={1536} height={1024} sizes="95px" /></button>}
       {chapter.objectRecovered && !preview && <button type="button" className="totoro-forest-continue" onClick={() => journey?.turnTo("totoroObject")}>Ver la hoja recuperada →</button>}
     </div>
     <div className="totoro-growth-progress" aria-label={`Crecimiento: ${chapter.objectRecovered ? "hoja recuperada" : sunlit ? "planta crecida" : watered ? "brote regado" : "semilla"}`}>
@@ -129,14 +128,13 @@ function TotoroQuestion({ progress, journey, preview }) {
     const success = await progress.saveAnswer("totoro", answer);
     if (!success) { submitted.current = false; setSaving(false); setFeedback("No se pudo guardar el recuerdo. Intentá nuevamente."); return; }
     try { window.localStorage.removeItem(draftKey); } catch { /* El texto ya está guardado. */ }
-    markMemoryInkPending("totoro");
     setRestoring(true);
   }
   return <>
     <div className={`storybook-page storybook-title-page stage-c-object-left totoro-object-left${restoring ? " is-restoring" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       {showingAnimation ? <MemoryRestorationArt theme={experienceThemes.totoro} /> : <>
-        <div className="stage-c-object-art totoro-object-art"><Image src={`${assets}/hoja.webp`} alt="Hoja especial recuperada del bosque" width={850} height={570} sizes="(max-width: 700px) 78vw, 34vw" priority /></div>
+        <div className="stage-c-object-art totoro-object-art"><Image src={`${assets}/hoja.png`} alt="Hoja especial recuperada del bosque" width={1536} height={1024} sizes="(max-width: 700px) 78vw, 34vw" priority /></div>
         <p className="book-art-caption">La hoja recuperada</p>
       </>}
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
@@ -144,7 +142,7 @@ function TotoroQuestion({ progress, journey, preview }) {
     <div className={`storybook-page storybook-index-page stage-c-form-page${showingAnimation ? " memory-restoration-page" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>El recuerdo de la infancia</h1>
-      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="totoro" onComplete={() => journey?.turnTo("totoroRestored")} />) : <>
+      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="totoro" onComplete={() => { markMemoryInkPending("totoro"); journey?.turnTo("totoroRestored"); }} />) : <>
       {!chapter.objectRecovered ? <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo("totoroGame")}>Recuperar la hoja →</button> : <>
         <p>{experience.question}</p>
         <form onSubmit={save}>
@@ -164,22 +162,21 @@ function TotoroQuestion({ progress, journey, preview }) {
 
 function TotoroRestored({ progress, journey, preview }) {
   const chapter = progress.chapter("totoro");
-  const active = journey?.spread === "totoroRestored" && !journey?.turn && !preview;
+  const active = ["totoro", "totoroRestored"].includes(journey?.spread) && !journey?.turn && !preview;
   if (!chapter.saved) return <TotoroQuestion progress={progress} journey={journey} preview={preview} />;
   return <>
     <div className="storybook-page storybook-title-page stage-c-restored-left totoro-restored-left">
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <div className="book-restored-art"><Image src="/images/scenes/totoro-forest.png" alt="Bosque luminoso de Totoro" fill sizes="(max-width: 700px) 85vw, 37vw" /></div>
-      <div className="stage-c-restored-object totoro-restored-leaf"><Image src={`${assets}/hoja.webp`} alt="Hoja del bosque guardada en el libro" width={850} height={570} sizes="(max-width: 700px) 55vw, 22vw" /></div>
+      <div className="book-restored-art"><Image src="/images/scenes/totoro.jpg" alt="Totoro y las niñas entre la hierba del bosque" fill sizes="(max-width: 700px) 85vw, 37vw" /></div>
+      <div className="stage-c-restored-object totoro-restored-leaf"><Image src={`${assets}/hoja.png`} alt="Hoja del bosque guardada en el libro" width={1536} height={1024} sizes="(max-width: 700px) 55vw, 22vw" /></div>
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
     </div>
     <div className="storybook-page storybook-index-page book-restored-right stage-c-restored-right">
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <h1>El recuerdo de la infancia</h1>
-      <p className="book-restored-question">{experience.question}</p>
+      <h1>Mi recuerdo</h1>
+      <div className="ink-flourish" aria-hidden="true" />
       <MagicalInk answer={chapter.answer} chapterId="totoro" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
-      <ShareMemoryPrompt chapterId="totoro" answer={chapter.answer} progress={progress} journey={journey} preview={preview} />
-      {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("totoro")}>Volver al capítulo →</button>}
+      {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("totoroGame")}>Volver al minijuego →</button>}
       {!preview && progress.overall.finalUnlocked && <button className="book-chapter-start totoro-final-button" type="button" onClick={() => journey?.turnTo("finale")}>Abrir mi biblioteca <span aria-hidden="true">→</span></button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>

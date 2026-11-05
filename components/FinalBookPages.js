@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const memories = [
-  { id: "chihiro", title: "El boleto de los recuerdos", image: "/images/experiences/chihiro/boleto-recuperado.webp", alt: "Boleto de tren recuperado", spread: "restored" },
+  { id: "chihiro", title: "El boleto de los recuerdos", image: "/images/experiences/chihiro/ticket.png", alt: "Boleto de tren recuperado", spread: "restored" },
   { id: "howl", title: "La carta que nunca enviaste", image: "/images/experiences/howl/sobre-cerrado.webp", alt: "Carta en su sobre sellado", spread: "howlRestored" },
-  { id: "totoro", title: "El recuerdo de la infancia", image: "/images/experiences/totoro/hoja.webp", alt: "Hoja especial del bosque", spread: "totoroRestored" },
+  { id: "totoro", title: "El recuerdo de la infancia", image: "/images/experiences/totoro/hoja.png", alt: "Hoja especial del bosque", spread: "totoroRestored" },
 ];
 
 export default function FinalBookPages({ progress, journey, preview = false }) {

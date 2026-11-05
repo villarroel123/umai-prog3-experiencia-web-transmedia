@@ -1,3 +1,5 @@
+import "@fontsource/cormorant-upright/400.css";
+import "@fontsource/redaction-10/400.css";
 import "./globals.css";
 import "./story.css";
 import "./story-redesign.css";
@@ -11,7 +13,8 @@ import "./book-contents.css";
 import "./stage-c.css";
 import "./experience-themes.css";
 import "./memory-restoration.css";
-import "./community-book.css";
+import "./memory-journal.css";
+import "./typography.css";
 import BookJourney from "@/components/BookJourney";
 
 export const metadata = {

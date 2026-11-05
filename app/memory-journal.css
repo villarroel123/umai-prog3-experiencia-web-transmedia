@@ -1,0 +1,97 @@
+/* The film stills fill the existing portrait frames; the projected book is unchanged. */
+.book-chapter-art::before,
+.book-game-art::before,
+.book-restored-art::before {
+  content: none;
+}
+
+.book-journey .book-chapter-art,
+.book-journey .book-game-art,
+.book-journey .book-restored-art {
+  overflow: hidden;
+}
+
+.book-journey .book-chapter-art img,
+.book-journey .experience-theme .book-game-left .book-game-art img,
+.book-journey .book-restored-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-navigation-art-page-chihiro .book-chapter-art img,
+.experience-theme--chihiro .book-restored-art img { object-position: 44% center; }
+.book-navigation-art-page-howl .book-chapter-art img,
+.experience-theme--howl .book-restored-art img { object-position: 32% center; }
+.book-navigation-art-page-totoro .book-chapter-art img,
+.experience-theme--totoro .book-restored-art img { object-position: 33% center; }
+
+.experience-theme--chihiro .book-game-left .book-game-art img { object-position: 52% center; }
+.experience-theme--howl .book-game-left .book-game-art img { object-position: 50% center; }
+.experience-theme--totoro .book-game-left .book-game-art img { object-position: 42% center; }
+
+/* The keepsake stays small over the image so it never changes the frame size. */
+.book-journey :is(.book-restored-left, .stage-c-restored-left) .book-restored-art {
+  width: 88%;
+  height: 83%;
+  margin: 0 auto;
+}
+.book-restored-left .book-restored-ticket,
+.stage-c-restored-left .stage-c-restored-object {
+  position: absolute;
+  z-index: 2;
+  right: 7%;
+  bottom: 8%;
+  width: 30%;
+  margin: 0;
+}
+.stage-c-restored-left .stage-c-restored-object { pointer-events: auto; }
+.stage-c-restored-left .totoro-restored-leaf { width: 25%; }
+
+/* A ruled diary page holds the saved answer without increasing the book height. */
+.book-journey .book-restored-right {
+  justify-content: center;
+}
+.book-journey .book-restored-right h1 {
+  margin: 0 auto 8px;
+  color: #3f3025;
+}
+.book-restored-right .ink-flourish {
+  width: min(42%, 180px);
+  margin: 0 auto 19px;
+}
+.book-journey .book-restored-right .book-restored-answer {
+  flex: 0 1 auto;
+  box-sizing: border-box;
+  width: min(90%, 430px);
+  min-height: clamp(150px, 24vh, 225px);
+  max-height: 45%;
+  overflow-y: auto;
+  margin: 0 auto 12px;
+  padding: 12px 18px;
+  border: 1px solid #c5a77a;
+  border-radius: 4px;
+  background: repeating-linear-gradient(to bottom, #f9edcfb8 0, #f9edcfb8 calc(1.7em - 1px), #bda9899c calc(1.7em - 1px), #bda9899c 1.7em);
+  background-position: 0 10px;
+  box-shadow: inset 0 0 16px #a8814b1f, 0 3px 10px #6949301c;
+  color: #4c3729;
+  font: italic clamp(12px, 1.08vw, 16px)/1.7 'Libre Baskerville', Georgia, serif;
+  scrollbar-width: thin;
+  scrollbar-color: #ac906c #f4e6c9;
+}
+.book-journey .book-restored-right .book-chapter-replay {
+  margin: clamp(11px, 2vh, 22px) auto 0;
+}
+.book-journey .book-restored-right .totoro-final-button {
+  margin: 9px auto 0;
+}
+
+@media (max-width: 700px) {
+  .book-journey .book-restored-right .book-restored-answer {
+    min-height: 155px;
+    max-height: 46%;
+    padding: 9px 13px;
+    font-size: 12px;
+  }
+  .book-restored-right .ink-flourish { margin-bottom: 12px; }
+}

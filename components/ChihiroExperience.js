@@ -134,7 +134,7 @@ export default function ChihiroExperience({ movie, progress }) {
       </div> : <div className="ticket-reveal">
         <p className="ticket-reveal-kicker">{phase === "saved" ? "RECUERDO GUARDADO" : phase === "travelling" ? "EL RECUERDO VIAJA AL LIBRO" : "OBJETO RECUPERADO"}</p>
         <h1 id="chihiro-experience-heading">El boleto de los recuerdos</h1>
-        <div className="ticket-reveal-art"><Image src={ticketImage} alt="Boleto antiguo reconstruido, ilustrado con un tren y flores" width={930} height={423} sizes="(max-width: 800px) 88vw, 660px" priority />{(phase === "travelling" || phase === "saved") && <span className="ticket-written-answer">{chapter.answer.slice(0, 90)}{chapter.answer.length > 90 ? "…" : ""}</span>}<span className="ticket-sparkles" aria-hidden="true" /></div>
+        <div className="ticket-reveal-art"><Image src={ticketImage} alt="Boleto antiguo reconstruido" width={707} height={274} sizes="(max-width: 800px) 88vw, 660px" priority />{(phase === "travelling" || phase === "saved") && <span className="ticket-written-answer">{chapter.answer.slice(0, 90)}{chapter.answer.length > 90 ? "…" : ""}</span>}<span className="ticket-sparkles" aria-hidden="true" /></div>
         {phase === "object" && <button type="button" className="ticket-skip" onClick={() => setPhase("question")}>Continuar sin esperar →</button>}
         {phase === "question" && <form className="ticket-question" onSubmit={saveAnswer}>
           <label htmlFor="chihiro-answer">{experience.question}</label>

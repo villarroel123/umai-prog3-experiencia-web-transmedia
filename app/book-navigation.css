@@ -19,7 +19,8 @@
 .book-journey .book-navigation-prologue .index-page-heading,.book-journey .book-navigation-chapter-page .index-page-heading{align-self:stretch;width:100%}
 .book-prologue-art,.book-chapter-art{position:relative;flex:none;width:min(100%,420px);overflow:hidden;border:4px solid #d1ae77;outline:1px solid #9c784d;box-shadow:0 7px 15px #79522b38}
 .book-prologue-art{height:46%;margin:14px auto 12px;border-radius:48% 48% 7px 7px/20% 20% 7px 7px}
-.book-prologue-art img,.book-chapter-art img{object-fit:cover}
+.book-prologue-art img{object-fit:cover}
+.book-chapter-art img{object-fit:contain}
 .book-navigation-prologue h2{margin:2px 0 5px;color:#433326;font:italic 400 clamp(17px,1.55vw,25px)/1.2 'Libre Baskerville',Georgia,serif}
 .book-navigation-prologue>p{max-width:350px;margin:0;color:#5c4834;font:clamp(10px,.9vw,13px)/1.55 'Libre Baskerville',Georgia,serif}
 .book-text-next{margin:14px auto 0;padding:9px 19px;border:1px solid #9c8659;border-radius:9px;background:#385943;color:#fff2d2;box-shadow:0 4px 8px #3d301f40;font:700 clamp(10px,.9vw,12px) Georgia,serif;cursor:pointer}
