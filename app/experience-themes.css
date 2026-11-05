@@ -1,0 +1,203 @@
+/* The paper and book geometry stay shared; only the illustrated memory changes. */
+.experience-theme .book-game-left .book-game-art {
+  width: 88%;
+  height: 82%;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: auto;
+  border-color: var(--memory-accent);
+  border-width: 2px;
+  border-radius: 45% 45% 9px 9px / 12% 12% 9px 9px;
+  outline-color: var(--memory-main);
+  background: var(--memory-surface);
+  box-shadow: 0 3px 9px #49382e30, 0 0 0 4px #f2e4c78c;
+}
+.experience-theme--chihiro .book-game-left .book-game-art img { object-fit: cover; object-position: 50% 50%; }
+.experience-theme--howl .book-game-left .book-game-art img { object-fit: cover; object-position: 50% 50%; }
+.experience-theme--totoro .book-game-left .book-game-art img { object-fit: cover; object-position: 45% 50%; }
+.experience-theme .book-game-right h1 {
+  max-width: 84%;
+  margin: 0 auto 9px;
+  color: var(--memory-main);
+  font-size: clamp(24px, 2.2vw, 35px);
+  line-height: 1.22;
+}
+.experience-theme .book-game-right > p {
+  max-width: 78%;
+  margin: 0 auto;
+  color: var(--memory-ink);
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.5;
+}
+.experience-theme .memory-divider {
+  position: relative;
+  display: block;
+  width: min(44%, 185px);
+  height: 20px;
+  margin: 0 auto 12px;
+  background: linear-gradient(var(--memory-accent), var(--memory-accent)) center / 100% 1px no-repeat;
+}
+.experience-theme .memory-divider::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: calc(50% - 6px);
+  width: 12px;
+  height: 12px;
+  background: var(--memory-accent);
+  clip-path: polygon(50% 0, 64% 36%, 100% 50%, 64% 64%, 50% 100%, 36% 64%, 0 50%, 36% 36%);
+  box-shadow: 0 0 0 5px var(--memory-surface);
+}
+.experience-theme .book-game-right .page-botanical { opacity: .78; }
+.book-journey .experience-theme .book-game-right { padding-inline: clamp(15px, 1.35vw, 21px); }
+.experience-theme .book-game-right .book-ticket-game,
+.experience-theme .book-game-right .howl-desk,
+.experience-theme .book-game-right .totoro-game {
+  margin-top: clamp(20px, 3.6vh, 38px);
+  margin-bottom: auto;
+}
+
+/* The original four-part ticket sits on a train-seat coloured work surface. */
+.experience-theme--chihiro .book-ticket-game {
+  box-sizing: border-box;
+  width: min(96%, 490px);
+  gap: 16px;
+  padding: 5px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.experience-theme--chihiro .book-ticket-board {
+  width: min(96%, 430px);
+  border-color: var(--memory-accent);
+  box-shadow: 0 3px 8px #644a3738, 0 0 0 4px #e3c8989c;
+}
+.experience-theme--chihiro .book-ticket-board::before { background: #e4ceac80; }
+.experience-theme--chihiro .book-ticket-slot { border-color: var(--memory-secondary); }
+.experience-theme--chihiro .book-ticket-slot:hover:not(:disabled),
+.experience-theme--chihiro .book-ticket-slot:focus-visible { outline-color: var(--memory-accent); }
+.experience-theme--chihiro .book-ticket-piece { border-color: var(--memory-accent); background: var(--memory-surface); }
+.experience-theme--chihiro .book-ticket-tray { gap: clamp(10px, 1.2vw, 18px); min-height: 84px; }
+.experience-theme--chihiro .book-ticket-piece { flex-basis: clamp(61px, 5.6vw, 78px); height: clamp(45px, 3.9vw, 57px); }
+.experience-theme--chihiro .book-ticket-piece:hover,
+.experience-theme--chihiro .book-ticket-piece.is-selected { box-shadow: 0 5px 12px #1b243080, 0 0 0 2px var(--memory-accent); }
+.experience-theme--chihiro .book-ticket-feedback,
+.experience-theme--chihiro .book-ticket-accessibility,
+.experience-theme--chihiro .book-ticket-continue { color: var(--memory-main); }
+.experience-theme--chihiro .book-ticket-accessibility {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.experience-theme--chihiro .book-ticket-continue { border-color: var(--memory-accent); }
+.experience-theme--chihiro .book-ticket-sparkles { color: #ffe6ac; }
+
+/* The new desk uses the same blue sky and meadow hues as the chapter still. */
+.experience-theme--howl .howl-desk {
+  width: min(98%, 500px);
+  aspect-ratio: 1.78;
+  border-color: var(--memory-accent);
+  border-width: 2px;
+  border-radius: 11px;
+  background: var(--memory-surface);
+  box-shadow: 0 4px 12px #3c586140, 0 0 0 3px #e8dabe;
+}
+.experience-theme--howl .howl-desk > img { object-fit: contain; }
+.experience-theme--howl .howl-desk-shade { inset: 69% 0 0; background: linear-gradient(transparent, #34463bbd); }
+.experience-theme--howl .howl-hotspot:hover:not(:disabled),
+.experience-theme--howl .howl-hotspot:focus-visible { outline-color: var(--memory-accent); background: #fff5bd38; }
+.experience-theme--howl .howl-hotspot-drawer::after,
+.experience-theme--howl .howl-hotspot-box::after {
+  content: "⌕";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #f5e7c5;
+  border-radius: 50%;
+  background: #335873b8;
+  box-shadow: 0 1px 5px #2639478c;
+  color: #fff2d7;
+  font: 20px/1 Georgia, serif;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.experience-theme--howl .howl-desk.is-open .howl-hotspot-box::after { display: none; }
+.experience-theme--howl .howl-hotspot-books { top: 56%; left: 8%; width: 24%; height: 22%; }
+.experience-theme--howl .howl-hotspot-papers { top: 73%; left: 16%; width: 23%; height: 18%; }
+.experience-theme--howl .howl-hotspot-drawer { top: 34%; left: 8%; width: 19%; height: 23%; }
+.experience-theme--howl .howl-hotspot-cup { top: 26%; left: 59%; width: 12%; height: 19%; }
+.experience-theme--howl .howl-hotspot-lamp { top: 9%; left: 65%; width: 12%; height: 33%; }
+.experience-theme--howl .howl-hotspot-box { top: 31%; left: 77%; width: 19%; height: 26%; }
+.experience-theme--howl .howl-key { bottom: 14%; left: 15%; width: 15%; filter: drop-shadow(0 2px 4px #6d613c); }
+.experience-theme--howl .howl-desk-letter { top: 31%; left: 77%; width: 19%; filter: drop-shadow(0 0 8px #fff0b7); }
+.experience-theme--howl .howl-desk-sparkles { top: 28%; right: 4%; width: 25%; height: 37%; }
+.experience-theme--howl .howl-desk-continue { background: var(--memory-main); }
+
+/* The clearing shares the chapter's blue water and dense greens. */
+.experience-theme--totoro .totoro-forest-board {
+  width: min(98%, 500px);
+  aspect-ratio: 1.78;
+  border-color: var(--memory-accent);
+  border-width: 2px;
+  border-radius: 11px;
+  background: var(--memory-secondary);
+  box-shadow: 0 4px 12px #284d5252, 0 0 0 3px #e8dabe;
+}
+.experience-theme--totoro .totoro-forest-board > img { object-fit: contain; }
+.experience-theme--totoro .totoro-forest-board::after { background: linear-gradient(180deg, #1c5c8520, transparent 42%, #264a3650); }
+.experience-theme--totoro .totoro-growing-tree { bottom: 20%; filter: drop-shadow(0 2px 5px #254b346b); }
+.experience-theme--totoro .totoro-weather { filter: drop-shadow(0 2px 4px #2a4b5488); }
+.experience-theme--totoro .totoro-weather:hover:not(:disabled),
+.experience-theme--totoro .totoro-weather:focus-visible { outline-color: var(--memory-accent); }
+.experience-theme--totoro .totoro-cloud { top: 7%; left: 9%; width: 20%; height: 23%; }
+.experience-theme--totoro .totoro-sun { top: 6%; right: 8%; width: 18%; height: 24%; }
+.experience-theme--totoro .totoro-leaf-pick { filter: drop-shadow(0 0 9px #fff5b0); }
+.experience-theme--totoro .totoro-growth-progress {
+  display: flex;
+  justify-content: space-between;
+  width: min(94%, 470px);
+  gap: 4px;
+  margin: 12px auto 0;
+  color: #887b64;
+  font: 11px Georgia, serif;
+}
+.experience-theme--totoro .totoro-growth-progress span { display: flex; align-items: center; gap: 5px; }
+.experience-theme--totoro .totoro-growth-progress span::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.experience-theme--totoro .totoro-growth-progress .is-active { color: var(--memory-main); }
+.experience-theme--totoro .totoro-growth-progress .is-active::before { background: currentColor; }
+.experience-theme--totoro .totoro-game-feedback { color: var(--memory-main); }
+.experience-theme--totoro .totoro-forest-continue { background: var(--memory-main); }
+
+@media (max-width: 700px) {
+  .experience-theme .book-game-left .book-game-art { width: 88%; height: 82%; max-height: none; }
+  .experience-theme .book-game-right h1 { max-width: 85%; margin-bottom: 4px; font-size: 21px; }
+  .experience-theme .book-game-right > p { max-width: 96%; font-size: 10px; line-height: 1.35; }
+  .experience-theme .memory-divider { height: 10px; margin-bottom: 5px; }
+  .experience-theme .memory-divider::after { top: 1px; width: 8px; height: 8px; left: calc(50% - 4px); }
+  .experience-theme .book-game-right .book-ticket-game,
+  .experience-theme .book-game-right .howl-desk,
+  .experience-theme .book-game-right .totoro-game { margin-top: 12px; }
+  .experience-theme--chihiro .book-ticket-game { gap: 4px; padding: 0; }
+  .experience-theme--chihiro .book-ticket-board { width: min(94%, 245px); }
+  .experience-theme--chihiro .book-ticket-tray { min-height: 39px; gap: 5px; }
+  .experience-theme--chihiro .book-ticket-piece { flex-basis: 45px; height: 32px; }
+  .experience-theme--howl .howl-desk,
+  .experience-theme--totoro .totoro-forest-board { width: 100%; }
+  .experience-theme--totoro .totoro-growth-progress { margin-top: 6px; font-size: 8px; }
+  .experience-theme--totoro .totoro-growth-progress span { gap: 3px; }
+  .experience-theme--totoro .totoro-growth-progress span::before { width: 6px; height: 6px; }
+}

@@ -4,8 +4,10 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 
-const PAGE_WIDTH = 2.12;
+const PAGE_WIDTH = 1.94;
 const PAGE_DEPTH = 2.78;
+const COVER_WIDTH = PAGE_WIDTH + 0.23;
+const TURN_DURATION_MS = 1850;
 
 function illustratedTexture(kind) {
   const canvas = document.createElement("canvas");
@@ -16,9 +18,9 @@ function illustratedTexture(kind) {
   const cover = kind === "cover";
   const gradient = ink.createLinearGradient(0, 0, 1024, 768);
   if (paper) {
-    gradient.addColorStop(0, "#e8d6ac");
-    gradient.addColorStop(0.5, "#f3e5c4");
-    gradient.addColorStop(1, "#d7bd8e");
+    gradient.addColorStop(0, "#ddbd8f");
+    gradient.addColorStop(0.5, "#efd6ad");
+    gradient.addColorStop(1, "#cda878");
   } else if (cover) {
     gradient.addColorStop(0, "#29494f");
     gradient.addColorStop(0.52, "#34565a");
@@ -236,7 +238,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
     const spiralWood = new THREE.MeshStandardMaterial({ color: 0x986747, roughness: 1 });
     const teal = new THREE.MeshStandardMaterial({ map: coverTexture, color: 0xb9c6b9, roughness: 1, side: THREE.DoubleSide });
     const coverEdge = new THREE.MeshStandardMaterial({ color: 0x18333a, roughness: 1, side: THREE.DoubleSide });
-    const paper = new THREE.MeshStandardMaterial({ map: paperTexture, color: 0xf1e4c9, roughness: 1, side: THREE.DoubleSide });
+    const paper = new THREE.MeshBasicMaterial({ map: paperTexture, color: 0xffffff, side: THREE.DoubleSide });
     const paperEdge = new THREE.MeshStandardMaterial({ color: 0xd8c49b, roughness: 1, side: THREE.DoubleSide });
     const gold = new THREE.MeshStandardMaterial({ color: 0x9a794a, roughness: 0.88, metalness: 0.08 });
 
@@ -267,17 +269,17 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       collar.position.y = y;
       stand.add(collar);
     }
-    rounded(stand, [3.55, 0.12, 0.17], woodDark, [0, -0.06, 0.25], 0.04);
-    const cradle = rounded(stand, [4.7, 0.17, 3.06], wood, [0, 0.23, 0], 0.12);
+    rounded(stand, [2 * PAGE_WIDTH - 0.69, 0.12, 0.17], woodDark, [0, -0.06, 0.25], 0.04);
+    const cradle = rounded(stand, [2 * COVER_WIDTH, 0.17, 3.06], wood, [0, 0.23, 0], 0.12);
     cradle.rotation.x = 0.24;
-    const lip = rounded(stand, [4.4, 0.13, 0.13], carvedWood, [0, -0.05, 1.51], 0.045);
+    const lip = rounded(stand, [2 * (PAGE_WIDTH + 0.08), 0.13, 0.13], carvedWood, [0, -0.05, 1.51], 0.045);
     lip.rotation.x = 0.24;
     for (const side of [-1, 1]) {
       const brace = rounded(stand, [0.12, 0.9, 0.12], woodDark, [side * 1.29, -0.38, -0.42], 0.045);
       brace.rotation.z = side * 0.61;
     }
     const shadowMaterial = new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, opacity: 0.62, depthWrite: false });
-    const contactShadow = new THREE.Mesh(new THREE.PlaneGeometry(4.3, 2.65), shadowMaterial);
+    const contactShadow = new THREE.Mesh(new THREE.PlaneGeometry(2 * (PAGE_WIDTH + 0.03), 2.65), shadowMaterial);
     contactShadow.rotation.x = -Math.PI / 2 + 0.24;
     contactShadow.position.set(0, 0.323, 0);
     stand.add(contactShadow);
@@ -287,11 +289,11 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
     book.rotation.set(0.24, -0.1, 0);
     scene.add(book);
     for (const side of [-1, 1]) {
-      const cover = new THREE.Mesh(leafGeometry(side, 2.35, 3.03, -0.01, 0.12, true), [teal, coverEdge]);
+      const cover = new THREE.Mesh(leafGeometry(side, COVER_WIDTH, 3.03, -0.01, 0.12, true), [teal, coverEdge]);
       cover.castShadow = true;
       cover.receiveShadow = true;
       book.add(cover);
-      const block = new THREE.Mesh(leafGeometry(side, 2.18, 2.83, 0.33, 0.29), [paper, paperEdge]);
+      const block = new THREE.Mesh(leafGeometry(side, PAGE_WIDTH + 0.06, 2.83, 0.33, 0.29), [paper, paperEdge]);
       block.castShadow = true;
       block.receiveShadow = true;
       book.add(block);
@@ -300,7 +302,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
         for (let i = 0; i <= 20; i += 1) {
           const fraction = i / 20;
           frontEdge.push(new THREE.Vector3(
-            side * (0.045 + fraction * 2.16),
+            side * (0.045 + fraction * (PAGE_WIDTH + 0.04)),
             0.31 + pageHeight(fraction, 1.39) - layer * 0.039,
             1.405 - 0.02 * Math.pow(fraction, 4),
           ));
@@ -320,15 +322,15 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       const strokes = [];
       for (let i = 0; i < 6; i += 1) {
         const z = -1.22 + i * 0.48;
-        strokes.push(new THREE.Vector3(side * 2.17, 0.12 + (i % 2) * 0.018, z));
-        strokes.push(new THREE.Vector3(side * 2.18, 0.12 + (i % 2) * 0.018, z + 0.15));
+        strokes.push(new THREE.Vector3(side * (PAGE_WIDTH + 0.05), 0.12 + (i % 2) * 0.018, z));
+        strokes.push(new THREE.Vector3(side * (PAGE_WIDTH + 0.06), 0.12 + (i % 2) * 0.018, z + 0.15));
       }
       const marks = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(strokes), new THREE.LineBasicMaterial({ color: 0x9d8d70, transparent: true, opacity: 0.55 }));
       book.add(marks);
       for (const z of [-1.39, 1.39]) {
         const corner = new THREE.Mesh(new THREE.SphereGeometry(0.052, 10, 7), gold);
         corner.scale.set(1, 0.38, 1);
-        corner.position.set(side * 2.27, 0.075, z);
+        corner.position.set(side * (PAGE_WIDTH + 0.15), 0.075, z);
         book.add(corner);
       }
     }
@@ -376,11 +378,33 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       return { pivot, mesh, original: Float32Array.from(mesh.geometry.attributes.position.array), side };
     });
     const turningShadowMaterial = new THREE.MeshBasicMaterial({ color: 0x493421, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide });
-    const turningShadow = new THREE.Mesh(new THREE.PlaneGeometry(PAGE_WIDTH, PAGE_DEPTH), turningShadowMaterial);
+    const turningShadow = new THREE.Mesh(new THREE.PlaneGeometry(0.42, PAGE_DEPTH), turningShadowMaterial);
     turningShadow.rotation.x = -Math.PI / 2;
     turningShadow.position.y = 0.485;
     turningShadow.visible = false;
     book.add(turningShadow);
+    const turnDustPositions = new Float32Array(18 * 3);
+    const turnDustGeometry = new THREE.BufferGeometry();
+    turnDustGeometry.setAttribute("position", new THREE.BufferAttribute(turnDustPositions, 3));
+    const turnDustMaterial = new THREE.PointsMaterial({ color: 0xffd889, size: 0.065, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true });
+    const turnDust = new THREE.Points(turnDustGeometry, turnDustMaterial);
+    book.add(turnDust);
+    const starCanvas = document.createElement("canvas");
+    starCanvas.width = starCanvas.height = 32;
+    const starInk = starCanvas.getContext("2d");
+    starInk.fillStyle = "#fff1bd";
+    starInk.shadowColor = "#ffca69";
+    starInk.shadowBlur = 8;
+    starInk.beginPath();
+    [[16, 1], [19, 13], [31, 16], [19, 19], [16, 31], [13, 19], [1, 16], [13, 13]].forEach(([x, y], i) => i ? starInk.lineTo(x, y) : starInk.moveTo(x, y));
+    starInk.closePath();
+    starInk.fill();
+    const starTexture = new THREE.CanvasTexture(starCanvas);
+    const turnStarPositions = new Float32Array(3 * 3);
+    const turnStarGeometry = new THREE.BufferGeometry();
+    turnStarGeometry.setAttribute("position", new THREE.BufferAttribute(turnStarPositions, 3));
+    const turnStarMaterial = new THREE.PointsMaterial({ map: starTexture, color: 0xffffff, size: 0.22, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true });
+    book.add(new THREE.Points(turnStarGeometry, turnStarMaterial));
 
     const ambient = new THREE.AmbientLight(0xffe9c8, 1.15);
     scene.add(ambient);
@@ -425,7 +449,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       new THREE.Vector3(-1.6, 0.48, 1.53),
       new THREE.Vector3(-0.4, 0.54, 1.62),
       new THREE.Vector3(1.15, 0.46, 1.53),
-      new THREE.Vector3(2.12, 0.4, 1.22),
+      new THREE.Vector3(PAGE_WIDTH, 0.4, 1.22),
     ]);
     const trail = new THREE.Line(new THREE.BufferGeometry().setFromPoints(trailCurve.getPoints(64)), trailMaterial);
     book.add(trail);
@@ -478,7 +502,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       view.aspect = aspect;
       view.up.set(0, 0, -1);
       view.updateProjectionMatrix();
-      const bounds = narrow ? [side < 0 ? -2.35 : 0, side < 0 ? 0 : 2.35] : [-2.35, 2.35];
+      const bounds = narrow ? [side < 0 ? -COVER_WIDTH : 0, side < 0 ? 0 : COVER_WIDTH] : [-COVER_WIDTH, COVER_WIDTH];
       const corners = [];
       for (const x of bounds) for (const y of [0.86, 1.63]) for (const z of [-1.55, 1.55]) {
         corners.push(new THREE.Vector3(x, y, z + 0.18));
@@ -508,7 +532,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       scene.updateMatrixWorld(true);
       camera.updateMatrixWorld();
       const points = [];
-      const inner = side < 0 ? [-1.98, -0.17] : [0.17, 1.98];
+      const inner = side < 0 ? [-PAGE_WIDTH + 0.14, -0.17] : [0.17, PAGE_WIDTH - 0.14];
       for (const x of inner) for (const z of [-1.22, 1.22]) {
         const fraction = Math.abs(x) / PAGE_WIDTH;
         const worldPoint = book.localToWorld(new THREE.Vector3(x, 0.4 + pageHeight(fraction, z) + 0.008, z));
@@ -574,7 +598,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       for (let i = 0; i < attribute.count; i += 1) {
         const fraction = Math.min(1, Math.max(0, Math.abs(original[i * 3]) / PAGE_WIDTH));
         // The free edge starts first; each column bends around the spine in turn.
-        const travel = THREE.MathUtils.smoothstep((progress - 0.13 * (1 - fraction)) / 0.87, 0, 1);
+        const travel = THREE.MathUtils.smoothstep((progress - 0.1 * (1 - fraction)) / 0.9, 0, 1);
         const angle = Math.PI * travel;
         const lift = Math.sin(angle);
         const x = original[i * 3];
@@ -587,8 +611,18 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       mesh.geometry.computeVertexNormals();
     }
 
+    function updateTurnSurface(host, turnProgress) {
+      host.style.setProperty("--turn-source-opacity", `${1 - THREE.MathUtils.smoothstep(turnProgress, 0.08, 0.34)}`);
+      host.style.setProperty("--turn-target-opacity", `${THREE.MathUtils.smoothstep(turnProgress, 0.7, 1)}`);
+      host.style.setProperty("--turn-image-opacity", `${THREE.MathUtils.smoothstep(turnProgress, 0.69, 0.91)}`);
+      host.style.setProperty("--turn-title-opacity", `${THREE.MathUtils.smoothstep(turnProgress, 0.74, 0.95)}`);
+      host.style.setProperty("--turn-copy-opacity", `${THREE.MathUtils.smoothstep(turnProgress, 0.78, 0.98)}`);
+      host.style.setProperty("--turn-button-opacity", `${THREE.MathUtils.smoothstep(turnProgress, 0.84, 1)}`);
+      host.dataset.turnSurface = "ready";
+    }
+
     function animate(now) {
-      const requestedTurn = turnRef.current;
+      const requestedTurn = turnRef.current?.ready ? turnRef.current : null;
       if (requestedTurn && requestedTurn.id !== currentTurnId) {
         currentTurnId = requestedTurn.id;
         turnStartedAt = now;
@@ -687,21 +721,43 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       pageGlow.intensity = opening ? 0.65 + Math.sin(Math.min(elapsed / 3.4, 1) * Math.PI) * 0.42 : reading ? 0.2 : magic * 0.5;
       pageGlow.position.y = book.position.y + 0.55;
       turningPages.forEach((item, index) => bendTurningPage(item, opening ? (elapsed - (index ? 1.38 : 0.76)) / 1.56 : 0));
-      const turnProgress = requestedTurn && !turnCompleted ? Math.min((now - turnStartedAt) / 1050, 1) : 0;
+      const turnProgress = requestedTurn && !turnCompleted ? Math.min((now - turnStartedAt) / TURN_DURATION_MS, 1) : 0;
       const projectionHost = projectionHostRef.current;
       if (projectionHost && requestedTurn) {
-        const angle = THREE.MathUtils.smoothstep((turnProgress - 0.065) / 0.87, 0, 1) * 180 * -requestedTurn.direction;
-        projectionHost.style.setProperty("--book-turn-angle", `${angle}deg`);
+        updateTurnSurface(projectionHost, turnProgress);
         projectionHost.dataset.turnHalf = turnProgress >= 0.5 ? "true" : "false";
       }
       for (const item of navigationPages) {
         bendTurningPage(item, requestedTurn && item.side === requestedTurn.direction ? turnProgress : 0);
       }
       turningShadow.visible = !!requestedTurn && turnProgress > 0 && turnProgress < 1;
-      turningShadow.position.x = requestedTurn?.direction === 1 ? -PAGE_WIDTH / 2 : PAGE_WIDTH / 2;
-      turningShadowMaterial.opacity = 0.21 * Math.sin(turnProgress * Math.PI);
+      turningShadow.position.x = requestedTurn?.direction === 1 ? -0.21 : 0.21;
+      turningShadowMaterial.opacity = 0.13 * Math.sin(turnProgress * Math.PI);
+      turnDustMaterial.opacity = requestedTurn && !reducedMotion.matches ? 0.6 * Math.sin(turnProgress * Math.PI) : 0;
+      turnStarMaterial.opacity = turnDustMaterial.opacity * 0.8;
+      if (requestedTurn && !reducedMotion.matches) {
+        const count = window.innerWidth < 700 ? 9 : 18;
+        const side = requestedTurn.direction;
+        for (let i = 0; i < 18; i += 1) {
+          const phase = i * 2.399;
+          const drift = (turnProgress * 1.7 + i * 0.137) % 1;
+          const edge = side * PAGE_WIDTH * Math.cos(Math.PI * THREE.MathUtils.smoothstep(turnProgress, 0.08, 0.93));
+          turnDustPositions[i * 3] = i < count ? edge * (0.55 + (i % 5) * 0.09) + Math.sin(phase) * 0.14 : 100;
+          turnDustPositions[i * 3 + 1] = 0.65 + Math.sin(turnProgress * Math.PI) * 0.5 + drift * 0.45;
+          turnDustPositions[i * 3 + 2] = Math.cos(phase) * 0.58 + Math.sin(drift * Math.PI) * 0.16;
+        }
+        turnDustGeometry.attributes.position.needsUpdate = true;
+        for (let i = 0; i < 3; i += 1) {
+          const sourceIndex = (i * 6 + 2) * 3;
+          turnStarPositions[i * 3] = turnDustPositions[sourceIndex];
+          turnStarPositions[i * 3 + 1] = turnDustPositions[sourceIndex + 1];
+          turnStarPositions[i * 3 + 2] = turnDustPositions[sourceIndex + 2];
+        }
+        turnStarGeometry.attributes.position.needsUpdate = true;
+      }
       if (requestedTurn && turnProgress >= 1 && !turnCompleted) {
         turnCompleted = true;
+        if (projectionHost) projectionHost.dataset.turnSurface = "complete";
         navigationPages.forEach((item) => { item.pivot.visible = false; });
         turningShadow.visible = false;
         turnCompleteRef.current();
@@ -735,6 +791,7 @@ export default function BookScene({ phase, mobilePage, turn, projectionHostRef, 
       woodTexture.dispose();
       coverTexture.dispose();
       paperTexture.dispose();
+      starTexture.dispose();
       shadowTexture.dispose();
       renderer.dispose();
       renderer.domElement.remove();

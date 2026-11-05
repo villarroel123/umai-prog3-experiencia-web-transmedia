@@ -3,6 +3,12 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { chapterExperiences } from "@/data/chapterExperiences";
+import { experienceThemes } from "@/data/experienceThemes";
+import ExperienceGameSpread from "@/components/ExperienceGameSpread";
+import MemoryRestoration, { MemoryRestorationArt, MemoryRestorationPreview } from "@/components/MemoryRestoration";
+import MagicalInk from "@/components/MagicalInk";
+import ShareMemoryPrompt from "@/components/ShareMemoryPrompt";
+import { markMemoryInkPending } from "@/data/memoryAnimations";
 
 const assets = "/images/experiences/howl";
 const experience = chapterExperiences.howl;
@@ -13,7 +19,7 @@ function HowlDesk({ progress, journey, preview }) {
   const [unlocking, setUnlocking] = useState(false);
   const [boxOpen, setBoxOpen] = useState(false);
   const [letterTaken, setLetterTaken] = useState(false);
-  const [feedback, setFeedback] = useState("Explorá los objetos del escritorio.");
+  const [feedback, setFeedback] = useState("");
   const busy = useRef(false);
   const storageKey = `biblioteca-howl-escritorio-v1:${progress.authUser?.uid || "local"}`;
   const { startGame } = progress;
@@ -78,7 +84,7 @@ function HowlDesk({ progress, journey, preview }) {
     window.setTimeout(() => journey?.turnTo("howlObject"), 1100);
   }
   return <div className={`howl-desk${boxOpen ? " is-open" : ""}${letterTaken ? " is-recovered" : ""}`}>
-    <Image src={`${assets}/escritorio-magico.webp`} alt="Escritorio mágico con libros, lámpara, cajón y caja cerrada" fill sizes="(max-width: 700px) 85vw, 38vw" />
+    <Image src={`${assets}/escritorio-colina.png`} alt="Escritorio ilustrado en una colina con libros, lámpara, cajón y caja cerrada" fill sizes="(max-width: 700px) 85vw, 38vw" />
     <div className="howl-desk-shade" aria-hidden="true" />
     {["books", "papers", "drawer", "cup", "lamp", "box"].map((object) => <button key={object} type="button" className={`howl-hotspot howl-hotspot-${object}`} onClick={() => inspect(object)} disabled={preview || letterTaken} aria-label={{ books: "Explorar los libros", papers: "Explorar los papeles", drawer: "Abrir el cajón", cup: "Mirar la taza", lamp: "Examinar la lámpara", box: "Abrir la caja" }[object]} />)}
     {keyFound && <div className={`howl-key${unlocking ? " is-unlocking" : ""}`} aria-label="Llave recuperada"><Image src={`${assets}/llave.webp`} alt="" width={580} height={506} sizes="60px" /></div>}
@@ -97,6 +103,8 @@ function HowlQuestion({ progress, journey, preview }) {
   const [feedback, setFeedback] = useState("");
   const submitted = useRef(false);
   const draftKey = `biblioteca-howl-borrador-v1:${progress.authUser?.uid || "local"}`;
+  const transitionPreview = preview && journey?.turn?.source === "howlObject" && journey?.turn?.target === "howlRestored";
+  const showingAnimation = restoring || transitionPreview;
   useEffect(() => {
     if (preview || chapter.saved) return;
     try { const saved = window.localStorage.getItem(draftKey); if (saved) queueMicrotask(() => setAnswer(saved.slice(0, 500))); }
@@ -110,19 +118,22 @@ function HowlQuestion({ progress, journey, preview }) {
     const success = await progress.saveAnswer("howl", answer);
     if (!success) { submitted.current = false; setSaving(false); setFeedback("No se pudo guardar la carta. Intentá nuevamente."); return; }
     try { window.localStorage.removeItem(draftKey); } catch { /* El texto ya está guardado. */ }
+    markMemoryInkPending("howl");
     setRestoring(true);
-    window.setTimeout(() => journey?.turnTo("howlRestored"), 1900);
   }
   return <>
     <div className={`storybook-page storybook-title-page stage-c-object-left howl-object-left${restoring ? " is-restoring" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <div className="stage-c-object-art"><Image src={`${assets}/${restoring ? "sobre-abierto" : "sobre-cerrado"}.webp`} alt="Sobre antiguo con sello de cera y flores" width={900} height={834} sizes="(max-width: 700px) 78vw, 34vw" priority />{restoring && <span className="howl-writing-preview">{answer.slice(0, 75)}</span>}</div>
-      <p className="book-art-caption">La carta recuperada</p>
+      {showingAnimation ? <MemoryRestorationArt theme={experienceThemes.howl} /> : <>
+        <div className="stage-c-object-art"><Image src={`${assets}/sobre-cerrado.webp`} alt="Sobre antiguo con sello de cera y flores" width={900} height={834} sizes="(max-width: 700px) 78vw, 34vw" priority /></div>
+        <p className="book-art-caption">La carta recuperada</p>
+      </>}
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
     </div>
-    <div className="storybook-page storybook-index-page stage-c-form-page">
+    <div className={`storybook-page storybook-index-page stage-c-form-page${showingAnimation ? " memory-restoration-page" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>La carta que nunca enviaste</h1>
+      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="howl" onComplete={() => journey?.turnTo("howlRestored")} />) : <>
       {!chapter.objectRecovered ? <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo("howlGame")}>Recuperar la carta →</button> : <>
         <p>{experience.question}</p>
         <form onSubmit={save}>
@@ -133,8 +144,8 @@ function HowlQuestion({ progress, journey, preview }) {
           {feedback && <p role="alert">{feedback}</p>}
         </form>
       </>}
-      {restoring && <p className="book-restoring-message" role="status">La carta vuelve a su página…</p>}
       {chapter.saved && !restoring && !preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("howlRestored")}>Leer la carta guardada →</button>}
+      </>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>
   </>;
@@ -143,14 +154,7 @@ function HowlQuestion({ progress, journey, preview }) {
 function HowlRestored({ progress, journey, preview }) {
   const chapter = progress.chapter("howl");
   const [opened, setOpened] = useState(false);
-  const [length, setLength] = useState(0);
   const active = journey?.spread === "howlRestored" && !journey?.turn && !preview;
-  useEffect(() => {
-    if (!active || !chapter.saved) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { queueMicrotask(() => setLength(chapter.answer.length)); return; }
-    const timer = window.setInterval(() => setLength((current) => Math.min(chapter.answer.length, current + 2)), 28);
-    return () => window.clearInterval(timer);
-  }, [active, chapter.answer, chapter.saved]);
   if (!chapter.saved) return <HowlQuestion progress={progress} journey={journey} preview={preview} />;
   return <>
     <div className="storybook-page storybook-title-page stage-c-restored-left">
@@ -164,7 +168,8 @@ function HowlRestored({ progress, journey, preview }) {
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>La carta que nunca enviaste</h1>
       <p className="book-restored-question">{experience.question}</p>
-      <blockquote className="book-restored-answer">{active ? chapter.answer.slice(0, length) : chapter.answer}{active && length < chapter.answer.length && <span aria-hidden="true" className="ink-cursor">│</span>}</blockquote>
+      <MagicalInk answer={chapter.answer} chapterId="howl" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
+      <ShareMemoryPrompt chapterId="howl" answer={chapter.answer} progress={progress} journey={journey} preview={preview} />
       {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("howl")}>Volver al capítulo →</button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>
@@ -172,10 +177,9 @@ function HowlRestored({ progress, journey, preview }) {
 }
 
 export default function HowlBookPages({ spread, progress, journey, preview = false }) {
-  return <div className="storybook-cover"><div className="storybook-pages">
-    {spread === "howlGame" ? <>
-      <div className="storybook-page storybook-title-page book-game-left stage-c-game-left"><span className="page-botanical page-botanical-top" aria-hidden="true" /><div className="book-game-art"><Image src={`${assets}/escritorio-magico.webp`} alt="Interior cálido del castillo con un escritorio antiguo" fill sizes="(max-width: 700px) 85vw, 37vw" /></div><span className="page-botanical page-botanical-bottom" aria-hidden="true" /></div>
-      <div className="storybook-page storybook-index-page book-game-right stage-c-game-right"><span className="page-botanical page-botanical-top" aria-hidden="true" /><h1>La carta que nunca enviaste</h1><p>Explorá el escritorio, encontrá la llave y recuperá la carta escondida.</p><HowlDesk progress={progress} journey={journey} preview={preview} /><span className="page-botanical page-botanical-bottom-right" aria-hidden="true" /></div>
-    </> : spread === "howlObject" ? <HowlQuestion progress={progress} journey={journey} preview={preview} /> : <HowlRestored progress={progress} journey={journey} preview={preview} />}
+  return <div className="storybook-cover experience-theme experience-theme--howl" style={experienceThemes.howl.style}><div className="storybook-pages">
+    {spread === "howlGame" ? <ExperienceGameSpread theme={experienceThemes.howl} title="La carta que nunca enviaste" instruction="Explorá el escritorio, encontrá la llave y recuperá la carta escondida." stageC>
+      <HowlDesk progress={progress} journey={journey} preview={preview} />
+    </ExperienceGameSpread> : spread === "howlObject" ? <HowlQuestion progress={progress} journey={journey} preview={preview} /> : <HowlRestored progress={progress} journey={journey} preview={preview} />}
   </div></div>;
 }

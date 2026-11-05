@@ -22,8 +22,9 @@ const bookPaths = {
   totoroObject: "/recuerdos/totoro/objeto",
   totoroRestored: "/recuerdos/totoro/restaurado",
   finale: "/final",
+  community: "/red-recuerdos",
 };
-const bookOrder = ["index", "contents", "chihiro", "game", "object", "restored", "howl", "howlGame", "howlObject", "howlRestored", "totoro", "totoroGame", "totoroObject", "totoroRestored", "finale"];
+const bookOrder = ["index", "contents", "chihiro", "game", "object", "restored", "howl", "howlGame", "howlObject", "howlRestored", "totoro", "totoroGame", "totoroObject", "totoroRestored", "finale", "community"];
 
 function pageForPath(pathname) {
   const key = Object.keys(bookPaths).find((item) => bookPaths[item] === pathname);
@@ -42,7 +43,7 @@ export default function BookJourney({ children }) {
   const [intendedPath, setIntendedPath] = useState(null);
   const [phase, setPhase] = useState(() => pathname === "/biblioteca" ? "reading" : "intro");
   const [unavailable, setUnavailable] = useState(false);
-  const [mobilePage, setMobilePage] = useState(() => ["game", "object", "howlGame", "howlObject", "totoroGame", "totoroObject"].includes(pageForPath(pathname)) ? "right" : "left");
+  const [mobilePage, setMobilePage] = useState(() => ["game", "object", "howlGame", "howlObject", "totoroGame", "totoroObject", "community"].includes(pageForPath(pathname)) ? "right" : "left");
   const [spread, setSpread] = useState(() => pageForPath(pathname));
   const [turn, setTurn] = useState(null);
   const turnSerial = useRef(0);
@@ -76,6 +77,7 @@ export default function BookJourney({ children }) {
       window.history.pushState(null, "", bookPaths[key]);
       return;
     }
+    if (shellRef.current) shellRef.current.dataset.turnSurface = "preparing";
     setMobilePage(direction > 0 ? "right" : "left");
     turningRef.current = true;
     turnSerial.current += 1;
@@ -92,6 +94,10 @@ export default function BookJourney({ children }) {
     window.history.pushState(null, "", bookPaths[finished.target]);
     turningRef.current = false;
     setTurn(null);
+  }, []);
+
+  const activateTurn = useCallback((id) => {
+    setTurn((current) => current?.id === id ? { ...current, ready: true } : current);
   }, []);
 
   const begin = useCallback(() => {
@@ -128,7 +134,7 @@ export default function BookJourney({ children }) {
     router.push("/");
   }, [router]);
 
-  const context = { begin, mobilePage, pageIndex, spread, turn, phase: activePhase, returnToIntro, setMobilePage, turnTo, turning: !!turn, unavailable };
+  const context = { activateTurn, begin, mobilePage, pageIndex, spread, turn, phase: activePhase, returnToIntro, setMobilePage, turnTo, turning: !!turn, unavailable };
 
   if (!isBookRoute) return children;
 

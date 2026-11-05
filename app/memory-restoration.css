@@ -1,0 +1,180 @@
+/* The restoration stays inside the existing projected paper surfaces. */
+.book-journey .memory-restoration-art {
+  position: relative;
+  width: 88%;
+  height: 82%;
+  margin: auto;
+  overflow: hidden;
+  border: 2px solid var(--memory-accent);
+  border-radius: 45% 45% 9px 9px / 12% 12% 9px 9px;
+  outline: 1px solid var(--memory-main);
+  background: var(--memory-surface);
+  box-shadow: 0 3px 9px #49382e30, 0 0 0 4px #f2e4c78c;
+}
+.memory-restoration-art img { object-fit: cover; }
+.experience-theme--totoro .memory-restoration-art img { object-position: 45% 50%; }
+.book-journey .memory-restoration-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 0;
+}
+.book-journey .memory-restoration-page h1 {
+  max-width: 90%;
+  margin: 0 auto 14px;
+  color: var(--memory-main);
+  font: italic 400 clamp(21px, 2vw, 31px)/1.2 'Libre Baskerville', Georgia, serif;
+}
+.memory-restoration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(90%, 440px);
+  max-height: 72%;
+  min-height: 0;
+  gap: 12px;
+  margin: 0 auto;
+}
+.memory-restoration-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--memory-accent), transparent 20%);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--memory-surface), transparent 46%);
+  box-shadow: 0 4px 14px #62492e38, 0 0 0 5px #f1e2c576;
+}
+.memory-restoration-frame > img {
+  display: block;
+  width: 100%;
+  max-height: min(48vh, 380px);
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  animation: memory-gif-arrive .55s ease-out forwards;
+}
+.memory-restoration.is-fading .memory-restoration-frame > img {
+  animation: memory-gif-depart .75s ease-in forwards;
+}
+.memory-restoration-skip {
+  position: relative;
+  z-index: 2;
+  padding: 5px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--memory-accent);
+  background: transparent;
+  color: var(--memory-main);
+  cursor: pointer;
+  font: 11px/1.3 Georgia, serif;
+}
+.memory-restoration-skip:hover,
+.memory-restoration-skip:focus-visible { outline: 1px solid var(--memory-main); outline-offset: 3px; }
+.memory-restoration-particles {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.memory-restoration-particles i {
+  position: absolute;
+  left: calc(12% + var(--i, 0) * 11%);
+  top: calc(25% + var(--i, 0) * 7%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--memory-accent);
+  box-shadow: 0 0 8px 3px color-mix(in srgb, var(--memory-accent), transparent 35%);
+  opacity: 0;
+}
+.memory-restoration-particles i:nth-child(1) { --i: 0; }
+.memory-restoration-particles i:nth-child(2) { --i: 1; }
+.memory-restoration-particles i:nth-child(3) { --i: 2; }
+.memory-restoration-particles i:nth-child(4) { --i: 3; }
+.memory-restoration-particles i:nth-child(5) { --i: 4; }
+.memory-restoration-particles i:nth-child(6) { --i: 5; }
+.memory-restoration-particles i:nth-child(7) { --i: 6; }
+.memory-restoration.is-fading .memory-restoration-particles i {
+  animation: memory-particle-to-paper .8s ease-out calc(var(--i) * 55ms) both;
+}
+.memory-restoration-preview {
+  display: grid;
+  place-items: center;
+  width: min(80%, 350px);
+  height: 50%;
+  margin: auto;
+  border: 1px solid var(--memory-accent);
+  border-radius: 8px;
+  background: radial-gradient(circle, #fff3ce 0, transparent 62%);
+  color: var(--memory-accent);
+  font: 38px Georgia, serif;
+}
+.memory-ink-quote { position: relative; color: var(--memory-main); }
+.memory-ink-text { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.memory-ink-quote.is-writing .memory-ink-text {
+  clip-path: inset(0 0 100% 0);
+  animation: memory-ink-reveal var(--ink-duration) linear forwards;
+}
+.memory-ink-light {
+  position: absolute;
+  z-index: 1;
+  left: 5%;
+  top: 0;
+  width: 90%;
+  height: 2px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, var(--memory-accent), transparent 72%);
+  box-shadow: 0 0 10px 2px var(--memory-accent);
+  opacity: 0;
+  animation: memory-ink-trace var(--ink-duration) ease-in-out forwards;
+  pointer-events: none;
+}
+.memory-ink-spark { position: absolute; right: 4%; bottom: 2px; color: var(--memory-accent); animation: memory-ink-spark .7s ease-out both; }
+.memory-restored-indicator,
+.memory-sync-status {
+  display: block;
+  max-width: 90%;
+  margin: 0 auto 8px;
+  color: var(--memory-main);
+  text-align: center;
+  font: 10px/1.4 Georgia, serif;
+}
+.memory-restored-indicator { letter-spacing: .08em; text-transform: uppercase; }
+.memory-sync-status { letter-spacing: normal; text-transform: none; }
+@keyframes memory-gif-arrive { to { opacity: 1; } }
+@keyframes memory-gif-depart { from { opacity: 1; } to { opacity: 0; } }
+@keyframes memory-particle-to-paper {
+  12% { opacity: .9; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(20px, 45px) scale(.35); }
+}
+@keyframes memory-ink-reveal { to { clip-path: inset(0 0 0 0); } }
+@keyframes memory-ink-trace {
+  0% { opacity: 0; transform: translateY(0); }
+  15% { opacity: .8; }
+  85% { opacity: .7; }
+  100% { opacity: 0; transform: translateY(190px); }
+}
+@keyframes memory-ink-spark { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+@media (max-width: 700px) {
+  .book-journey .memory-restoration-page h1 { margin-bottom: 7px; font-size: 20px; }
+  .memory-restoration { width: min(90%, 330px); max-height: 75%; gap: 7px; }
+  .memory-restoration-frame > img { max-height: 45vh; }
+  .memory-restoration-skip { font-size: 10px; }
+  .memory-ink-quote { max-height: 34%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .memory-restoration-frame > img,
+  .memory-restoration.is-fading .memory-restoration-frame > img,
+  .memory-restoration.is-fading .memory-restoration-particles i,
+  .memory-ink-quote.is-writing .memory-ink-text,
+  .memory-ink-light,
+  .memory-ink-spark { animation: none !important; }
+  .memory-restoration-frame > img { opacity: 1; }
+  .memory-ink-quote.is-writing .memory-ink-text { clip-path: none; }
+}

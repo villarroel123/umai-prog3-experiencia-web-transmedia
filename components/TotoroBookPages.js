@@ -3,6 +3,12 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { chapterExperiences } from "@/data/chapterExperiences";
+import { experienceThemes } from "@/data/experienceThemes";
+import ExperienceGameSpread from "@/components/ExperienceGameSpread";
+import MemoryRestoration, { MemoryRestorationArt, MemoryRestorationPreview } from "@/components/MemoryRestoration";
+import MagicalInk from "@/components/MagicalInk";
+import ShareMemoryPrompt from "@/components/ShareMemoryPrompt";
+import { markMemoryInkPending } from "@/data/memoryAnimations";
 
 const assets = "/images/experiences/totoro";
 const experience = chapterExperiences.totoro;
@@ -12,7 +18,7 @@ function ForestGame({ progress, journey, preview }) {
   const [watered, setWatered] = useState(false);
   const [sunlit, setSunlit] = useState(false);
   const [recovering, setRecovering] = useState(false);
-  const [feedback, setFeedback] = useState("Acercá la nube a la planta para darle lluvia.");
+  const [feedback, setFeedback] = useState("");
   const [drag, setDrag] = useState(null);
   const boardRef = useRef(null);
   const movedRef = useRef(false);
@@ -84,7 +90,7 @@ function ForestGame({ progress, journey, preview }) {
   }
   return <div className="totoro-game">
     <div className={`totoro-forest-board${watered ? " is-watered" : ""}${sunlit ? " is-sunlit" : ""}${recovering ? " is-recovering" : ""}`} ref={boardRef}>
-      <Image src={`${assets}/claro-del-bosque.webp`} alt="Claro del bosque con un pequeño brote en la tierra" fill sizes="(max-width: 700px) 85vw, 38vw" />
+      <Image src={`${assets}/claro-estanque.png`} alt="Claro ilustrado junto al estanque con un pequeño brote en la tierra" fill sizes="(max-width: 700px) 85vw, 38vw" />
       <div className="totoro-growing-tree" aria-hidden="true"><Image src={`${assets}/arbol.webp`} alt="" width={544} height={850} sizes="(max-width: 700px) 40vw, 18vw" /></div>
       {watered && <span className="totoro-rain" aria-hidden="true"><i /><i /><i /><i /><i /></span>}
       {sunlit && <span className="totoro-sunbeams" aria-hidden="true" />}
@@ -93,8 +99,10 @@ function ForestGame({ progress, journey, preview }) {
       {sunlit && (!chapter.objectRecovered || recovering) && <button type="button" className="totoro-leaf-pick" onClick={takeLeaf} disabled={preview || recovering} aria-label="Recuperar la hoja del árbol"><Image src={`${assets}/hoja.webp`} alt="Hoja especial del bosque" width={850} height={570} sizes="95px" /></button>}
       {chapter.objectRecovered && !preview && <button type="button" className="totoro-forest-continue" onClick={() => journey?.turnTo("totoroObject")}>Ver la hoja recuperada →</button>}
     </div>
+    <div className="totoro-growth-progress" aria-label={`Crecimiento: ${chapter.objectRecovered ? "hoja recuperada" : sunlit ? "planta crecida" : watered ? "brote regado" : "semilla"}`}>
+      {["Semilla", "Brote", "Planta", "Hoja"].map((step, index) => <span key={step} className={index <= (chapter.objectRecovered ? 3 : sunlit ? 2 : watered ? 1 : 0) ? "is-active" : ""} aria-hidden="true">{step}</span>)}
+    </div>
     <p className="totoro-game-feedback" role="status">{feedback}</p>
-    <p className="totoro-game-help">Arrastrá los elementos hacia la planta o tocalos. Lluvia → luz → hoja.</p>
   </div>;
 }
 
@@ -106,6 +114,8 @@ function TotoroQuestion({ progress, journey, preview }) {
   const [feedback, setFeedback] = useState("");
   const submitted = useRef(false);
   const draftKey = `biblioteca-totoro-borrador-v1:${progress.authUser?.uid || "local"}`;
+  const transitionPreview = preview && journey?.turn?.source === "totoroObject" && journey?.turn?.target === "totoroRestored";
+  const showingAnimation = restoring || transitionPreview;
   useEffect(() => {
     if (preview || chapter.saved) return;
     try { const saved = window.localStorage.getItem(draftKey); if (saved) queueMicrotask(() => setAnswer(saved.slice(0, 500))); }
@@ -119,19 +129,22 @@ function TotoroQuestion({ progress, journey, preview }) {
     const success = await progress.saveAnswer("totoro", answer);
     if (!success) { submitted.current = false; setSaving(false); setFeedback("No se pudo guardar el recuerdo. Intentá nuevamente."); return; }
     try { window.localStorage.removeItem(draftKey); } catch { /* El texto ya está guardado. */ }
+    markMemoryInkPending("totoro");
     setRestoring(true);
-    window.setTimeout(() => journey?.turnTo("totoroRestored"), 1900);
   }
   return <>
     <div className={`storybook-page storybook-title-page stage-c-object-left totoro-object-left${restoring ? " is-restoring" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
-      <div className="stage-c-object-art totoro-object-art"><Image src={`${assets}/hoja.webp`} alt="Hoja especial recuperada del bosque" width={850} height={570} sizes="(max-width: 700px) 78vw, 34vw" priority />{restoring && <span className="totoro-writing-preview">{answer.slice(0, 70)}</span>}</div>
-      <p className="book-art-caption">La hoja recuperada</p>
+      {showingAnimation ? <MemoryRestorationArt theme={experienceThemes.totoro} /> : <>
+        <div className="stage-c-object-art totoro-object-art"><Image src={`${assets}/hoja.webp`} alt="Hoja especial recuperada del bosque" width={850} height={570} sizes="(max-width: 700px) 78vw, 34vw" priority /></div>
+        <p className="book-art-caption">La hoja recuperada</p>
+      </>}
       <span className="page-botanical page-botanical-bottom" aria-hidden="true" />
     </div>
-    <div className="storybook-page storybook-index-page stage-c-form-page">
+    <div className={`storybook-page storybook-index-page stage-c-form-page${showingAnimation ? " memory-restoration-page" : ""}`}>
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>El recuerdo de la infancia</h1>
+      {showingAnimation ? (transitionPreview ? <MemoryRestorationPreview /> : <MemoryRestoration chapterId="totoro" onComplete={() => journey?.turnTo("totoroRestored")} />) : <>
       {!chapter.objectRecovered ? <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo("totoroGame")}>Recuperar la hoja →</button> : <>
         <p>{experience.question}</p>
         <form onSubmit={save}>
@@ -142,8 +155,8 @@ function TotoroQuestion({ progress, journey, preview }) {
           {feedback && <p role="alert">{feedback}</p>}
         </form>
       </>}
-      {restoring && <p className="book-restoring-message" role="status">La hoja se incorpora a la página…</p>}
       {chapter.saved && !restoring && !preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("totoroRestored")}>Leer el recuerdo guardado →</button>}
+      </>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>
   </>;
@@ -151,14 +164,7 @@ function TotoroQuestion({ progress, journey, preview }) {
 
 function TotoroRestored({ progress, journey, preview }) {
   const chapter = progress.chapter("totoro");
-  const [length, setLength] = useState(0);
   const active = journey?.spread === "totoroRestored" && !journey?.turn && !preview;
-  useEffect(() => {
-    if (!active || !chapter.saved) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { queueMicrotask(() => setLength(chapter.answer.length)); return; }
-    const timer = window.setInterval(() => setLength((current) => Math.min(chapter.answer.length, current + 2)), 28);
-    return () => window.clearInterval(timer);
-  }, [active, chapter.answer, chapter.saved]);
   if (!chapter.saved) return <TotoroQuestion progress={progress} journey={journey} preview={preview} />;
   return <>
     <div className="storybook-page storybook-title-page stage-c-restored-left totoro-restored-left">
@@ -171,7 +177,8 @@ function TotoroRestored({ progress, journey, preview }) {
       <span className="page-botanical page-botanical-top" aria-hidden="true" />
       <h1>El recuerdo de la infancia</h1>
       <p className="book-restored-question">{experience.question}</p>
-      <blockquote className="book-restored-answer">{active ? chapter.answer.slice(0, length) : chapter.answer}{active && length < chapter.answer.length && <span aria-hidden="true" className="ink-cursor">│</span>}</blockquote>
+      <MagicalInk answer={chapter.answer} chapterId="totoro" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
+      <ShareMemoryPrompt chapterId="totoro" answer={chapter.answer} progress={progress} journey={journey} preview={preview} />
       {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("totoro")}>Volver al capítulo →</button>}
       {!preview && progress.overall.finalUnlocked && <button className="book-chapter-start totoro-final-button" type="button" onClick={() => journey?.turnTo("finale")}>Abrir mi biblioteca <span aria-hidden="true">→</span></button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
@@ -180,10 +187,9 @@ function TotoroRestored({ progress, journey, preview }) {
 }
 
 export default function TotoroBookPages({ spread, progress, journey, preview = false }) {
-  return <div className="storybook-cover"><div className="storybook-pages">
-    {spread === "totoroGame" ? <>
-      <div className="storybook-page storybook-title-page book-game-left stage-c-game-left"><span className="page-botanical page-botanical-top" aria-hidden="true" /><div className="book-game-art"><Image src={`${assets}/claro-del-bosque.webp`} alt="Claro de un bosque luminoso donde crece una planta" fill sizes="(max-width: 700px) 85vw, 37vw" /></div><span className="page-botanical page-botanical-bottom" aria-hidden="true" /></div>
-      <div className="storybook-page storybook-index-page book-game-right stage-c-game-right"><span className="page-botanical page-botanical-top" aria-hidden="true" /><h1>El recuerdo de la infancia</h1><p>Traé la lluvia y el sol al brote. Una hoja guardará tu recuerdo.</p><ForestGame progress={progress} journey={journey} preview={preview} /><span className="page-botanical page-botanical-bottom-right" aria-hidden="true" /></div>
-    </> : spread === "totoroObject" ? <TotoroQuestion progress={progress} journey={journey} preview={preview} /> : <TotoroRestored progress={progress} journey={journey} preview={preview} />}
+  return <div className="storybook-cover experience-theme experience-theme--totoro" style={experienceThemes.totoro.style}><div className="storybook-pages">
+    {spread === "totoroGame" ? <ExperienceGameSpread theme={experienceThemes.totoro} title="El recuerdo de la infancia" instruction="Traé la lluvia y el sol al brote. Una hoja guardará tu recuerdo." stageC>
+      <ForestGame progress={progress} journey={journey} preview={preview} />
+    </ExperienceGameSpread> : spread === "totoroObject" ? <TotoroQuestion progress={progress} journey={journey} preview={preview} /> : <TotoroRestored progress={progress} journey={journey} preview={preview} />}
   </div></div>;
 }

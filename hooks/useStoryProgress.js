@@ -110,8 +110,8 @@ export function useStoryProgress() {
   }, [persist, ready]);
 
   const saveAnswer = useCallback((id, value) => {
-    const answer = typeof value === "string" ? value.trim().slice(0, 500) : "";
-    if (!ready || !storyChapterIds.includes(id) || !chaptersRef.current[id]?.gameComplete || !chaptersRef.current[id]?.objectRecovered || !answer) return Promise.resolve(false);
+    const answer = typeof value === "string" ? value.slice(0, 500) : "";
+    if (!ready || !storyChapterIds.includes(id) || !chaptersRef.current[id]?.gameComplete || !chaptersRef.current[id]?.objectRecovered || !answer.trim()) return Promise.resolve(false);
     return persist({ ...chaptersRef.current, [id]: { started: true, gameComplete: true, objectRecovered: true, ticketRecovered: id === "chihiro", answer, pageRestored: true, updatedAt: Date.now() } }).then(() => true);
   }, [persist, ready]);
 

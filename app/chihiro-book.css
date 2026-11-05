@@ -1,16 +1,22 @@
 /* Projected ink stays attached to the same Three.js book throughout the chapter. */
-.book-journey--turning .book-journey-stage{z-index:7}
+.book-journey--turning .book-journey-stage{z-index:4}
 .book-journey--reading[data-projected="true"] .storybook-index{opacity:1!important}
 .book-journey--turning .storybook-index{pointer-events:none}
 .book-turn-target,.book-turn-source{position:fixed;inset:0;pointer-events:none}
-.book-journey[data-turn-half="false"] .book-turn-target{visibility:hidden}
-.book-turn-source{z-index:8}
-.book-journey .book-turn-source .storybook-page{background-color:#e8d6ac!important;background-image:var(--book-paper-texture)!important;background-position:center!important;background-size:100% 100%!important;pointer-events:none!important}
-.book-turn-source .storybook-page>*{animation:none!important}
-.book-turn-static{position:fixed;inset:0;pointer-events:none}
-.book-journey .book-turn-static .storybook-page{background:transparent!important}
-.book-turn-forward .book-turn-static .storybook-index-page,.book-turn-backward .book-turn-static .storybook-title-page{display:none!important}
-.book-journey[data-turn-half="true"] .book-turn-static{visibility:hidden}
+.book-turn-target{z-index:5;opacity:var(--turn-target-opacity,0)}
+.book-turn-source{z-index:6;opacity:var(--turn-source-opacity,1)}
+.book-turn-preparing .book-turn-target,.book-journey[data-turn-surface="preparing"] .book-turn-target{visibility:hidden}
+.book-journey[data-turn-surface="complete"] .book-turn-source{visibility:hidden}
+.book-turn-target .storybook-page>*,.book-turn-source .storybook-page>*{animation:none!important}
+.book-journey--turning .book-turn-target .storybook-page,.book-journey--turning .book-turn-source .storybook-page{pointer-events:none!important}
+.book-journey[data-turn-surface="complete"] .book-turn-target{opacity:1}
+.book-turn-target .book-chapter-art,.book-turn-target .book-prologue-art{opacity:var(--turn-image-opacity,1)}
+.book-turn-target .book-navigation-chapter-page h1,.book-turn-target .book-contents-left h1,.book-turn-target .book-navigation-title h1{opacity:var(--turn-title-opacity,1)}
+.book-turn-target .book-chapter-description,.book-turn-target .book-contents-copy,.book-turn-target .title-page-intro{opacity:var(--turn-copy-opacity,1)}
+.book-turn-target .book-chapter-start,.book-turn-target .book-contents-chapter{opacity:var(--turn-button-opacity,1)}
+.book-journey .storybook-title-page::before,.book-journey .storybook-index-page::before{content:"";position:absolute;z-index:1;top:0;bottom:0;width:7%;pointer-events:none}
+.book-journey .storybook-title-page::before{right:0;background:linear-gradient(90deg,transparent,#624b3152)}
+.book-journey .storybook-index-page::before{left:0;background:linear-gradient(90deg,#624b3152,transparent)}
 
 /* Film spreads use the illustration and five editorial elements only. */
 .book-journey .book-navigation-art-page{justify-content:center}
@@ -28,6 +34,35 @@
 .book-journey .book-navigation-chapter-page .book-chapter-pending{margin:10px 0 0;font-size:10px}
 .book-journey .book-navigation-chapter-page .page-botanical-top{opacity:.43}
 .book-journey .book-navigation-chapter-page .page-botanical-bottom-right{opacity:.38}
+
+/* Editorial spreads share the same parchment and restrained botanical frame. */
+.book-journey .book-navigation-art-page .book-chapter-art{width:88%;height:83%;border:1px solid #c9a778;border-radius:12px 12px 8px 8px;outline:0;box-shadow:0 3px 10px #76563630}
+.book-journey .book-navigation-chapter-page{align-items:center;text-align:center;padding:clamp(36px,7vh,72px) clamp(32px,4vw,62px)}
+.book-journey .book-navigation-chapter-page .book-chapter-label{margin:0 0 clamp(16px,3vh,30px)}
+.book-journey .book-navigation-chapter-page h1,.book-journey .book-navigation-chapter-page-howl h1{width:auto;max-width:90%;margin:0 auto;font-size:clamp(25px,2.9vw,44px);text-align:center}
+.book-journey .book-navigation-chapter-page .ink-flourish{margin:clamp(15px,2.4vh,25px) auto}
+.book-journey .book-navigation-chapter-page .book-chapter-description{max-width:78%;font-size:clamp(12px,1.02vw,16px);line-height:1.65}
+.book-journey .book-navigation-chapter-page .book-chapter-start{margin:clamp(24px,4vh,38px) auto 0;padding:10px 20px}
+.book-journey .book-navigation-prologue .book-prologue-art{width:90%;height:86%;margin:auto;border:1px solid #c9a778;border-radius:12px;outline:0;box-shadow:0 3px 10px #76563630}
+.book-journey .book-navigation-prologue .book-prologue-art img{object-position:center}
+.book-journey .book-navigation-title h1{margin:0}
+.book-journey .book-navigation-title .title-page-intro{max-width:78%;margin:20px auto 0}
+.book-journey .book-contents-left .book-folio{display:none}
+.book-journey .book-contents-left h1{font-style:italic}
+.book-contents-illustration,.book-journey .title-page-vignette{position:relative;width:130px;height:95px;margin:8% auto 0;opacity:1;transform:none}
+.book-journey .title-page-vignette{position:absolute;left:8%;bottom:7%;margin:0}
+.book-contents-illustration img,.book-journey .title-page-vignette img{position:absolute;right:0;bottom:0;width:55px;height:65px;object-fit:contain}
+.index-book-stack{position:absolute;left:5px;bottom:6px;display:block;width:85px;height:53px}
+.index-book-stack i{position:absolute;left:2px;bottom:0;width:78px;height:15px;border:1px solid #704e34;border-radius:3px;background:linear-gradient(#9b6b48 15%,#e8d4a7 16%,#e8d4a7 68%,#75533a 70%);box-shadow:2px 2px 3px #51392348;transform:rotate(-5deg)}
+.index-book-stack i:nth-child(2){bottom:14px;left:7px;background:linear-gradient(#526b51 15%,#e8d4a7 16%,#e8d4a7 68%,#405b46 70%);transform:rotate(7deg)}
+.index-book-stack i:nth-child(3){bottom:29px;left:0;width:68px;background:linear-gradient(#745643 15%,#e8d4a7 16%,#e8d4a7 68%,#5b4338 70%)}
+.book-journey .book-contents-right .book-contents-chapter{grid-template-columns:38px 1fr 72px;min-height:105px}
+.book-contents-object{width:68px;height:61px;object-fit:contain;filter:drop-shadow(1px 4px 3px #654b3640);transition:transform .3s ease,filter .3s ease}
+.book-contents-chapter:hover .book-contents-object,.book-contents-chapter:focus-visible .book-contents-object{transform:translateY(-4px);filter:drop-shadow(0 2px 8px #d5ab56ad)}
+.book-index-bookmark{top:calc(var(--book-right-y) - 1px);min-width:36px;width:36px;height:48px;padding:4px;border-radius:3px 3px 9px 9px;font-size:0}
+.book-index-bookmark span{margin:0;font-size:23px;line-height:1;color:#ebc978}
+.book-index-bookmark:disabled{visibility:visible;opacity:.82;cursor:default}
+@media(max-width:700px){.book-journey .book-navigation-chapter-page{padding:25px 18px}.book-journey .book-navigation-chapter-page .book-chapter-description{max-width:94%;font-size:11px}.book-journey .book-navigation-prologue .book-prologue-art{height:79%}.book-journey .book-contents-right .book-contents-chapter{grid-template-columns:25px 1fr 46px;min-height:73px}.book-contents-object{width:45px;height:43px}.book-index-bookmark{top:calc(var(--book-right-y) - 2px);right:8px;width:32px;height:41px;min-width:32px}}
 
 /* The train, ticket, game and personal writing are printed on projected pages. */
 .book-journey .book-game-left,.book-journey .book-object-left,.book-journey .book-restored-left{justify-content:center;align-items:center}

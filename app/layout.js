@@ -9,6 +9,9 @@ import "./book-navigation.css";
 import "./chihiro-book.css";
 import "./book-contents.css";
 import "./stage-c.css";
+import "./experience-themes.css";
+import "./memory-restoration.css";
+import "./community-book.css";
 import BookJourney from "@/components/BookJourney";
 
 export const metadata = {
