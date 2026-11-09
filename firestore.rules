@@ -1,6 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function signedIn() { return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous'; }
+    function validText(text) { return text is string && text.size() > 0 && text.size() <= 500 && text.matches('.*[^ \\t\\r\\n].*'); }
+    function validFilm(film) { return film in ['chihiro', 'howl', 'totoro']; }
+    function validName(name) { return name is string && name.size() >= 2 && name.size() <= 32; }
+    function ownsMemoryId(memoryId) {
+      return request.auth != null && (
+        memoryId == request.auth.uid + '_chihiro' ||
+        memoryId == request.auth.uid + '_howl' ||
+        memoryId == request.auth.uid + '_totoro'
+      );
+    }
     match /progress/{userId} {
       allow read, delete: if request.auth != null
         && request.auth.uid == userId;
@@ -25,7 +37,46 @@ service cloud.firestore {
 
       allow create, update: if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.userId == request.auth.uid;
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['userId','email','displayName','photoURL','isAnonymous','authProvider','lastLoginAt','createdAt','publicName','updatedAt'])
+        && (!('publicName' in request.resource.data) || validName(request.resource.data.publicName));
+    }
+
+    function validMemory(memoryId, uid, film) {
+      let data = request.resource.data;
+      return signedIn() && owner(uid) && memoryId == uid + '_' + film
+        && data.keys().hasOnly(['authorUid','filmId','text','authorName','anonymous','status','publishedAt','updatedAt'])
+        && data.keys().hasAll(['authorUid','filmId','text','authorName','anonymous','status','publishedAt','updatedAt'])
+        && data.authorUid == uid && data.filmId == film && validFilm(film)
+        && validText(data.text) && data.status == 'published' && data.anonymous is bool
+        && (data.anonymous ? data.authorName == 'Anónimo' :
+          (validName(data.authorName) && data.authorName == get(/databases/$(database)/documents/users/$(uid)).data.publicName))
+        && data.publishedAt is timestamp && data.updatedAt is timestamp;
+    }
+    match /sharedMemories/{memoryId} {
+      allow get: if ownsMemoryId(memoryId) || (resource != null && resource.data.status == 'published');
+      allow list: if request.query.limit <= 6 && (resource.data.status == 'published' || owner(resource.data.authorUid));
+      allow create: if validMemory(memoryId, request.resource.data.authorUid, request.resource.data.filmId)
+        && request.resource.data.publishedAt == request.time
+        && request.resource.data.updatedAt == request.time;
+      allow update: if validMemory(memoryId, resource.data.authorUid, resource.data.filmId)
+        && request.resource.data.authorUid == resource.data.authorUid
+        && request.resource.data.filmId == resource.data.filmId
+        && request.resource.data.publishedAt == resource.data.publishedAt
+        && request.resource.data.updatedAt == request.time
+        && request.time > resource.data.updatedAt + duration.value(10, 's');
+      allow delete: if owner(resource.data.authorUid);
+    }
+    match /memoryReports/{reportId} {
+      allow create: if request.auth != null
+        && reportId == request.resource.data.memoryId + '_' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['memoryId','reporterUid','reason','createdAt','status'])
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.reason in ['inapropiado','spam','otro']
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt is timestamp
+        && exists(/databases/$(database)/documents/sharedMemories/$(request.resource.data.memoryId));
+      allow read, update, delete: if false;
     }
   }
 }

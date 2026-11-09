@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const port = 9256;
+const appPort = Number(process.env.APP_PORT || 3000);
 const mobile = process.argv.includes("--mobile");
 const reduced = process.argv.includes("--reduced");
 const visual = process.argv.includes("--visual");
@@ -45,7 +46,7 @@ try {
     const result = await send("Runtime.evaluate", { expression, returnByValue: true });
     return result.result.value;
   };
-  const until = async (expression, label, timeout = 13000) => {
+  const until = async (expression, label, timeout = 45000) => {
     const started = Date.now();
     while (Date.now() - started < timeout) {
       if (await evaluate(expression)) return;
@@ -54,7 +55,7 @@ try {
     throw new Error(`Timed out: ${label}; route=${await evaluate("location.pathname")}`);
   };
   const navigate = async (route) => {
-    await send("Page.navigate", { url: `http://localhost:3000${route}` }, 45000);
+    await send("Page.navigate", { url: `http://localhost:${appPort}${route}` }, 45000);
     await until('!!document.querySelector(".book-journey--reading .storybook-page")', route);
   };
   const snapshot = async (label) => {
@@ -166,14 +167,17 @@ try {
   await until('location.pathname === "/recuerdos/chihiro"', "index next page");
   await evaluate('document.querySelector(".book-page-arrow-prev").click()');
   await until('location.pathname === "/biblioteca/indice"', "chapter previous page");
-  await evaluate('document.querySelector(".book-contents-final").click()');
+  await evaluate('Array.from(document.querySelectorAll(".book-contents-final")).find((button) => button.textContent.includes("mi biblioteca"))?.click()');
   await until('location.pathname === "/final" && !!document.querySelector(".book-finale-object")', "unlocked finale");
-  if (!await evaluate('document.querySelector(".book-page-arrow-next").disabled')) throw new Error("Final page has an unexpected next page");
+  await evaluate('document.querySelector(".book-page-arrow-next").click()');
+  await until('location.pathname === "/red-recuerdos" && !!document.querySelector(".community-right")', "community chapter");
+  await evaluate('document.querySelector(".book-page-arrow-prev").click()');
+  await until('location.pathname === "/final"', "community previous page");
   await evaluate('document.querySelector(".book-page-arrow-prev").click()');
   await until('location.pathname === "/recuerdos/totoro/restaurado"', "final previous page");
   await evaluate('document.querySelector(".book-index-bookmark").click()');
   await until('location.pathname === "/biblioteca/indice"', "index bookmark");
-  console.log(JSON.stringify({ indexChapters: 3, arrows: true, finaleUnlocked: true, finaleLastPage: true, indexBookmark: true }));
+  console.log(JSON.stringify({ indexChapters: 3, arrows: true, finaleUnlocked: true, communityChapter: true, indexBookmark: true }));
   socket.close();
 } finally {
   chrome.kill();

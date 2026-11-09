@@ -22,8 +22,9 @@ const bookPaths = {
   totoroObject: "/recuerdos/totoro/objeto",
   totoroRestored: "/recuerdos/totoro/restaurado",
   finale: "/final",
+  community: "/red-recuerdos",
 };
-const bookOrder = ["index", "contents", "chihiro", "game", "object", "restored", "howl", "howlGame", "howlObject", "howlRestored", "totoro", "totoroGame", "totoroObject", "totoroRestored", "finale"];
+const bookOrder = ["index", "contents", "chihiro", "game", "object", "restored", "howl", "howlGame", "howlObject", "howlRestored", "totoro", "totoroGame", "totoroObject", "totoroRestored", "finale", "community"];
 
 function pageForPath(pathname) {
   const key = Object.keys(bookPaths).find((item) => bookPaths[item] === pathname);

@@ -1,0 +1,14 @@
+{
+  "indexes": [
+    { "collectionGroup": "sharedMemories", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "status", "order": "ASCENDING" },
+      { "fieldPath": "publishedAt", "order": "DESCENDING" }
+    ] },
+    { "collectionGroup": "sharedMemories", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "status", "order": "ASCENDING" },
+      { "fieldPath": "filmId", "order": "ASCENDING" },
+      { "fieldPath": "publishedAt", "order": "DESCENDING" }
+    ] }
+  ],
+  "fieldOverrides": []
+}

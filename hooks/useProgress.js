@@ -1,18 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInAnonymously,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
+import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { chapters } from "@/data/chapters";
 import { getFirebaseServices, hasFirebaseConfig } from "@/lib/firebase";
+import { accountPublicName, authenticateEmail, authenticateGoogle, closeSession, recoverPassword } from "@/lib/auth";
 
 const STORAGE_KEY = "biblioteca-recuerdos-progress";
 const VALID_CLUE_IDS = new Set(chapters.map((chapter) => chapter.clueId));
@@ -46,17 +39,18 @@ function getProvider(user) {
 }
 
 async function saveUserProfile(user, db) {
+  if (user.isAnonymous) return;
   const userRef = doc(db, "users", user.uid);
   const snapshot = await getDoc(userRef);
   const profile = {
     userId: user.uid,
-    email: user.email || null,
-    displayName: user.displayName || null,
-    photoURL: user.photoURL || null,
-    isAnonymous: user.isAnonymous,
+    isAnonymous: false,
     authProvider: getProvider(user),
     lastLoginAt: serverTimestamp(),
   };
+
+  const accountName = accountPublicName(user);
+  if (accountName) profile.publicName = accountName;
 
   if (!snapshot.exists()) profile.createdAt = serverTimestamp();
   await setDoc(userRef, profile, { merge: true });
@@ -96,12 +90,14 @@ export function useProgress() {
           await signInAnonymously(auth);
         } catch (error) {
           console.warn("No se pudo iniciar la sesion anonima.", error);
-          setAuthError(error.code || "auth/anonymous-sign-in-failed");
+          // El acceso como invitado sigue siendo local cuando el proveedor anónimo no está habilitado.
+          setAuthError("");
           setSyncState("offline");
         }
         return;
       }
 
+      setAuthUser(user);
       try {
         setSyncState("connecting");
         await saveUserProfile(user, db);
@@ -121,7 +117,6 @@ export function useProgress() {
         saveLocal(mergedClues);
         remoteUserRef.current = user;
         setRemoteUser(user);
-        setAuthUser(user);
         setAuthError("");
         setSyncState("cloud");
       } catch (error) {
@@ -191,8 +186,8 @@ export function useProgress() {
     setAuthLoading(true);
     setAuthError("");
     try {
-      const { auth } = getFirebaseServices();
-      await signInWithPopup(auth, new GoogleAuthProvider());
+      const user = await authenticateGoogle();
+      setAuthUser({ uid: user.uid, isAnonymous: user.isAnonymous, displayName: user.displayName, email: user.email, providerData: user.providerData });
     } catch (error) {
       setAuthError(error.code || "auth/google-sign-in-failed");
       throw error;
@@ -201,16 +196,12 @@ export function useProgress() {
     }
   }, []);
 
-  const submitEmail = useCallback(async ({ email, password, mode }) => {
+  const submitEmail = useCallback(async ({ email, password, mode, publicName }) => {
     setAuthLoading(true);
     setAuthError("");
     try {
-      const { auth } = getFirebaseServices();
-      const action =
-        mode === "signup"
-          ? createUserWithEmailAndPassword
-          : signInWithEmailAndPassword;
-      await action(auth, email, password);
+      const user = await authenticateEmail({ email, password, mode, publicName });
+      setAuthUser({ uid: user.uid, isAnonymous: user.isAnonymous, displayName: user.displayName, email: user.email, providerData: user.providerData });
     } catch (error) {
       setAuthError(error.code || "auth/email-sign-in-failed");
       throw error;
@@ -223,14 +214,20 @@ export function useProgress() {
     setAuthLoading(true);
     setAuthError("");
     try {
-      const { auth } = getFirebaseServices();
-      await signOut(auth);
+      await closeSession();
     } catch (error) {
       setAuthError(error.code || "auth/sign-out-failed");
       throw error;
     } finally {
       setAuthLoading(false);
     }
+  }, []);
+
+  const resetPassword = useCallback(async (email) => {
+    setAuthLoading(true); setAuthError("");
+    try { await recoverPassword(email); }
+    catch (error) { setAuthError(error.code || error.message); throw error; }
+    finally { setAuthLoading(false); }
   }, []);
 
   const discovered = useMemo(() => new Set(clues), [clues]);
@@ -248,6 +245,7 @@ export function useProgress() {
     reset,
     signInWithGoogle,
     submitEmail,
+    resetPassword,
     syncState,
   };
 }

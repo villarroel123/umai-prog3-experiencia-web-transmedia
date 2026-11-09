@@ -15,6 +15,7 @@ import "./experience-themes.css";
 import "./memory-restoration.css";
 import "./memory-journal.css";
 import "./typography.css";
+import "./community-book.css";
 import BookJourney from "@/components/BookJourney";
 
 export const metadata = {

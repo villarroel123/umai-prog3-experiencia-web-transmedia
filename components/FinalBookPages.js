@@ -39,6 +39,7 @@ export default function FinalBookPages({ progress, journey, preview = false }) {
       <div className="ink-flourish" aria-hidden="true" />
       {unlocked ? <p>Cada historia nos deja un recuerdo. Ahora, este libro también guarda los tuyos.</p> : <p>Cuando recuperes el boleto, la carta y la hoja, esta última página se llenará de vida.</p>}
       <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo("contents")} disabled={preview}>Volver al índice <span aria-hidden="true">→</span></button>
+      <button type="button" className="book-chapter-start" onClick={() => journey?.turnTo("community")} disabled={preview}>Red de recuerdos <span aria-hidden="true">→</span></button>
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>
   </div></div>;

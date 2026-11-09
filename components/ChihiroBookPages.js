@@ -1,4 +1,5 @@
 "use client";
+import ShareMemoryActions from "@/components/ShareMemoryActions";
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -198,6 +199,7 @@ function RestoredPages({ progress, journey, preview }) {
       <h1>Mi recuerdo</h1>
       <div className="ink-flourish" aria-hidden="true" />
       <MagicalInk answer={answer} chapterId="chihiro" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
+      <ShareMemoryActions chapterId="chihiro" journey={journey} preview={preview} />
       {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("game")}>Volver al minijuego →</button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
     </div>

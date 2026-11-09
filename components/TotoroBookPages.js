@@ -1,4 +1,5 @@
 "use client";
+import ShareMemoryActions from "@/components/ShareMemoryActions";
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -176,6 +177,7 @@ function TotoroRestored({ progress, journey, preview }) {
       <h1>Mi recuerdo</h1>
       <div className="ink-flourish" aria-hidden="true" />
       <MagicalInk answer={chapter.answer} chapterId="totoro" active={active} preview={preview} syncState={progress.syncState} signedIn={Boolean(progress.authUser?.uid)} />
+      <ShareMemoryActions chapterId="totoro" journey={journey} preview={preview} />
       {!preview && <button className="book-chapter-replay" type="button" onClick={() => journey?.turnTo("totoroGame")}>Volver al minijuego →</button>}
       {!preview && progress.overall.finalUnlocked && <button className="book-chapter-start totoro-final-button" type="button" onClick={() => journey?.turnTo("finale")}>Abrir mi biblioteca <span aria-hidden="true">→</span></button>}
       <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />

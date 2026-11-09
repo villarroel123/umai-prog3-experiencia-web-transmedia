@@ -9,6 +9,7 @@ import ChihiroBookPages from "@/components/ChihiroBookPages";
 import HowlBookPages from "@/components/HowlBookPages";
 import TotoroBookPages from "@/components/TotoroBookPages";
 import FinalBookPages from "@/components/FinalBookPages";
+import CommunityBookPages from "@/components/CommunityBookPages";
 
 const descriptions = {
   chihiro: "Una niña descubre un mundo de espíritus donde deberá encontrar el valor para regresar a casa.",
@@ -25,10 +26,10 @@ function PageArrows({ journey, progress }) {
   const spread = journey?.spread || "index";
   const films = ["index", "contents", "chihiro", "howl", "totoro"];
   const position = films.indexOf(spread);
-  const previous = position >= 0 ? films[position - 1] : ({ game: "chihiro", object: "game", restored: "object", howlGame: "howl", howlObject: "howlGame", howlRestored: "howlObject", totoroGame: "totoro", totoroObject: "totoroGame", totoroRestored: "totoroObject", finale: "totoroRestored" })[spread];
-  const next = position >= 0 ? films[position + 1] : ({ restored: "howl", howlRestored: "totoro", totoroRestored: progress.overall.finalUnlocked ? "finale" : null })[spread];
+  const previous = position >= 0 ? films[position - 1] : ({ game: "chihiro", object: "game", restored: "object", howlGame: "howl", howlObject: "howlGame", howlRestored: "howlObject", totoroGame: "totoro", totoroObject: "totoroGame", totoroRestored: "totoroObject", finale: "totoroRestored", community: "finale" })[spread];
+  const next = position >= 0 ? films[position + 1] : ({ restored: "howl", howlRestored: "totoro", totoroRestored: progress.overall.finalUnlocked ? "finale" : null, finale: "community" })[spread];
   const chapterNumber = spread.startsWith("howl") ? 2 : spread.startsWith("totoro") || spread === "finale" ? 3 : 1;
-  const count = spread === "index" ? "PRÓLOGO" : spread === "contents" ? "ÍNDICE" : position >= 0 ? `${String(position - 1).padStart(2, "0")} / 03` : `${String(chapterNumber).padStart(2, "0")} / 03`;
+  const count = spread === "index" ? "PRÓLOGO" : spread === "contents" ? "ÍNDICE" : spread === "community" ? "RED DE RECUERDOS" : position >= 0 ? `${String(position - 1).padStart(2, "0")} / 03` : `${String(chapterNumber).padStart(2, "0")} / 03`;
   return <nav className="book-page-arrows" aria-label="Pasar páginas del libro">
     <button type="button" className="book-page-arrow book-page-arrow-prev" onClick={() => journey?.turnTo(previous)} disabled={!journey || journey.turning || !previous} aria-label="Página anterior">‹</button>
     <span className="book-page-count" aria-live="polite">{count}</span>
@@ -64,6 +65,7 @@ function BookSpread({ spread, progress, journey, preview = false }) {
     return <TotoroBookPages spread={spread} progress={progress} journey={journey} preview={preview} />;
   }
   if (spread === "finale") return <FinalBookPages progress={progress} journey={journey} preview={preview} />;
+  if (spread === "community") return <CommunityBookPages progress={progress} journey={journey} preview={preview} />;
   const movie = movies.find((item) => item.id === spread);
   const chapter = movie && progress.chapter(movie.id);
   if (movie && chapter.saved) {
@@ -89,6 +91,7 @@ function BookSpread({ spread, progress, journey, preview = false }) {
       <div className="storybook-page storybook-index-page book-contents-right">
         <div className="index-page-heading"><span>CAPÍTULOS</span><span>01 — 03</span></div>
         <ChapterList progress={progress} journey={journey} preview={preview} />
+        <button type="button" className="book-contents-final" onClick={() => journey?.turnTo("community")} disabled={preview || journey?.turning}>Red de recuerdos <span aria-hidden="true">→</span></button>
         {progress.overall.finalUnlocked && <button type="button" className="book-contents-final" onClick={() => journey?.turnTo("finale")} disabled={preview || journey?.turning}>Abrir mi biblioteca de los recuerdos <span aria-hidden="true">→</span></button>}
         <p className="book-contents-hint">Seleccioná una historia para abrir su capítulo.</p>
         <span className="page-botanical page-botanical-bottom-right" aria-hidden="true" />
