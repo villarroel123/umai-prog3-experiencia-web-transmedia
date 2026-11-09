@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { chapters } from "@/data/chapters";
 import { getFirebaseServices, hasFirebaseConfig } from "@/lib/firebase";
@@ -85,15 +85,8 @@ export function useProgress() {
         remoteUserRef.current = null;
         setRemoteUser(null);
         setAuthUser(null);
-        try {
-          setSyncState("connecting");
-          await signInAnonymously(auth);
-        } catch (error) {
-          console.warn("No se pudo iniciar la sesion anonima.", error);
-          // El acceso como invitado sigue siendo local cuando el proveedor anónimo no está habilitado.
-          setAuthError("");
-          setSyncState("offline");
-        }
+        setAuthError("");
+        setSyncState("local");
         return;
       }
 

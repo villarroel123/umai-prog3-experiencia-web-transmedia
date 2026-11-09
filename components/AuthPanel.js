@@ -110,7 +110,7 @@ export default function AuthPanel({
 
             <div className="auth-separator"><span>O</span></div>
             <button className="auth-google" onClick={handleGoogle} disabled={authLoading}>CONTINUAR CON GOOGLE</button>
-            <p className="auth-note">El acceso como invitado utiliza una cuenta anónima de Firebase.</p>
+            <p className="auth-note">Como invitado, tus recuerdos quedan guardados en este navegador.</p>
           </>
         )}
 
