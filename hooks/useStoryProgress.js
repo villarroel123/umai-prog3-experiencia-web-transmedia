@@ -34,7 +34,7 @@ export function useStoryProgress() {
   const writesRef = useRef(Promise.resolve());
 
   useEffect(() => {
-    if (!auth.ready || (hasFirebaseConfig && !uid && auth.syncState !== "offline")) return;
+    if (!auth.ready) return;
     const key = uid || "local";
     if (hydratedRef.current === key) return;
     let cancelled = false;
