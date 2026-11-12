@@ -43,3 +43,7 @@ npm run build
 ```
 
 Proyecto académico inspirado en universos de Studio Ghibli. Sus obras y marcas pertenecen a sus titulares; esta base usa ilustraciones y geometría originales.
+
+## Declaración de uso de inteligencia artificial
+Para el desarrollo del trabajo se utilizaron las herramientas de IA Claude, Codex y ChatGPT (modelo GPT-6) como apoyo en tareas de consulta, revisión y asistencia técnica. El contenido final fue revisado y adaptado por las integrantes.
+
